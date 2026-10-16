@@ -234,7 +234,6 @@ export const BLEND_MODE_OPTIONS: Option<BlendMode>[] = [
 export const DEFAULT_SETTINGS: Settings = {
   ...defaultOptions,
   borderRadius: 28,
-  displace: 2.5,
   height: 220,
   width: 360,
 };

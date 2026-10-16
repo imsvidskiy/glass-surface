@@ -8,7 +8,7 @@ export const defaultOptions: Readonly<GlassSurfaceOptions> = {
   borderRadius: 20,
   borderWidth: 0.07,
   brightness: 50,
-  displace: 1.2,
+  displace: 0.8,
   distortionScale: -180,
   greenOffset: 10,
   mixBlendMode: "difference",
