@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
   "name": "@svidskiy/glass-surface-react",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Refractive liquid glass React component",
   "keywords": [
     "react",
