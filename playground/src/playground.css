@@ -39,6 +39,7 @@ body {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+  color-scheme: light;
   border: 1px solid var(--line);
   border-radius: 20px;
 }
@@ -56,6 +57,11 @@ body {
   flex-wrap: wrap;
   gap: 8px;
   justify-content: space-between;
+}
+
+.toolbar__link {
+  color: var(--text);
+  text-decoration: none;
 }
 
 .stage__handle {

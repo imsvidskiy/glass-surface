@@ -95,10 +95,6 @@ export function GlassSurface(props: GlassSurfaceProps): ReactNode {
 
       <span aria-hidden="true" className="glass-surface__frame" />
 
-      <span aria-hidden="true" className="glass-surface__sheen" />
-
-      <span aria-hidden="true" className="glass-surface__rim" />
-
       <span aria-hidden="true" className="glass-surface__glow" />
 
       <span aria-hidden="true" className="glass-surface__line" />

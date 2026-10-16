@@ -16,10 +16,10 @@ import {
   getSourceSize,
   resolveBackdrop,
 } from "./backdrop";
-import { createGlassProgram } from "./program";
-import { POSITION_LOCATION } from "./shaders";
+import { createProgram } from "./program";
+import { BLUR_SHADER, POSITION_LOCATION, REFRACTION_SHADER } from "./shaders";
 
-const UNIFORM_NAMES = [
+const REFRACTION_UNIFORMS = [
   "uBackdrop",
   "uDisplacementMap",
   "uCanvasSize",
@@ -29,10 +29,11 @@ const UNIFORM_NAMES = [
   "uChannelScale",
   "uHorizontalChannel",
   "uVerticalChannel",
-  "uSpread",
   "uLevelOfDetail",
   "uSaturation",
 ] as const;
+
+const BLUR_UNIFORMS = ["uSource", "uDirection", "uSigma", "uRadius"] as const;
 
 const CHANNEL_MASKS: Record<ColorChannel, [number, number, number, number]> = {
   A: [0, 0, 0, 1],
@@ -43,15 +44,25 @@ const CHANNEL_MASKS: Record<ColorChannel, [number, number, number, number]> = {
 
 const BACKDROP_UNIT = 0;
 const MAP_UNIT = 1;
+const PASS_UNIT = 2;
+
+/** Below this deviation, in device pixels, the blur passes are skipped. */
+const MINIMUM_SIGMA = 0.3;
+
+/** The widest blur reach, in device pixels; three sigma beyond it is clipped. */
+const MAXIMUM_RADIUS = 120;
 
 const FULL_SCREEN_TRIANGLE = new Float32Array([-1, -1, 3, -1, -1, 3]);
 
 const MINIMUM_TEXELS = 1e-6;
 
-type Uniforms = Record<
-  (typeof UNIFORM_NAMES)[number],
-  WebGLUniformLocation | null
->;
+type Uniforms<Name extends string> = Record<Name, WebGLUniformLocation | null>;
+
+/** A texture the passes draw into and read from. */
+interface PassTarget {
+  framebuffer: WebGLFramebuffer;
+  texture: WebGLTexture;
+}
 
 export type RendererSettings = Pick<
   GlassSurfaceOptions,
@@ -113,35 +124,89 @@ function createTexture(gl: WebGL2RenderingContext, unit: number): WebGLTexture {
   return texture;
 }
 
+function getUniforms<Name extends string>(
+  gl: WebGL2RenderingContext,
+  program: WebGLProgram,
+  names: readonly Name[]
+): Uniforms<Name> {
+  const entries = names.map((name) => [
+    name,
+    gl.getUniformLocation(program, name),
+  ]);
+
+  return Object.fromEntries(entries) as Uniforms<Name>;
+}
+
+/** Mipmaps only shrink a backdrop drawn smaller than its pixels; the blur is a pass of its own. */
 function getLevelOfDetail(
   backdrop: UploadedBackdrop,
   content: Size,
-  scale: number,
-  displace: number
+  scale: number
 ): number {
   if (!backdrop.mipmapped) {
     return 0;
   }
 
-  const texelsPerUnit = (backdrop.size.width / content.width) * scale;
-  const texelsPerPixel = texelsPerUnit / getPixelRatio();
-  const spreadTexels = texelsPerUnit * Math.max(0, displace);
+  const texelsPerPixel =
+    ((backdrop.size.width / content.width) * scale) / getPixelRatio();
 
-  return Math.max(
-    0,
-    Math.log2(Math.max(texelsPerPixel, spreadTexels * 0.5, MINIMUM_TEXELS))
+  return Math.max(0, Math.log2(Math.max(texelsPerPixel, MINIMUM_TEXELS)));
+}
+
+function createPassTarget(gl: WebGL2RenderingContext): PassTarget {
+  const texture = createTexture(gl, PASS_UNIT);
+  const framebuffer = gl.createFramebuffer();
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+  gl.framebufferTexture2D(
+    gl.FRAMEBUFFER,
+    gl.COLOR_ATTACHMENT0,
+    gl.TEXTURE_2D,
+    texture,
+    0
   );
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  return { framebuffer, texture };
+}
+
+function resizePassTarget(
+  gl: WebGL2RenderingContext,
+  target: PassTarget,
+  size: Size
+): void {
+  gl.activeTexture(gl.TEXTURE0 + PASS_UNIT);
+  gl.bindTexture(gl.TEXTURE_2D, target.texture);
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    0,
+    gl.RGBA,
+    size.width,
+    size.height,
+    0,
+    gl.RGBA,
+    gl.UNSIGNED_BYTE,
+    null
+  );
+}
+
+function deletePassTarget(
+  gl: WebGL2RenderingContext,
+  target: PassTarget
+): void {
+  gl.deleteFramebuffer(target.framebuffer);
+  gl.deleteTexture(target.texture);
 }
 
 export function createWebglRenderer(targets: RendererTargets): WebglRenderer {
   const { element, canvas, readSettings, onFailure } = targets;
 
   const gl = getWebgl2Context(canvas);
-  const program = createGlassProgram(gl);
+  const refractionProgram = createProgram(gl, REFRACTION_SHADER);
+  const blurProgram = createProgram(gl, BLUR_SHADER);
   const vertexArray = gl.createVertexArray();
   const vertexBuffer = gl.createBuffer();
 
-  gl.useProgram(program);
   gl.bindVertexArray(vertexArray);
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, FULL_SCREEN_TRIANGLE, gl.STATIC_DRAW);
@@ -149,17 +214,20 @@ export function createWebglRenderer(targets: RendererTargets): WebglRenderer {
   gl.vertexAttribPointer(POSITION_LOCATION, 2, gl.FLOAT, false, 0, 0);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
-  const uniformEntries = UNIFORM_NAMES.map((name) => [
-    name,
-    gl.getUniformLocation(program, name),
-  ]);
-  const uniforms = Object.fromEntries(uniformEntries) as Uniforms;
+  const uniforms = getUniforms(gl, refractionProgram, REFRACTION_UNIFORMS);
+  const blurUniforms = getUniforms(gl, blurProgram, BLUR_UNIFORMS);
 
   const backdropTexture = createTexture(gl, BACKDROP_UNIT);
   const mapTexture = createTexture(gl, MAP_UNIT);
+  const refracted = createPassTarget(gl);
+  const halfBlurred = createPassTarget(gl);
 
+  gl.useProgram(refractionProgram);
   gl.uniform1i(uniforms.uBackdrop, BACKDROP_UNIT);
   gl.uniform1i(uniforms.uDisplacementMap, MAP_UNIT);
+
+  gl.useProgram(blurProgram);
+  gl.uniform1i(blurUniforms.uSource, PASS_UNIT);
 
   const mapCanvas = document.createElement("canvas");
   const mapContext = getContext2d(mapCanvas);
@@ -171,6 +239,7 @@ export function createWebglRenderer(targets: RendererTargets): WebglRenderer {
   let frame = 0;
   let visible = true;
   let drawnSignature = "";
+  let passSize: Size = { height: 0, width: 0 };
 
   function isRunning(): boolean {
     return visible && !document.hidden;
@@ -312,8 +381,18 @@ export function createWebglRenderer(targets: RendererTargets): WebglRenderer {
 
     const scaleX = bounds.width / layout.width;
     const scaleY = bounds.height / layout.height;
+    const sigma = Math.max(0, displace) * pixelRatio;
+    const blurred = sigma >= MINIMUM_SIGMA;
+
+    if (blurred && (passSize.width !== width || passSize.height !== height)) {
+      passSize = { height, width };
+      resizePassTarget(gl, refracted, passSize);
+      resizePassTarget(gl, halfBlurred, passSize);
+    }
 
     gl.viewport(0, 0, width, height);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, blurred ? refracted.framebuffer : null);
+    gl.useProgram(refractionProgram);
     gl.uniform2f(uniforms.uCanvasSize, width, height);
     gl.uniform2f(uniforms.uSurfaceSize, layout.width, layout.height);
     gl.uniform2f(
@@ -334,12 +413,38 @@ export function createWebglRenderer(targets: RendererTargets): WebglRenderer {
     );
     gl.uniform4fv(uniforms.uHorizontalChannel, CHANNEL_MASKS[xChannel]);
     gl.uniform4fv(uniforms.uVerticalChannel, CHANNEL_MASKS[yChannel]);
-    gl.uniform1f(uniforms.uSpread, Math.max(0, displace));
     gl.uniform1f(
       uniforms.uLevelOfDetail,
-      getLevelOfDetail(uploaded, content, scaleX, displace)
+      getLevelOfDetail(uploaded, content, scaleX)
     );
     gl.uniform1f(uniforms.uSaturation, saturation);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    if (!blurred) {
+      return;
+    }
+
+    blur(sigma);
+  }
+
+  /** Blurs the refracted pass across, then down onto the canvas. */
+  function blur(sigma: number): void {
+    gl.useProgram(blurProgram);
+    gl.uniform1f(blurUniforms.uSigma, sigma);
+    gl.uniform1i(
+      blurUniforms.uRadius,
+      Math.min(MAXIMUM_RADIUS, Math.ceil(sigma * 3))
+    );
+    gl.activeTexture(gl.TEXTURE0 + PASS_UNIT);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, halfBlurred.framebuffer);
+    gl.bindTexture(gl.TEXTURE_2D, refracted.texture);
+    gl.uniform2f(blurUniforms.uDirection, 1, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindTexture(gl.TEXTURE_2D, halfBlurred.texture);
+    gl.uniform2f(blurUniforms.uDirection, 0, 1);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
@@ -408,9 +513,12 @@ export function createWebglRenderer(targets: RendererTargets): WebglRenderer {
 
       gl.deleteTexture(backdropTexture);
       gl.deleteTexture(mapTexture);
+      deletePassTarget(gl, refracted);
+      deletePassTarget(gl, halfBlurred);
       gl.deleteBuffer(vertexBuffer);
       gl.deleteVertexArray(vertexArray);
-      gl.deleteProgram(program);
+      gl.deleteProgram(refractionProgram);
+      gl.deleteProgram(blurProgram);
     },
   };
 }

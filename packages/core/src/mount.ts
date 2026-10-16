@@ -13,7 +13,7 @@ import type { GlassSurfaceInput } from "./types";
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
-const DECORATION_LAYERS = ["frame", "sheen", "rim", "glow", "line"] as const;
+const DECORATION_LAYERS = ["frame", "glow", "line"] as const;
 
 let instanceCount = 0;
 
