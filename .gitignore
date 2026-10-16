@@ -1,0 +1,41 @@
+# Dependencies
+
+node_modules/
+
+# Build
+
+dist/
+*.tsbuildinfo
+*.tgz
+
+# Cloudflare
+
+.cloudflare/
+
+# Vite
+
+.vite/
+vite.config.ts.timestamp-*
+
+# Testing
+
+coverage/
+
+# Logs
+
+*.log
+
+# Environment
+
+.env
+.env.*
+!.env.example
+
+# Editors
+
+.idea/
+.vscode/
+
+# Operating systems
+
+.DS_Store

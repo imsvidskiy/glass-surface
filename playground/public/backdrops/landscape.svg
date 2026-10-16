@@ -1,0 +1,67 @@
+<svg
+  height="1000"
+  viewBox="0 0 1600 1000"
+  width="1600"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <title>Landscape</title>
+
+  <defs>
+    <linearGradient id="sky" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#1e3a8a" />
+
+      <stop offset="0.55" stop-color="#f97316" />
+
+      <stop offset="1" stop-color="#fde68a" />
+    </linearGradient>
+
+    <linearGradient id="lake" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f59e0b" />
+
+      <stop offset="1" stop-color="#1e1b4b" />
+    </linearGradient>
+
+    <radialGradient id="sun">
+      <stop offset="0" stop-color="#fff7d6" />
+
+      <stop offset="0.6" stop-color="#fde047" />
+
+      <stop offset="1" stop-color="#fde047" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect fill="url(#sky)" height="700" width="1600" />
+
+  <circle cx="1060" cy="520" fill="url(#sun)" r="220" />
+
+  <path
+    d="M0 560 260 340 470 520 700 300 980 560 1240 360 1600 600V700H0Z"
+    fill="#7c3aed"
+    fill-opacity="0.7"
+  />
+
+  <path
+    d="M0 620 320 440 560 600 860 420 1120 620 1400 470 1600 640V700H0Z"
+    fill="#4c1d95"
+  />
+
+  <path
+    d="M0 680 200 600 420 670 700 560 960 680 1240 590 1600 690V700H0Z"
+    fill="#1e1b4b"
+  />
+
+  <rect fill="url(#lake)" height="300" width="1600" y="700" />
+
+  <g
+    stroke="#fff7d6"
+    stroke-linecap="round"
+    stroke-opacity="0.7"
+    stroke-width="6"
+  >
+    <line x1="940" x2="1180" y1="760" y2="760" />
+
+    <line x1="980" x2="1140" y1="810" y2="810" />
+
+    <line x1="1010" x2="1110" y1="860" y2="860" />
+  </g>
+</svg>

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "@svidskiy/glass-surface",
+  "version": "0.0.0",
+  "description": "Refractive liquid glass for any element",
+  "keywords": [
+    "glass",
+    "liquid-glass",
+    "glassmorphism",
+    "backdrop-filter",
+    "webgl",
+    "refraction"
+  ],
+  "homepage": "https://github.com/svidskiy/glass-surface/tree/main/packages/core#readme",
+  "bugs": "https://github.com/svidskiy/glass-surface/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/svidskiy/glass-surface.git",
+    "directory": "packages/core"
+  },
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json",
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "release": "bun publish",
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "tsdown": "catalog:"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

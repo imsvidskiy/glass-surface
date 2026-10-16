@@ -1,0 +1,13 @@
+<svg
+  height="200"
+  viewBox="0 0 200 200"
+  width="200"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <title>Star</title>
+
+  <path
+    d="M100 8 L127 72 L196 76 L143 121 L160 190 L100 152 L40 190 L57 121 L4 76 L73 72 Z"
+    fill="#000"
+  />
+</svg>

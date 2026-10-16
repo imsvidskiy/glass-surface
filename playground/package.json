@@ -1,0 +1,28 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "playground",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "deploy": "cf deploy",
+    "dev": "vite",
+    "preview": "vite preview",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@svidskiy/glass-surface": "workspace:*",
+    "@svidskiy/glass-surface-react": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-beta.v.1",
+    "@types/node": "^26.6.5",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^6.1.2",
+    "cf": "1.0.0-beta.17",
+    "vite": "^8.3.4"
+  }
+}

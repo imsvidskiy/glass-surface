@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose an option, a renderer improvement, or a framework adapter
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem before the solution.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to achieve, and what stops you today?
+      placeholder: I want the glass to refract a live DOM backdrop in Safari.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How the library could solve it. A new option, a renderer change, an adapter for another framework.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Workarounds you tried or other designs you considered.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      multiple: true
+      options:
+        - "@svidskiy/glass-surface"
+        - "@svidskiy/glass-surface-react"
+        - Playground
+        - New adapter

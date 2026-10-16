@@ -1,0 +1,18 @@
+$schema: https://raw.githubusercontent.com/evilmartians/lefthook/v2.2.2/schema.json
+
+glob_matcher: doublestar
+
+pre-commit:
+  jobs:
+    - name: ultracite
+      glob: "**/*.{ts,tsx,json,jsonc,css,html,svg}"
+      run: bun x --no-install ultracite fix {staged_files}
+      stage_fixed: true
+
+pre-push:
+  jobs:
+    - name: build
+      run: bun run build
+
+    - name: typecheck
+      run: bun run typecheck

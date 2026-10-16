@@ -1,0 +1,41 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "glass-surface-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "playground"
+    ],
+    "catalog": {
+      "@types/react": "^19.3.0",
+      "@types/react-dom": "^19.3.0",
+      "react": "^19.3.1",
+      "react-dom": "^19.3.1",
+      "tsdown": "^0.23.1"
+    }
+  },
+  "scripts": {
+    "build": "bun run --filter './packages/*' build",
+    "changeset": "changeset",
+    "check": "ultracite check",
+    "deploy": "bun run --filter playground deploy",
+    "dev": "bun run --filter playground dev",
+    "fix": "ultracite fix",
+    "prepare": "lefthook install",
+    "release": "bun run build && bun run --filter './packages/*' release",
+    "typecheck": "bun run --filter '*' typecheck",
+    "version-packages": "changeset version"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/core": "^0.18.5",
+    "@biomejs/biome": "^2.5.15",
+    "@changesets/cli": "^3.0.3",
+    "@tsconfig/bases": "^1.0.28",
+    "lefthook": "^2.2.2",
+    "publint": "^0.3.25",
+    "typescript": "^7.0.2",
+    "ultracite": "^8.0.1"
+  }
+}
