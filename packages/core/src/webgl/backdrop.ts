@@ -25,7 +25,13 @@ export function getSourceSize(source: BackdropElement): Size {
 /** Identifies the current frame of the source; empty while the source is not ready. */
 export function getFrameKey(source: BackdropElement): string {
   if (source instanceof HTMLImageElement) {
-    return source.complete ? source.currentSrc : "";
+    const loaded = source.complete && source.naturalWidth > 0;
+
+    if (!loaded) {
+      return "";
+    }
+
+    return source.currentSrc || source.src;
   }
 
   if (source instanceof HTMLVideoElement) {

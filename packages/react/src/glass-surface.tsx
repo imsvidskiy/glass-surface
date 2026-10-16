@@ -4,9 +4,11 @@ import {
   FILTER_REGION,
   type GlassSurfaceInput,
   getSurfaceClasses,
+  getSurfaceOverrides,
   getSurfaceProperties,
   resolveOptions,
   toFilterId,
+  toStyleObject,
 } from "@svidskiy/glass-surface";
 import {
   type CSSProperties,
@@ -76,6 +78,7 @@ export function GlassSurface(props: GlassSurfaceProps): ReactNode {
     height,
     width,
     ...getSurfaceProperties(filterId, options, state),
+    ...toStyleObject(getSurfaceOverrides(options, state)),
   } as CSSProperties;
 
   return (

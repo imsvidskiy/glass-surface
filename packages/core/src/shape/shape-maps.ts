@@ -84,8 +84,8 @@ export function createShapeMap(
         const shift = flatness * (centerBrightness - 0.5);
 
         pixels[index * 4] = 255 * (0.5 + slopeX * bend + shift);
-        pixels[index * 4 + 1] = 255 * (0.5 + shift);
-        pixels[index * 4 + 2] = 255 * (0.5 + slopeY * bend + shift);
+        pixels[index * 4 + 1] = 255 * (0.5 + slopeY * bend + shift);
+        pixels[index * 4 + 2] = 255 * (0.5 + shift);
         pixels[index * 4 + 3] = 255;
       }
     }

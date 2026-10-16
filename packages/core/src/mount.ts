@@ -3,7 +3,12 @@ import {
   type GlassSurfaceController,
 } from "./controller";
 import { describeFilter, FILTER_REGION, type SvgAttributes } from "./filter";
-import { getSurfaceClasses, getSurfaceProperties, toFilterId } from "./styles";
+import {
+  getSurfaceClasses,
+  getSurfaceOverrides,
+  getSurfaceProperties,
+  toFilterId,
+} from "./styles";
 import type { GlassSurfaceInput } from "./types";
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
@@ -77,7 +82,10 @@ export function createGlassSurface(
   function render(): void {
     const state = controller.getState();
     const options = controller.getOptions();
-    const properties = getSurfaceProperties(filterId, options, state);
+    const properties: Record<string, string> = {
+      ...getSurfaceProperties(filterId, options, state),
+      ...getSurfaceOverrides(options, state),
+    };
 
     element.classList.remove(...appliedClasses);
     appliedClasses = getSurfaceClasses(state);

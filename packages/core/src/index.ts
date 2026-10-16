@@ -14,9 +14,12 @@ export { createGlassSurface, type GlassSurfaceInstance } from "./mount";
 export { defaultOptions, resolveOptions } from "./options";
 export {
   getSurfaceClasses,
+  getSurfaceOverrides,
   getSurfaceProperties,
+  type SurfaceOverrides,
   type SurfaceProperties,
   toFilterId,
+  toStyleObject,
 } from "./styles";
 export { supportsSvgBackdropFilter } from "./support";
 export type {
