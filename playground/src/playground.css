@@ -37,7 +37,7 @@ body {
 
 .stage {
   position: relative;
-  height: clamp(380px, 58vh, 620px);
+  aspect-ratio: 16 / 10;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -51,26 +51,11 @@ body {
   object-fit: cover;
 }
 
-.stage__presets,
-.stage__backdrops {
-  position: absolute;
-  left: 50%;
-  z-index: 2;
-  padding: 4px;
-  margin: 0;
-  background: rgb(11 11 14 / 0.55);
-  border: 0;
-  border-radius: 12px;
-  backdrop-filter: blur(12px);
-  transform: translateX(-50%);
-}
-
-.stage__presets {
-  top: 14px;
-}
-
-.stage__backdrops {
-  bottom: 14px;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
 }
 
 .stage__handle {
@@ -371,13 +356,4 @@ body {
   position: absolute;
   pointer-events: none;
   opacity: 0;
-}
-
-.stage__presets .segmented__legend,
-.stage__backdrops .segmented__legend {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
 }

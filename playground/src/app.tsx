@@ -31,8 +31,8 @@ import {
 import { createSnippet } from "./snippet";
 import { useDrag } from "./use-drag";
 
-const BACKDROP_WIDTH = 1900;
-const BACKDROP_HEIGHT = 925;
+const BACKDROP_WIDTH = 1920;
+const BACKDROP_HEIGHT = 1200;
 
 const COPIED_NOTICE_DURATION = 1500;
 
@@ -107,6 +107,22 @@ export function App(): ReactNode {
 
   return (
     <main className="playground">
+      <div className="toolbar">
+        <SegmentedControl
+          label="Preset"
+          onChange={choosePreset}
+          options={PRESET_OPTIONS}
+          value={preset}
+        />
+
+        <SegmentedControl
+          label="Backdrop"
+          onChange={setBackdrop}
+          options={BACKDROP_OPTIONS}
+          value={backdrop}
+        />
+      </div>
+
       <div className="stage" ref={stageRef}>
         <img
           alt=""
@@ -115,14 +131,6 @@ export function App(): ReactNode {
           ref={backdropRef}
           src={`/backdrops/${backdrop}.webp`}
           width={BACKDROP_WIDTH}
-        />
-
-        <SegmentedControl
-          className="stage__presets"
-          label="Preset"
-          onChange={choosePreset}
-          options={PRESET_OPTIONS}
-          value={preset}
         />
 
         <div
@@ -137,14 +145,6 @@ export function App(): ReactNode {
             {PRESET_CONTENT[preset]}
           </GlassSurface>
         </div>
-
-        <SegmentedControl
-          className="stage__backdrops"
-          label="Backdrop"
-          onChange={setBackdrop}
-          options={BACKDROP_OPTIONS}
-          value={backdrop}
-        />
       </div>
 
       <section className="panel">
