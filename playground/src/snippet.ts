@@ -23,9 +23,7 @@ function differsFromDefault([name, value]: [string, unknown]): boolean {
 
 /** A ready-to-paste component with every prop that differs from the defaults, sorted by name. */
 export function createSnippet(settings: Settings): string {
-  const { preset, ...props } = settings;
-
-  const changed = Object.entries(props).filter(differsFromDefault);
+  const changed = Object.entries(settings).filter(differsFromDefault);
 
   const propLines = changed
     .map(function toProp([name, value]) {

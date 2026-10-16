@@ -18,11 +18,9 @@ import {
   type BackdropName,
   BLEND_MODE_OPTIONS,
   CHANNEL_OPTIONS,
+  DEFAULT_SETTINGS,
   findSlider,
   type NumericSetting,
-  PRESET_OPTIONS,
-  PRESET_SETTINGS,
-  type PresetName,
   RENDERER_OPTIONS,
   type Settings,
   SLIDER_SECTIONS,
@@ -53,8 +51,8 @@ export function App(): ReactNode {
   const stageRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLImageElement>(null);
 
-  const [settings, setSettings] = useState<Settings>(PRESET_SETTINGS.tabBar);
-  const [backdrop, setBackdrop] = useState<BackdropName>("1");
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [backdrop, setBackdrop] = useState<BackdropName>("2");
   const [copied, setCopied] = useState(false);
 
   const drag = useDrag(stageRef);
@@ -65,8 +63,6 @@ export function App(): ReactNode {
   const updateBlendMode = useSettingUpdater("mixBlendMode", setSettings);
   const updateRefraction = useSettingUpdater("refraction", setSettings);
 
-  const { preset, ...surfaceSettings } = settings;
-
   const updateNumber = useCallback(function applyNumberSetting(
     key: NumericSetting,
     value: number
@@ -76,14 +72,8 @@ export function App(): ReactNode {
     });
   }, []);
 
-  const choosePreset = useCallback(function selectPreset(name: PresetName) {
-    setSettings(PRESET_SETTINGS[name]);
-  }, []);
-
-  const resetSettings = useCallback(function restorePreset() {
-    setSettings(function applyPreset(current) {
-      return PRESET_SETTINGS[current.preset];
-    });
+  const resetSettings = useCallback(function restoreDefaults() {
+    setSettings(DEFAULT_SETTINGS);
   }, []);
 
   const copySnippet = useCallback(
@@ -107,13 +97,6 @@ export function App(): ReactNode {
   return (
     <main className="playground">
       <div className="toolbar">
-        <SegmentedControl
-          label="Preset"
-          onChange={choosePreset}
-          options={PRESET_OPTIONS}
-          value={preset}
-        />
-
         <SegmentedControl
           label="Backdrop"
           onChange={setBackdrop}
@@ -140,7 +123,7 @@ export function App(): ReactNode {
           onPointerUp={drag.handlePointerUp}
           style={handleStyle}
         >
-          <GlassSurface {...surfaceSettings} backdrop={backdropRef} />
+          <GlassSurface {...settings} backdrop={backdropRef} />
         </div>
       </div>
 
