@@ -1,4 +1,4 @@
-import { FRAGMENT_SHADER, POSITION_LOCATION, VERTEX_SHADER } from "./shaders";
+import { POSITION_LOCATION, VERTEX_SHADER } from "./shaders";
 
 function compileShader(
   gl: WebGL2RenderingContext,
@@ -25,9 +25,13 @@ function compileShader(
   throw new Error(`Failed to compile a WebGL shader: ${log}`);
 }
 
-export function createGlassProgram(gl: WebGL2RenderingContext): WebGLProgram {
+/** Links the shared full-screen vertex shader with one fragment shader. */
+export function createProgram(
+  gl: WebGL2RenderingContext,
+  fragmentSource: string
+): WebGLProgram {
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
-  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
+  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
   const program = gl.createProgram();
 
   gl.attachShader(program, vertexShader);

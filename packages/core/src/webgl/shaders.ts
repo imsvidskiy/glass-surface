@@ -7,7 +7,8 @@ void main() {
   gl_Position = vec4(aPosition, 0.0, 1.0);
 }`;
 
-export const FRAGMENT_SHADER = `#version 300 es
+/** Bends the backdrop through the displacement map, one sample per channel, and saturates it. */
+export const REFRACTION_SHADER = `#version 300 es
 precision highp float;
 
 uniform sampler2D uBackdrop;
@@ -19,7 +20,6 @@ uniform vec2 uBackdropStep;
 uniform vec3 uChannelScale;
 uniform vec4 uHorizontalChannel;
 uniform vec4 uVerticalChannel;
-uniform float uSpread;
 uniform float uLevelOfDetail;
 uniform float uSaturation;
 
@@ -37,26 +37,9 @@ vec4 sampleRefracted(vec2 point) {
   return vec4(red.r, green.g, blue.b, (red.a + green.a + blue.a) / 3.0);
 }
 
-vec4 sampleBlurred(vec2 point) {
-  vec4 color = vec4(0.0);
-  float weightSum = 0.0;
-
-  for (int row = -2; row <= 2; row++) {
-    for (int column = -2; column <= 2; column++) {
-      vec2 offset = vec2(float(column), float(row)) * uSpread * 0.8;
-      float weight = exp(-dot(offset, offset) / (2.0 * uSpread * uSpread));
-
-      color += sampleRefracted(point + offset) * weight;
-      weightSum += weight;
-    }
-  }
-
-  return color / weightSum;
-}
-
 void main() {
   vec2 point = vec2(gl_FragCoord.x, uCanvasSize.y - gl_FragCoord.y) / uCanvasSize * uSurfaceSize;
-  vec4 color = uSpread < 0.05 ? sampleRefracted(point) : sampleBlurred(point);
+  vec4 color = sampleRefracted(point);
 
   vec3 rgb = color.a > 0.0 ? color.rgb / color.a : vec3(0.0);
   float s = uSaturation;
@@ -69,4 +52,45 @@ void main() {
 
   rgb = clamp(saturationMatrix * rgb, 0.0, 1.0);
   outColor = vec4(rgb * color.a, color.a);
+}`;
+
+/**
+ * One direction of a separable Gaussian blur over every pixel within three sigma, like
+ * feGaussianBlur. Pairs of taps share one linear sample, so the radius costs half as many reads.
+ */
+export const BLUR_SHADER = `#version 300 es
+precision highp float;
+
+uniform sampler2D uSource;
+uniform vec2 uDirection;
+uniform float uSigma;
+uniform int uRadius;
+
+out vec4 outColor;
+
+float gaussian(float distance) {
+  return exp(-(distance * distance) / (2.0 * uSigma * uSigma));
+}
+
+void main() {
+  vec2 size = vec2(textureSize(uSource, 0));
+  vec2 uv = gl_FragCoord.xy / size;
+  vec2 step = uDirection / size;
+
+  vec4 sum = texture(uSource, uv);
+  float total = 1.0;
+
+  for (int tap = 1; tap <= uRadius; tap += 2) {
+    float near = float(tap);
+    float far = near + 1.0;
+    float nearWeight = gaussian(near);
+    float farWeight = tap + 1 <= uRadius ? gaussian(far) : 0.0;
+    float weight = nearWeight + farWeight;
+    float offset = (near * nearWeight + far * farWeight) / weight;
+
+    sum += (texture(uSource, uv + step * offset) + texture(uSource, uv - step * offset)) * weight;
+    total += 2.0 * weight;
+  }
+
+  outColor = sum / total;
 }`;

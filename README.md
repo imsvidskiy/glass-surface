@@ -52,7 +52,7 @@ calm, in React or in plain JavaScript.
       <td
         width="33%"
         valign="top"
-      ><b>Frosted fallback</b><br>Blur, tint, and a rim light wherever
+      ><b>Frosted fallback</b><br>Blur, richer color, and a tint wherever
         refraction isn't available.</td>
     </tr>
   </thead>
