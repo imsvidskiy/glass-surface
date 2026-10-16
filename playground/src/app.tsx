@@ -103,10 +103,6 @@ export function App(): ReactNode {
           options={BACKDROP_OPTIONS}
           value={backdrop}
         />
-
-        <a className="row toolbar__link" href="/examples">
-          Examples
-        </a>
       </div>
 
       <div className="stage" ref={stageRef}>

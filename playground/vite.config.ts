@@ -10,14 +10,6 @@ function fromPackages(path: string): string {
 const CORE_STYLES = fromPackages("core/src/glass-surface.css");
 
 export default defineConfig({
-  build: {
-    rolldownOptions: {
-      input: {
-        examples: fileURLToPath(new URL("examples.html", import.meta.url)),
-        playground: fileURLToPath(new URL("index.html", import.meta.url)),
-      },
-    },
-  },
   plugins: [react(), cloudflare()],
   resolve: {
     alias: [

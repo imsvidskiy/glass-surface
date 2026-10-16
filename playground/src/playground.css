@@ -59,11 +59,6 @@ body {
   justify-content: space-between;
 }
 
-.toolbar__link {
-  color: var(--text);
-  text-decoration: none;
-}
-
 .stage__handle {
   position: absolute;
   touch-action: none;
