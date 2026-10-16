@@ -108,9 +108,9 @@ export function TabBar() {
 ## Playground
 
 The [playground](https://glass-surface.svidware.workers.dev) drags the surface
-over five websites, tunes every option, and copies the component.
+over three patterned backdrops, tunes every option, and copies the component.
 
-![The playground: a glass tab bar over a website and the Customize panel](.github/screenshots/playground.webp)
+![The playground: a glass card over a patterned backdrop and the Customize panel](.github/screenshots/playground.webp)
 
 ## Renderers
 

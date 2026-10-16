@@ -6,8 +6,6 @@ import type {
   GlassSurfaceOptions,
 } from "@svidskiy/glass-surface-react";
 
-export type PresetName = "tabBar" | "button" | "card";
-
 export type BackdropName = "1" | "2" | "3";
 
 export type NumericSetting =
@@ -32,7 +30,6 @@ export type Settings = Pick<
 > & {
   height: number;
   mixBlendMode: BlendMode;
-  preset: PresetName;
   refraction: boolean;
   renderer: GlassRenderer;
   width: number;
@@ -194,12 +191,6 @@ export const SLIDERS: SliderDefinition[] = [
   },
 ];
 
-export const PRESET_OPTIONS: Option<PresetName>[] = [
-  { label: "Tab Bar", value: "tabBar" },
-  { label: "Button", value: "button" },
-  { label: "Card", value: "card" },
-];
-
 export const BACKDROP_OPTIONS: Option<BackdropName>[] = [
   { label: "1", value: "1" },
   { label: "2", value: "2" },
@@ -240,28 +231,11 @@ export const BLEND_MODE_OPTIONS: Option<BlendMode>[] = [
   return { label: value, value: value as BlendMode };
 });
 
-export const PRESET_SETTINGS: Record<PresetName, Settings> = {
-  button: {
-    ...defaultOptions,
-    borderRadius: 32,
-    height: 64,
-    preset: "button",
-    width: 220,
-  },
-  card: {
-    ...defaultOptions,
-    borderRadius: 28,
-    height: 220,
-    preset: "card",
-    width: 360,
-  },
-  tabBar: {
-    ...defaultOptions,
-    borderRadius: 38,
-    height: 76,
-    preset: "tabBar",
-    width: 320,
-  },
+export const DEFAULT_SETTINGS: Settings = {
+  ...defaultOptions,
+  borderRadius: 28,
+  height: 220,
+  width: 360,
 };
 
 export function findSlider(key: NumericSetting): SliderDefinition {
