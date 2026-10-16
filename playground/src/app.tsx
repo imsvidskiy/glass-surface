@@ -31,8 +31,8 @@ import {
 import { createSnippet } from "./snippet";
 import { useDrag } from "./use-drag";
 
-const BACKDROP_WIDTH = 2000;
-const BACKDROP_HEIGHT = 1120;
+const BACKDROP_WIDTH = 1900;
+const BACKDROP_HEIGHT = 925;
 
 const COPIED_NOTICE_DURATION = 1500;
 
@@ -55,7 +55,7 @@ export function App(): ReactNode {
   const backdropRef = useRef<HTMLImageElement>(null);
 
   const [settings, setSettings] = useState<Settings>(PRESET_SETTINGS.tabBar);
-  const [backdrop, setBackdrop] = useState<BackdropName>("photo");
+  const [backdrop, setBackdrop] = useState<BackdropName>("1");
   const [copied, setCopied] = useState(false);
 
   const drag = useDrag(stageRef);
