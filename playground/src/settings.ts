@@ -8,7 +8,7 @@ import type {
 
 export type PresetName = "tabBar" | "button" | "card";
 
-export type BackdropName = "landing" | "dashboard" | "news" | "article";
+export type BackdropName = "photo" | "app" | "type";
 
 export type NumericSetting =
   | "width"
@@ -201,10 +201,9 @@ export const PRESET_OPTIONS: Option<PresetName>[] = [
 ];
 
 export const BACKDROP_OPTIONS: Option<BackdropName>[] = [
-  { label: "Landing", value: "landing" },
-  { label: "Dashboard", value: "dashboard" },
-  { label: "News", value: "news" },
-  { label: "Article", value: "article" },
+  { label: "Photo", value: "photo" },
+  { label: "App", value: "app" },
+  { label: "Type", value: "type" },
 ];
 
 export const RENDERER_OPTIONS: Option<GlassRenderer>[] = [
