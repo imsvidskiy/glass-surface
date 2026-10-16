@@ -22,14 +22,20 @@
 </p>
 
 <p align="center">
-  <a href="https://glass-surface.svidware.workers.dev">Playground</a> ·
+  <a href="https://glass-surface.svidware.workers.dev">Live demo</a> ·
   <a href="#install">Install</a> ·
   <a href="#usage">Usage</a> ·
+  <a href="#playground">Playground</a> ·
   <a href="#renderers">Renderers</a> ·
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
-![The playground: a glass tab bar over a backdrop and the Customize panel](.github/screenshots/playground.webp)
+<a href=".github/assets/promo.mp4">
+  <img
+    src=".github/assets/promo-poster.webp"
+    alt="Watch the Glass Surface promo: glass sliding over websites, with music"
+  >
+</a>
 
 **Put real refraction behind any element.** The surface bends what lies
 behind it at the edge, splits the colors like a lens, and keeps the center
@@ -102,9 +108,14 @@ export function TabBar() {
 }
 ```
 
-The [playground](https://glass-surface.svidware.workers.dev) tunes every
-option and copies the JSX. [Core](packages/core) shows the same surface
-without React.
+[Core](packages/core) shows the same surface without React.
+
+## Playground
+
+The [playground](https://glass-surface.svidware.workers.dev) drags the surface
+over five websites, tunes every option, and copies the component.
+
+![The playground: a glass tab bar over a website and the Customize panel](.github/screenshots/playground.webp)
 
 ## Renderers
 
