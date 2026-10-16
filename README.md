@@ -30,7 +30,7 @@
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
-https://github.com/user-attachments/assets/ab11c0fe-cf5b-4807-9bf0-d518c3bb29f5
+![The playground: a glass card over a patterned backdrop and the Customize panel](.github/screenshots/playground.webp)
 
 **Put real refraction behind any element.** The surface bends what lies
 behind it at the edge, splits the colors like a lens, and keeps the center
@@ -109,8 +109,6 @@ export function TabBar() {
 
 The [playground](https://glass-surface.svidware.workers.dev) drags the surface
 over three patterned backdrops, tunes every option, and copies the component.
-
-![The playground: a glass card over a patterned backdrop and the Customize panel](.github/screenshots/playground.webp)
 
 ## Renderers
 
