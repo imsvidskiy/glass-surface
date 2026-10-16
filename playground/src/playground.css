@@ -70,61 +70,6 @@ body {
   cursor: grabbing;
 }
 
-.stage .glass-surface {
-  color: #fff;
-}
-
-/* Preset content */
-
-.label {
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.tab-bar {
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-}
-
-.tab-bar__item {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  color: inherit;
-  cursor: inherit;
-  background: none;
-  border: 0;
-}
-
-.icon {
-  width: 24px;
-  height: 24px;
-  stroke: currentcolor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.card {
-  display: grid;
-  gap: 8px;
-  padding: 16px;
-}
-
-.card__title {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
-.card__text {
-  margin: 0;
-  line-height: 1.4;
-  color: rgb(255 255 255 / 0.85);
-}
-
 /* Panel */
 
 .panel {

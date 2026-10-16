@@ -13,7 +13,6 @@ import {
   SliderControl,
   ToggleControl,
 } from "./controls";
-import { PRESET_CONTENT } from "./presets";
 import {
   BACKDROP_OPTIONS,
   type BackdropName,
@@ -141,9 +140,7 @@ export function App(): ReactNode {
           onPointerUp={drag.handlePointerUp}
           style={handleStyle}
         >
-          <GlassSurface {...surfaceSettings} backdrop={backdropRef}>
-            {PRESET_CONTENT[preset]}
-          </GlassSurface>
+          <GlassSurface {...surfaceSettings} backdrop={backdropRef} />
         </div>
       </div>
 
