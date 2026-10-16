@@ -85,16 +85,6 @@ body {
   cursor: grabbing;
 }
 
-.stage__hint {
-  position: absolute;
-  top: 22px;
-  left: 16px;
-  margin: 0;
-  font-size: 0.75rem;
-  color: rgb(255 255 255 / 0.75);
-  pointer-events: none;
-}
-
 .stage .glass-surface {
   color: #fff;
 }
@@ -363,6 +353,7 @@ body {
   color: var(--muted);
   white-space: nowrap;
   cursor: pointer;
+  border: 1px solid transparent;
   border-radius: 6px;
 }
 
@@ -373,7 +364,7 @@ body {
 .segmented__option:has(:checked) {
   color: var(--text);
   background: var(--row-hover);
-  box-shadow: inset 0 0 0 1px var(--line);
+  border-color: var(--line);
 }
 
 .segmented__input {
@@ -389,10 +380,4 @@ body {
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
-}
-
-@media (width < 720px) {
-  .stage__hint {
-    display: none;
-  }
 }

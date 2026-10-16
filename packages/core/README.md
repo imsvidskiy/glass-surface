@@ -5,8 +5,10 @@ Refractive glass surface for any element, without a framework.
 ![The playground: a glass tab bar over a backdrop and the Customize panel](https://raw.githubusercontent.com/svidskiy/glass-surface/main/.github/screenshots/playground.webp)
 
 ```sh
-bun add @svidskiy/glass-surface
+npm install @svidskiy/glass-surface
 ```
+
+pnpm, yarn, and bun work the same way: `pnpm add`, `yarn add`, `bun add`.
 
 ```ts
 import "@svidskiy/glass-surface/style.css";
