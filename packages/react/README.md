@@ -2,7 +2,7 @@
 
 React component for the refractive glass surface. Requires React 19.
 
-![A glass tab bar refracting a mountain sunset](https://raw.githubusercontent.com/svidskiy/glass-surface/main/.github/screenshots/hero.webp)
+![The playground: a glass tab bar over a backdrop and the Customize panel](https://raw.githubusercontent.com/svidskiy/glass-surface/main/.github/screenshots/playground.webp)
 
 ```sh
 bun add @svidskiy/glass-surface-react
