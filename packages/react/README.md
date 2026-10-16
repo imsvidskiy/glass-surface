@@ -5,8 +5,10 @@ React component for the refractive glass surface. Requires React 19.
 ![The playground: a glass tab bar over a backdrop and the Customize panel](https://raw.githubusercontent.com/svidskiy/glass-surface/main/.github/screenshots/playground.webp)
 
 ```sh
-bun add @svidskiy/glass-surface-react
+npm install @svidskiy/glass-surface-react
 ```
+
+pnpm, yarn, and bun work the same way: `pnpm add`, `yarn add`, `bun add`.
 
 ```tsx
 import "@svidskiy/glass-surface-react/style.css";

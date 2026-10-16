@@ -138,8 +138,6 @@ export function App(): ReactNode {
           </GlassSurface>
         </div>
 
-        <p className="stage__hint">Drag the surface</p>
-
         <SegmentedControl
           className="stage__backdrops"
           label="Backdrop"

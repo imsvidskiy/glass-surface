@@ -69,15 +69,16 @@ calm, in React or in plain JavaScript.
 
 ## Install
 
+With any package manager:
+
 ```sh
+npm install @svidskiy/glass-surface-react
+pnpm add @svidskiy/glass-surface-react
+yarn add @svidskiy/glass-surface-react
 bun add @svidskiy/glass-surface-react
 ```
 
-Without React, install the core instead:
-
-```sh
-bun add @svidskiy/glass-surface
-```
+Without React, install `@svidskiy/glass-surface` the same way.
 
 ## Usage
 
