@@ -60,13 +60,5 @@ function Card(): ReactNode {
 export const PRESET_CONTENT: Record<PresetName, ReactNode> = {
   button: <span className="label">Get started</span>,
   card: <Card />,
-  shape: <span className="label">Star</span>,
   tabBar: <TabBar />,
-};
-
-export const PRESET_SHAPES: Record<PresetName, string | null> = {
-  button: null,
-  card: null,
-  shape: "/star.svg",
-  tabBar: null,
 };
