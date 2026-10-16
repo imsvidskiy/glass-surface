@@ -30,12 +30,7 @@
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
-<a href=".github/assets/promo.mp4">
-  <img
-    src=".github/assets/promo-poster.webp"
-    alt="Watch the Glass Surface promo: glass sliding over websites, with music"
-  >
-</a>
+https://github.com/user-attachments/assets/ab11c0fe-cf5b-4807-9bf0-d518c3bb29f5
 
 **Put real refraction behind any element.** The surface bends what lies
 behind it at the edge, splits the colors like a lens, and keeps the center
