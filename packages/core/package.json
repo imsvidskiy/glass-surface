@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
   "name": "@svidskiy/glass-surface",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Refractive liquid glass for any element",
   "keywords": [
     "glass",
