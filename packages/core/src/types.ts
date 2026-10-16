@@ -83,7 +83,7 @@ export interface GlassSurfaceOptions {
   /** Enables refraction; without it the surface is frosted. */
   refraction: boolean;
 
-  /** Preferred renderer; `auto` uses WebGL when a backdrop is given and the SVG filter otherwise. */
+  /** Preferred renderer; `auto` uses the SVG filter where it is supported and WebGL with a backdrop elsewhere. */
   renderer: GlassRenderer;
 
   /** Saturation multiplier of the refracted backdrop. */

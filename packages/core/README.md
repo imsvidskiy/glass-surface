@@ -28,7 +28,7 @@ surface.destroy();
 - **SVG** refracts whatever is behind the element through `backdrop-filter`; Chromium only.
 - **Fallback** is frosted glass for every other case.
 
-`renderer: "auto"` picks WebGL when a backdrop is given and the SVG filter otherwise.
+`renderer: "auto"` picks the SVG filter in Chromium and WebGL elsewhere when a backdrop is given; `renderer: "webgl"` picks WebGL wherever a backdrop is given.
 
 ## License
 

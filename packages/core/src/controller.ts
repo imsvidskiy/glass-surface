@@ -32,6 +32,9 @@ const CANVAS_SELECTOR = ":scope > .glass-surface__canvas";
 
 const SHAPE_CELL_BUDGET = 400_000;
 
+/** The size the original falls back to while the element has no box. */
+const FALLBACK_MAP_SIZE: Size = { height: 200, width: 400 };
+
 const NO_SHAPE: ShapeState = { status: "none" };
 const LOADING_SHAPE: ShapeState = { status: "loading" };
 const FAILED_SHAPE: ShapeState = { status: "failed" };
@@ -116,8 +119,11 @@ export function createGlassSurfaceController(
     }
 
     const webglAvailable = options.backdrop !== null && !webglFailed;
+    const webglPreferred =
+      options.renderer === "webgl" ||
+      (options.renderer === "auto" && !svgSupported);
 
-    if (webglAvailable && options.renderer !== "svg") {
+    if (webglAvailable && webglPreferred) {
       return "webgl";
     }
 
@@ -183,6 +189,20 @@ export function createGlassSurfaceController(
     return tracedShape;
   }
 
+  /** The rectangle map follows the rendered box, transforms included, like the original. */
+  function getMapSize(): Size {
+    if (element === null) {
+      return FALLBACK_MAP_SIZE;
+    }
+
+    const bounds = element.getBoundingClientRect();
+
+    return {
+      height: bounds.height > 0 ? bounds.height : FALLBACK_MAP_SIZE.height,
+      width: bounds.width > 0 ? bounds.width : FALLBACK_MAP_SIZE.width,
+    };
+  }
+
   function createDisplacementMap(
     size: Size,
     traced: TracedShape | null
@@ -192,7 +212,7 @@ export function createGlassSurfaceController(
     }
 
     if (!traced) {
-      return createRectangleMap({ ...options, ...size });
+      return createRectangleMap({ ...options, ...getMapSize() });
     }
 
     const mapInput: ShapeMapInput = {

@@ -118,8 +118,9 @@ over three patterned backdrops, tunes every option, and copies the component.
 | SVG | Any content behind the element | Chromium |
 | Fallback | Nothing; frosted glass | Everywhere else |
 
-`renderer: "auto"` uses WebGL when a `backdrop` is given and the SVG filter
-otherwise.
+`renderer: "auto"` uses the SVG filter in Chromium and WebGL elsewhere when a
+`backdrop` is given. `renderer: "webgl"` uses WebGL wherever a `backdrop` is
+given.
 
 ## Packages
 
