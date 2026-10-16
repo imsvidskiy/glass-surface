@@ -6,14 +6,9 @@ import type {
   GlassSurfaceOptions,
 } from "@svidskiy/glass-surface-react";
 
-export type PresetName = "tabBar" | "button" | "card" | "shape";
+export type PresetName = "tabBar" | "button" | "card";
 
-export type BackdropName =
-  | "gradient"
-  | "type"
-  | "grid"
-  | "aurora"
-  | "landscape";
+export type BackdropName = "landing" | "dashboard" | "news" | "article";
 
 export type NumericSetting =
   | "width"
@@ -203,15 +198,13 @@ export const PRESET_OPTIONS: Option<PresetName>[] = [
   { label: "Tab Bar", value: "tabBar" },
   { label: "Button", value: "button" },
   { label: "Card", value: "card" },
-  { label: "Shape", value: "shape" },
 ];
 
 export const BACKDROP_OPTIONS: Option<BackdropName>[] = [
-  { label: "Gradient", value: "gradient" },
-  { label: "Type", value: "type" },
-  { label: "Grid", value: "grid" },
-  { label: "Aurora", value: "aurora" },
-  { label: "Landscape", value: "landscape" },
+  { label: "Landing", value: "landing" },
+  { label: "Dashboard", value: "dashboard" },
+  { label: "News", value: "news" },
+  { label: "Article", value: "article" },
 ];
 
 export const RENDERER_OPTIONS: Option<GlassRenderer>[] = [
@@ -262,13 +255,6 @@ export const PRESET_SETTINGS: Record<PresetName, Settings> = {
     height: 220,
     preset: "card",
     width: 360,
-  },
-  shape: {
-    ...defaultOptions,
-    borderRadius: 0,
-    height: 240,
-    preset: "shape",
-    width: 240,
   },
   tabBar: {
     ...defaultOptions,

@@ -13,7 +13,7 @@ import {
   SliderControl,
   ToggleControl,
 } from "./controls";
-import { PRESET_CONTENT, PRESET_SHAPES } from "./presets";
+import { PRESET_CONTENT } from "./presets";
 import {
   BACKDROP_OPTIONS,
   type BackdropName,
@@ -31,8 +31,8 @@ import {
 import { createSnippet } from "./snippet";
 import { useDrag } from "./use-drag";
 
-const BACKDROP_WIDTH = 1600;
-const BACKDROP_HEIGHT = 1000;
+const BACKDROP_WIDTH = 2400;
+const BACKDROP_HEIGHT = 1500;
 
 const COPIED_NOTICE_DURATION = 1500;
 
@@ -55,7 +55,7 @@ export function App(): ReactNode {
   const backdropRef = useRef<HTMLImageElement>(null);
 
   const [settings, setSettings] = useState<Settings>(PRESET_SETTINGS.tabBar);
-  const [backdrop, setBackdrop] = useState<BackdropName>("gradient");
+  const [backdrop, setBackdrop] = useState<BackdropName>("landing");
   const [copied, setCopied] = useState(false);
 
   const drag = useDrag(stageRef);
@@ -67,8 +67,6 @@ export function App(): ReactNode {
   const updateRefraction = useSettingUpdater("refraction", setSettings);
 
   const { preset, ...surfaceSettings } = settings;
-
-  const shape = PRESET_SHAPES[preset];
 
   const updateNumber = useCallback(function applyNumberSetting(
     key: NumericSetting,
@@ -91,7 +89,7 @@ export function App(): ReactNode {
 
   const copySnippet = useCallback(
     async function writeSnippet() {
-      await navigator.clipboard.writeText(createSnippet(settings, shape));
+      await navigator.clipboard.writeText(createSnippet(settings));
 
       setCopied(true);
 
@@ -99,7 +97,7 @@ export function App(): ReactNode {
         setCopied(false);
       }, COPIED_NOTICE_DURATION);
     },
-    [settings, shape]
+    [settings]
   );
 
   const handleStyle = {
@@ -115,7 +113,7 @@ export function App(): ReactNode {
           className="stage__backdrop"
           height={BACKDROP_HEIGHT}
           ref={backdropRef}
-          src={`/backdrops/${backdrop}.svg`}
+          src={`/backdrops/${backdrop}.webp`}
           width={BACKDROP_WIDTH}
         />
 
@@ -135,11 +133,7 @@ export function App(): ReactNode {
           onPointerUp={drag.handlePointerUp}
           style={handleStyle}
         >
-          <GlassSurface
-            {...surfaceSettings}
-            backdrop={backdropRef}
-            shape={shape}
-          >
+          <GlassSurface {...surfaceSettings} backdrop={backdropRef}>
             {PRESET_CONTENT[preset]}
           </GlassSurface>
         </div>
