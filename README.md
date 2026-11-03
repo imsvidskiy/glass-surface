@@ -4,9 +4,9 @@
 
 <p align="center">
   <a
-    href="https://github.com/svidskiy/glass-surface/actions/workflows/ci.yml"
+    href="https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml"
   ><img
-    src="https://github.com/svidskiy/glass-surface/actions/workflows/ci.yml/badge.svg"
+    src="https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml/badge.svg"
     alt="CI"
   ></a>
   <a
@@ -73,19 +73,19 @@ calm, in React or in plain JavaScript.
 With any package manager:
 
 ```sh
-npm install @svidskiy/glass-surface-react
-pnpm add @svidskiy/glass-surface-react
-yarn add @svidskiy/glass-surface-react
-bun add @svidskiy/glass-surface-react
+npm install @imsvidskiy/glass-surface-react
+pnpm add @imsvidskiy/glass-surface-react
+yarn add @imsvidskiy/glass-surface-react
+bun add @imsvidskiy/glass-surface-react
 ```
 
-Without React, install `@svidskiy/glass-surface` the same way.
+Without React, install `@imsvidskiy/glass-surface` the same way.
 
 ## Usage
 
 ```tsx
-import "@svidskiy/glass-surface-react/style.css";
-import { GlassSurface } from "@svidskiy/glass-surface-react";
+import "@imsvidskiy/glass-surface-react/style.css";
+import { GlassSurface } from "@imsvidskiy/glass-surface-react";
 import { useRef } from "react";
 
 export function TabBar() {
@@ -126,8 +126,8 @@ given.
 
 | Package | What it is |
 | --- | --- |
-| [`@svidskiy/glass-surface`](packages/core) | The framework-free core for JavaScript and TypeScript |
-| [`@svidskiy/glass-surface-react`](packages/react) | The React component |
+| [`@imsvidskiy/glass-surface`](packages/core) | The framework-free core for JavaScript and TypeScript |
+| [`@imsvidskiy/glass-surface-react`](packages/react) | The React component |
 
 ## Contributing
 

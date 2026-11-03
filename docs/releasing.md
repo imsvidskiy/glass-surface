@@ -8,8 +8,8 @@ before it reaches `main`.
 
 | Artifact | Made by | Used by |
 | --- | --- | --- |
-| `@svidskiy/glass-surface` on npm | `bun run release` | JavaScript and TypeScript projects |
-| `@svidskiy/glass-surface-react` on npm | `bun run release` | React projects |
+| `@imsvidskiy/glass-surface` on npm | `bun run release` | JavaScript and TypeScript projects |
+| `@imsvidskiy/glass-surface-react` on npm | `bun run release` | React projects |
 | The `vX.Y.Z` release on GitHub | `gh release create` | The release notes and history |
 
 Both packages share one version, set by the `fixed` group in
@@ -17,7 +17,7 @@ Both packages share one version, set by the `fixed` group in
 
 ## One-time setup
 
-1. An npm account that owns the `@svidskiy` scope, signed in with
+1. An npm account that owns the `@imsvidskiy` scope, signed in with
    `bunx npm login`.
 
 ## Cutting a release

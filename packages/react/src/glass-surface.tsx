@@ -9,7 +9,7 @@ import {
   resolveOptions,
   toFilterId,
   toStyleObject,
-} from "@svidskiy/glass-surface";
+} from "@imsvidskiy/glass-surface";
 import {
   type CSSProperties,
   createElement,

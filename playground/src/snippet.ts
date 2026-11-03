@@ -1,4 +1,4 @@
-import { defaultOptions } from "@svidskiy/glass-surface";
+import { defaultOptions } from "@imsvidskiy/glass-surface";
 import type { Settings } from "./settings";
 
 const COMPONENT_DEFAULTS: Record<string, unknown> = {
@@ -36,8 +36,8 @@ export function createSnippet(settings: Settings): string {
     });
 
   return [
-    'import "@svidskiy/glass-surface-react/style.css";',
-    'import { GlassSurface } from "@svidskiy/glass-surface-react";',
+    'import "@imsvidskiy/glass-surface-react/style.css";',
+    'import { GlassSurface } from "@imsvidskiy/glass-surface-react";',
     'import { useRef } from "react";',
     "",
     "export function Glass() {",

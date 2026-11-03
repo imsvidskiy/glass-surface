@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
-  "name": "@svidskiy/glass-surface-react",
+  "name": "@imsvidskiy/glass-surface-react",
   "version": "1.0.0",
   "description": "Refractive liquid glass React component",
   "keywords": [
@@ -11,11 +11,11 @@
     "backdrop-filter",
     "webgl"
   ],
-  "homepage": "https://github.com/svidskiy/glass-surface/tree/main/packages/react#readme",
-  "bugs": "https://github.com/svidskiy/glass-surface/issues",
+  "homepage": "https://github.com/imsvidskiy/glass-surface/tree/main/packages/react#readme",
+  "bugs": "https://github.com/imsvidskiy/glass-surface/issues",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/svidskiy/glass-surface.git",
+    "url": "git+https://github.com/imsvidskiy/glass-surface.git",
     "directory": "packages/react"
   },
   "license": "MIT",
@@ -38,7 +38,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@svidskiy/glass-surface": "workspace:^"
+    "@imsvidskiy/glass-surface": "workspace:^"
   },
   "devDependencies": {
     "@types/react": "catalog:",

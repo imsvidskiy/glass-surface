@@ -1,4 +1,4 @@
-import "@svidskiy/glass-surface-react/style.css";
+import "@imsvidskiy/glass-surface-react/style.css";
 import "./playground.css";
 
 import { StrictMode } from "react";

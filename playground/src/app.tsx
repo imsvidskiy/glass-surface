@@ -1,4 +1,4 @@
-import { GlassSurface } from "@svidskiy/glass-surface-react";
+import { GlassSurface } from "@imsvidskiy/glass-surface-react";
 import {
   type Dispatch,
   type ReactNode,

@@ -20,7 +20,7 @@ releases.
 You need [Bun](https://bun.sh) 1.4 or later.
 
 ```sh
-git clone https://github.com/svidskiy/glass-surface.git
+git clone https://github.com/imsvidskiy/glass-surface.git
 cd glass-surface
 bun install
 bun run dev
@@ -91,8 +91,8 @@ Commits follow
 
 | Scope | Area |
 | --- | --- |
-| `core` | `@svidskiy/glass-surface`: state, maps, the filter, and the renderers |
-| `react` | `@svidskiy/glass-surface-react` |
+| `core` | `@imsvidskiy/glass-surface`: state, maps, the filter, and the renderers |
+| `react` | `@imsvidskiy/glass-surface-react` |
 | `playground` | The playground and its deployment |
 | `release` | The version bump that prepares a release |
 | `deps` | Dependency updates, which Dependabot opens |

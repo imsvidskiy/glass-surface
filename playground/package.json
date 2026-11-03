@@ -11,8 +11,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@svidskiy/glass-surface": "workspace:*",
-    "@svidskiy/glass-surface-react": "workspace:*",
+    "@imsvidskiy/glass-surface": "workspace:*",
+    "@imsvidskiy/glass-surface-react": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
