@@ -32,7 +32,7 @@ body:
       label: Package
       multiple: true
       options:
-        - "@svidskiy/glass-surface"
-        - "@svidskiy/glass-surface-react"
+        - "@imsvidskiy/glass-surface"
+        - "@imsvidskiy/glass-surface-react"
         - Playground
         - New adapter

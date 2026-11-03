@@ -3,12 +3,12 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@svidskiy/glass-surface": ["../packages/core/src/index.ts"],
-      "@svidskiy/glass-surface/style.css": [
+      "@imsvidskiy/glass-surface": ["../packages/core/src/index.ts"],
+      "@imsvidskiy/glass-surface/style.css": [
         "../packages/core/src/glass-surface.css"
       ],
-      "@svidskiy/glass-surface-react": ["../packages/react/src/index.ts"],
-      "@svidskiy/glass-surface-react/style.css": [
+      "@imsvidskiy/glass-surface-react": ["../packages/react/src/index.ts"],
+      "@imsvidskiy/glass-surface-react/style.css": [
         "../packages/core/src/glass-surface.css"
       ]
     },

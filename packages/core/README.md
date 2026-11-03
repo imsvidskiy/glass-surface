@@ -1,18 +1,18 @@
-# @svidskiy/glass-surface
+# @imsvidskiy/glass-surface
 
 Refractive glass surface for any element, without a framework.
 
-![The playground: a glass tab bar over a backdrop and the Customize panel](https://raw.githubusercontent.com/svidskiy/glass-surface/main/.github/screenshots/playground.webp)
+![The playground: a glass tab bar over a backdrop and the Customize panel](https://raw.githubusercontent.com/imsvidskiy/glass-surface/main/.github/screenshots/playground.webp)
 
 ```sh
-npm install @svidskiy/glass-surface
+npm install @imsvidskiy/glass-surface
 ```
 
 pnpm, yarn, and bun work the same way: `pnpm add`, `yarn add`, `bun add`.
 
 ```ts
-import "@svidskiy/glass-surface/style.css";
-import { createGlassSurface } from "@svidskiy/glass-surface";
+import "@imsvidskiy/glass-surface/style.css";
+import { createGlassSurface } from "@imsvidskiy/glass-surface";
 
 const surface = createGlassSurface(document.querySelector("#panel"), {
   backdrop: document.querySelector("#photo"),

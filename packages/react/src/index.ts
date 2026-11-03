@@ -7,7 +7,7 @@ export type {
   ColorChannel,
   GlassRenderer,
   GlassSurfaceOptions,
-} from "@svidskiy/glass-surface";
+} from "@imsvidskiy/glass-surface";
 export {
   GlassSurface,
   type GlassSurfaceElement,

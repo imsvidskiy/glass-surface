@@ -14,15 +14,15 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: /^@svidskiy\/glass-surface(-react)?\/style\.css$/,
+        find: /^@imsvidskiy\/glass-surface(-react)?\/style\.css$/,
         replacement: CORE_STYLES,
       },
       {
-        find: /^@svidskiy\/glass-surface$/,
+        find: /^@imsvidskiy\/glass-surface$/,
         replacement: fromPackages("core/src/index.ts"),
       },
       {
-        find: /^@svidskiy\/glass-surface-react$/,
+        find: /^@imsvidskiy\/glass-surface-react$/,
         replacement: fromPackages("react/src/index.ts"),
       },
     ],

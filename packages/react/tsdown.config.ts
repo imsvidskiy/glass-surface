@@ -2,7 +2,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "tsdown";
 
 const coreStyles = fileURLToPath(
-  import.meta.resolve("@svidskiy/glass-surface/style.css")
+  import.meta.resolve("@imsvidskiy/glass-surface/style.css")
 );
 
 export default defineConfig({

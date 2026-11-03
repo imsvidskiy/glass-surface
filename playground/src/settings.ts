@@ -1,10 +1,10 @@
-import { defaultOptions } from "@svidskiy/glass-surface";
+import { defaultOptions } from "@imsvidskiy/glass-surface";
 import type {
   BlendMode,
   ColorChannel,
   GlassRenderer,
   GlassSurfaceOptions,
-} from "@svidskiy/glass-surface-react";
+} from "@imsvidskiy/glass-surface-react";
 
 export type BackdropName = "1" | "2" | "3";
 

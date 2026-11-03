@@ -1,18 +1,18 @@
-# @svidskiy/glass-surface-react
+# @imsvidskiy/glass-surface-react
 
 React component for the refractive glass surface. Requires React 19.
 
-![The playground: a glass tab bar over a backdrop and the Customize panel](https://raw.githubusercontent.com/svidskiy/glass-surface/main/.github/screenshots/playground.webp)
+![The playground: a glass tab bar over a backdrop and the Customize panel](https://raw.githubusercontent.com/imsvidskiy/glass-surface/main/.github/screenshots/playground.webp)
 
 ```sh
-npm install @svidskiy/glass-surface-react
+npm install @imsvidskiy/glass-surface-react
 ```
 
 pnpm, yarn, and bun work the same way: `pnpm add`, `yarn add`, `bun add`.
 
 ```tsx
-import "@svidskiy/glass-surface-react/style.css";
-import { GlassSurface } from "@svidskiy/glass-surface-react";
+import "@imsvidskiy/glass-surface-react/style.css";
+import { GlassSurface } from "@imsvidskiy/glass-surface-react";
 import { useRef } from "react";
 
 export function TabBar() {
@@ -30,7 +30,7 @@ export function TabBar() {
 }
 ```
 
-Every option of [`@svidskiy/glass-surface`](../core) is a prop; `width` and `height` default to 200 × 80.
+Every option of [`@imsvidskiy/glass-surface`](../core) is a prop; `width` and `height` default to 200 × 80.
 `element="span"` renders the surface and its content as spans, for glass inside phrasing content such as a heading.
 
 ## License

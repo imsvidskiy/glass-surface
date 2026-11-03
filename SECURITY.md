@@ -13,7 +13,7 @@ supported. [CONTRIBUTING.md](CONTRIBUTING.md) covers every other contribution.
 ## Reporting a vulnerability
 
 Report vulnerabilities through
-[GitHub private vulnerability reporting](https://github.com/svidskiy/glass-surface/security/advisories/new).
+[GitHub private vulnerability reporting](https://github.com/imsvidskiy/glass-surface/security/advisories/new).
 Don't open a public issue, pull request, or discussion for a security problem.
 
 Include what helps reproduce and assess the issue:

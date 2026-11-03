@@ -16,17 +16,17 @@
       },
     },
     "packages/core": {
-      "name": "@svidskiy/glass-surface",
+      "name": "@imsvidskiy/glass-surface",
       "version": "1.0.0",
       "devDependencies": {
         "tsdown": "catalog:",
       },
     },
     "packages/react": {
-      "name": "@svidskiy/glass-surface-react",
+      "name": "@imsvidskiy/glass-surface-react",
       "version": "1.0.0",
       "dependencies": {
-        "@svidskiy/glass-surface": "workspace:^",
+        "@imsvidskiy/glass-surface": "workspace:^",
       },
       "devDependencies": {
         "@types/react": "catalog:",
@@ -40,8 +40,8 @@
     "playground": {
       "name": "playground",
       "dependencies": {
-        "@svidskiy/glass-surface": "workspace:*",
-        "@svidskiy/glass-surface-react": "workspace:*",
+        "@imsvidskiy/glass-surface": "workspace:*",
+        "@imsvidskiy/glass-surface-react": "workspace:*",
         "react": "catalog:",
         "react-dom": "catalog:",
       },
@@ -208,6 +208,10 @@
 
     "@img/sharp-win32-x64": ["@img/sharp-win32-x64@0.35.5", "", { "os": "win32", "cpu": "x64" }, "sha512-x76eH0vEiHlcMQu8Y8IenntaACtddpT6W0wmXtWrnKcnKI7ME5DdgqhAD6SEWOEl1v2zDvkZDhFA9KnURwpfqg=="],
 
+    "@imsvidskiy/glass-surface": ["@imsvidskiy/glass-surface@workspace:packages/core"],
+
+    "@imsvidskiy/glass-surface-react": ["@imsvidskiy/glass-surface-react@workspace:packages/react"],
+
     "@jridgewell/resolve-uri": ["@jridgewell/resolve-uri@3.1.2", "", {}, "sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw=="],
 
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.6.0", "", {}, "sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw=="],
@@ -281,10 +285,6 @@
     "@sindresorhus/merge-streams": ["@sindresorhus/merge-streams@4.0.0", "", {}, "sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ=="],
 
     "@speed-highlight/core": ["@speed-highlight/core@1.2.24", "", {}, "sha512-qeW2e1l78afw8VhRPfPQ1Gjj+KU5XFQ/OFV5ti6eTa9bruO7mJyZtA4vw0ofqmA3tKCkROE9xLk3VZoeRc98nw=="],
-
-    "@svidskiy/glass-surface": ["@svidskiy/glass-surface@workspace:packages/core"],
-
-    "@svidskiy/glass-surface-react": ["@svidskiy/glass-surface-react@workspace:packages/react"],
 
     "@tsconfig/bases": ["@tsconfig/bases@1.0.28", "", {}, "sha512-l326opM2+2gDiv3fYIzy12IeUJkHwNbt9pI+Ww2Byk4D1AfJt+CJmbiIxXtWaxY06514pAO5YXBneufph9WKFQ=="],
 
