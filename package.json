@@ -24,7 +24,7 @@
     "dev": "bun run --filter playground dev",
     "fix": "ultracite fix",
     "prepare": "lefthook install",
-    "release": "bun run build && bun run --filter './packages/*' release",
+    "release": "bun run build && bun run --cwd packages/core release && bun run --cwd packages/react release",
     "typecheck": "bun run --filter '*' typecheck",
     "version-packages": "changeset version"
   },
