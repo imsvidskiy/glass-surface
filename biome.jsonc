@@ -3,6 +3,16 @@
   "extends": ["ultracite/biome/core"],
   "overrides": [
     {
+      "includes": [".github/PULL_REQUEST_TEMPLATE.md"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noEmptySource": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["packages/*/src/index.ts"],
       "linter": {
         "rules": {

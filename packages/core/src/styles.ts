@@ -17,11 +17,11 @@ const SHAPE_CLASSES: Record<ShapeState["status"], string[]> = {
 };
 
 function escapeMaskSource(source: string): string {
-  return source.replaceAll('"', "%22").replaceAll(/[\n\r]+/g, " ");
+  return source.replaceAll('"', "%22").replaceAll(/[\n\r]+/gu, " ");
 }
 
 export function toFilterId(id: string): string {
-  return `glass-surface-${id.replaceAll(/[^\w-]/g, "")}`;
+  return `glass-surface-${id.replaceAll(/[^\w-]/gu, "")}`;
 }
 
 export function getSurfaceClasses({
@@ -98,7 +98,7 @@ export function toStyleObject(
     value,
   ]) {
     const camelName = name.replaceAll(
-      /-([a-z])/g,
+      /-(?<letter>[a-z])/gu,
       function upper(_match, letter: string) {
         return letter.toUpperCase();
       }

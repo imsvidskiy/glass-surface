@@ -63,6 +63,7 @@ body {
   position: absolute;
   touch-action: none;
   cursor: grab;
+  /* biome-ignore lint/suspicious/useBaseline: the handle only stops text selection where user-select works */
   user-select: none;
   transform: translate(-50%, -50%);
 }

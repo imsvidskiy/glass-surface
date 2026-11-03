@@ -1,3 +1,4 @@
+/* biome-ignore-all lint/suspicious/useBaseline: backdrop filters, masks and light-dark are progressive here and degrade to a frosted or plain surface where unsupported */
 /* Surface */
 
 .glass-surface {
