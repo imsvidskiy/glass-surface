@@ -21,9 +21,12 @@ import {
   useSyncExternalStore,
 } from "react";
 
+export type GlassSurfaceElement = "div" | "span";
+
 export interface GlassSurfaceProps extends GlassSurfaceInput {
   children?: ReactNode;
   className?: string;
+  element?: GlassSurfaceElement;
   height?: CSSProperties["height"];
   style?: CSSProperties;
   width?: CSSProperties["width"];
@@ -35,6 +38,7 @@ export function GlassSurface(props: GlassSurfaceProps): ReactNode {
     width = 200,
     height = 80,
     className,
+    element: Element = "div",
     style,
     ...input
   } = props;
@@ -52,12 +56,12 @@ export function GlassSurface(props: GlassSurfaceProps): ReactNode {
   );
 
   const attach = useCallback(
-    function mountSurface(element: HTMLDivElement | null) {
-      if (!element) {
+    function mountSurface(surface: HTMLElement | null) {
+      if (!surface) {
         return;
       }
 
-      return controller.mount(element);
+      return controller.mount(surface);
     },
     [controller]
   );
@@ -82,7 +86,7 @@ export function GlassSurface(props: GlassSurfaceProps): ReactNode {
   } as CSSProperties;
 
   return (
-    <div className={surfaceClassName} ref={attach} style={surfaceStyle}>
+    <Element className={surfaceClassName} ref={attach} style={surfaceStyle}>
       <svg aria-hidden="true" className="glass-surface__filter">
         <filter id={filterId} {...FILTER_REGION}>
           {primitives.map(({ tag, result, attributes }) =>
@@ -99,7 +103,7 @@ export function GlassSurface(props: GlassSurfaceProps): ReactNode {
 
       <span aria-hidden="true" className="glass-surface__line" />
 
-      <div className="glass-surface__content">{children}</div>
-    </div>
+      <Element className="glass-surface__content">{children}</Element>
+    </Element>
   );
 }

@@ -31,6 +31,7 @@ export function TabBar() {
 ```
 
 Every option of [`@svidskiy/glass-surface`](../core) is a prop; `width` and `height` default to 200 × 80.
+`element="span"` renders the surface and its content as spans, for glass inside phrasing content such as a heading.
 
 ## License
 
