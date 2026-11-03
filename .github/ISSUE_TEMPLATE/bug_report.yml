@@ -28,7 +28,7 @@ body:
     id: version
     attributes:
       label: Version
-      placeholder: "@imsvidskiy/glass-surface-react 1.0.0"
+      placeholder: "@imsvidskiy/glass-surface-react 2.0.0"
     validations:
       required: true
   - type: dropdown
