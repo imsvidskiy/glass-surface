@@ -20,18 +20,24 @@ Both packages share one version, set by the `fixed` group in
 1. An npm account that owns the `@imsvidskiy` scope, signed in with
    `bunx npm login`.
 
+## Picking the version
+
+Raise the major version when a change breaks code written for the previous
+release or changes how a surface looks with the default options, the minor
+version when it adds an option, a prop or a renderer, and the patch version
+otherwise. The changesets on `main` carry these bumps.
+
 ## Cutting a release
 
 1. Merge a pull request titled `chore(release): prepare X.Y.Z` from the
    branch `release/X.Y.Z`. Its one commit,
    `chore(release): bump version to X.Y.Z`, is what `bun run version-packages`
    makes from the changesets on `main`.
-2. Write the release notes in Markdown: one summary sentence, then `## Added`,
-   `## Changed`, and `## Fixed`, leaving out an empty one, then
-   `**Contributors**:` with the GitHub handles of the release's commit authors
-   and `**Full changelog**:` with the compare link from the previous tag. Keep
-   the file outside the repository.
-3. Publish the packages from an up-to-date `main`:
+2. Write the release notes, as described in [Release notes](#release-notes).
+   Keep the file outside the repository.
+3. Publish the packages from an up-to-date `main` in a terminal. The core goes
+   first, because the React package depends on it, and npm asks to confirm
+   each one in the browser.
 
    ```sh
    bun run release
@@ -46,3 +52,22 @@ Both packages share one version, set by the `fixed` group in
    ```
 
 5. Deploy the playground with `bun run deploy`.
+
+## Release notes
+
+Write the notes for the developers who use the packages, from the pull
+requests merged since the last release, and check each line against them:
+
+- Open with one sentence: `Glass Surface X.Y.Z` and what the release brings.
+- Then the sections `## Added`, `## Changed`, and `## Fixed`, each only when
+  it has entries, in that order. A fix belongs in `Fixed` only when the bug
+  shipped in an earlier release; a bug made and fixed between two releases is
+  not listed.
+- Write each entry as a full sentence about what a developer sees, with option
+  and prop names in code. A breaking change opens `Changed` and says what to
+  change in existing code. Refactors and dependency updates go last in
+  `Changed` as one line each, such as "A code pass removed repeated work. The
+  surface renders the same."
+- End with `**Contributors**:` and the GitHub logins of every commit author in
+  the range, bots left out, and `**Full changelog**:` with the compare link
+  `https://github.com/imsvidskiy/glass-surface/compare/vPREVIOUS...vX.Y.Z`.
