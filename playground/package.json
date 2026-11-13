@@ -17,12 +17,11 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "2.0.0-beta.v.8",
-    "@types/node": "^26.6.6",
+    "@cloudflare/vite-plugin": "2.0.0-beta.v.17",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vitejs/plugin-react": "^6.1.2",
-    "cf": "1.0.0-beta.26",
-    "vite": "^8.3.5"
+    "@vitejs/plugin-react": "^6.3.0",
+    "cf": "1.0.0-beta.32",
+    "vite": "^8.3.8"
   }
 }

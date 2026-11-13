@@ -1,10 +1,15 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
   "access": "public",
-  "changelog": false,
-  "fixed": [["@imsvidskiy/glass-surface", "@imsvidskiy/glass-surface-react"]],
+  "fixed": [
+    [
+      "@imsvidskiy/glass-surface",
+      "@imsvidskiy/glass-surface-react"
+    ]
+  ],
   "privatePackages": {
     "version": false,
     "tag": false
-  }
+  },
+  "changelog": false
 }

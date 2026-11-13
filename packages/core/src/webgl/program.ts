@@ -1,13 +1,14 @@
 import { POSITION_LOCATION, VERTEX_SHADER } from "./shaders";
 
-function compileShader(
-  gl: WebGL2RenderingContext,
-  type: GLenum,
-  source: string
-): WebGLShader {
+export type Program<Uniform extends string> = {
+  handle: WebGLProgram;
+  uniforms: Record<Uniform, WebGLUniformLocation | null>;
+};
+
+function compileShader(gl: WebGL2RenderingContext, type: GLenum, source: string): WebGLShader {
   const shader = gl.createShader(type);
 
-  if (!shader) {
+  if (shader === null) {
     throw new Error("Failed to create a WebGL shader");
   }
 
@@ -25,11 +26,7 @@ function compileShader(
   throw new Error(`Failed to compile a WebGL shader: ${log}`);
 }
 
-/** Links the shared full-screen vertex shader with one fragment shader. */
-export function createProgram(
-  gl: WebGL2RenderingContext,
-  fragmentSource: string
-): WebGLProgram {
+function linkProgram(gl: WebGL2RenderingContext, fragmentSource: string): WebGLProgram {
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
   const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
   const program = gl.createProgram();
@@ -50,4 +47,22 @@ export function createProgram(
   gl.deleteProgram(program);
 
   throw new Error(`Failed to link the WebGL program: ${log}`);
+}
+
+export function createProgram<Uniform extends string>(
+  gl: WebGL2RenderingContext,
+  fragmentSource: string,
+  uniformNames: readonly Uniform[]
+): Program<Uniform> {
+  const handle = linkProgram(gl, fragmentSource);
+  const uniforms = {} as Program<Uniform>["uniforms"];
+
+  for (const name of uniformNames) {
+    uniforms[name] = gl.getUniformLocation(handle, name);
+  }
+
+  return {
+    handle,
+    uniforms,
+  };
 }

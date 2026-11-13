@@ -1,5 +1,3 @@
-/* Page */
-
 :root {
   --page: #0b0b0e;
   --panel: #131317;
@@ -33,7 +31,9 @@ body {
   margin: 0 auto;
 }
 
-/* Stage */
+.toolbar {
+  display: flex;
+}
 
 .stage {
   position: relative;
@@ -52,13 +52,6 @@ body {
   object-fit: cover;
 }
 
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: space-between;
-}
-
 .stage__handle {
   position: absolute;
   touch-action: none;
@@ -71,8 +64,6 @@ body {
 .stage__handle:active {
   cursor: grabbing;
 }
-
-/* Panel */
 
 .panel {
   display: grid;
@@ -141,9 +132,9 @@ body {
   gap: 6px;
 }
 
-/* Rows */
-
 .row {
+  --row-background: var(--row);
+
   position: relative;
   display: flex;
   gap: 12px;
@@ -154,13 +145,13 @@ body {
   padding: 0 12px;
   margin: 0;
   font-size: 0.82rem;
-  background: var(--row);
+  background: var(--row-background);
   border: 0;
   border-radius: 10px;
 }
 
 .row:hover {
-  background: var(--row-hover);
+  --row-background: var(--row-hover);
 }
 
 .row:focus-within {
@@ -168,40 +159,24 @@ body {
   outline-offset: -2px;
 }
 
+.row--slider {
+  background:
+    linear-gradient(var(--accent), var(--accent)) no-repeat 0 100% / var(--fill)
+    2px,
+    linear-gradient(
+      to right,
+      var(--accent-fill) var(--fill),
+      var(--row-background) var(--fill)
+    );
+}
+
 .row__label {
-  position: relative;
   color: var(--muted);
   white-space: nowrap;
-  pointer-events: none;
 }
 
 .row__value {
-  position: relative;
   font-variant-numeric: tabular-nums;
-  pointer-events: none;
-}
-
-.row--slider {
-  overflow: hidden;
-  background:
-    linear-gradient(var(--accent), var(--accent)) no-repeat 0 100% / var(--fill)
-    2px,
-    linear-gradient(
-      to right,
-      var(--accent-fill) var(--fill),
-      var(--row) var(--fill)
-    );
-}
-
-.row--slider:hover {
-  background:
-    linear-gradient(var(--accent), var(--accent)) no-repeat 0 100% / var(--fill)
-    2px,
-    linear-gradient(
-      to right,
-      var(--accent-fill) var(--fill),
-      var(--row-hover) var(--fill)
-    );
 }
 
 .row__range {
@@ -263,8 +238,6 @@ body {
 .row__switch:focus {
   outline: none;
 }
-
-/* Segmented control */
 
 .segmented__legend {
   float: left;

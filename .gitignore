@@ -5,25 +5,9 @@ node_modules/
 # Build
 
 dist/
-*.tsbuildinfo
 *.tgz
-
-# Cloudflare
-
 .cloudflare/
-
-# Vite
-
 .vite/
-vite.config.ts.timestamp-*
-
-# Testing
-
-coverage/
-
-# Logs
-
-*.log
 
 # Environment
 
@@ -31,11 +15,9 @@ coverage/
 .env.*
 !.env.example
 
-# Editors
-
-.idea/
-.vscode/
-
-# Operating systems
+# Editors and operating systems
 
 .DS_Store
+.idea/
+.vscode/
+.zed/

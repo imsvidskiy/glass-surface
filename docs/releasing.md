@@ -17,8 +17,8 @@ Both packages share one version, set by the `fixed` group in
 
 ## One-time setup
 
-1. An npm account that owns the `@imsvidskiy` scope, signed in with
-   `bunx npm login`.
+You need an npm account that owns the `@imsvidskiy` scope, signed in with
+`bunx npm login`.
 
 ## Picking the version
 
@@ -32,11 +32,13 @@ otherwise. The changesets on `main` carry these bumps.
 1. Merge a pull request titled `chore(release): prepare X.Y.Z` from the
    branch `release/X.Y.Z`. Its one commit,
    `chore(release): bump version to X.Y.Z`, is what `bun run version-packages`
-   makes from the changesets on `main`.
+   makes from the changesets on `main`: it bumps both packages and updates
+   `bun.lock`.
 2. Write the release notes, as described in [Release notes](#release-notes).
    Keep the file outside the repository.
-3. Publish the packages from an up-to-date `main` in a terminal. The core goes
-   first, because the React package depends on it, and npm asks to confirm
+3. Publish the packages from an up-to-date `main` in a terminal. The command
+   builds both packages and publishes every version that isn't on npm yet, the
+   core first, because the React package depends on it. npm asks to confirm
    each one in the browser.
 
    ```sh

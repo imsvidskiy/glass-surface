@@ -1,6 +1,6 @@
+# yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Bug report
 description: The surface does not render or behave as documented
-labels: []
 body:
   - type: markdown
     attributes:
@@ -28,7 +28,7 @@ body:
     id: version
     attributes:
       label: Version
-      placeholder: "@imsvidskiy/glass-surface-react 2.0.0"
+      description: The installed version of the package, as `npm ls @imsvidskiy/glass-surface` prints it.
     validations:
       required: true
   - type: dropdown

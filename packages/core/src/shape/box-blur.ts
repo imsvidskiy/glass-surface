@@ -1,20 +1,16 @@
-const PASSES = 3;
-
-interface BlurLine {
+type BlurLine = {
   length: number;
   offset: number;
   radius: number;
   stride: number;
-}
+};
 
-function blurLine(
-  source: Float32Array,
-  target: Float32Array,
-  line: BlurLine
-): void {
-  const { offset, stride, length, radius } = line;
+const PASSES = 3;
 
-  const scale = 1 / (2 * radius + 1);
+function blurLine(source: Float32Array, target: Float32Array, line: BlurLine): void {
+  const { length, offset, radius, stride } = line;
+
+  const weight = 1 / (2 * radius + 1);
 
   function read(index: number): number {
     return source[offset + Math.min(Math.max(index, 0), length - 1) * stride];
@@ -27,18 +23,12 @@ function blurLine(
   }
 
   for (let index = 0; index < length; index += 1) {
-    target[offset + index * stride] = sum * scale;
+    target[offset + index * stride] = sum * weight;
     sum += read(index + radius + 1) - read(index - radius);
   }
 }
 
-/** Repeated box blur with clamped edges, in place; three passes approximate a Gaussian. */
-export function boxBlur(
-  grid: Float32Array,
-  columns: number,
-  rows: number,
-  radius: number
-): void {
+export function boxBlur(grid: Float32Array, columns: number, rows: number, radius: number): void {
   const buffer = new Float32Array(grid.length);
 
   for (let pass = 0; pass < PASSES; pass += 1) {
