@@ -1,6 +1,6 @@
+# yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Feature request
 description: Propose an option, a renderer improvement, or a framework adapter
-labels: []
 body:
   - type: markdown
     attributes:
