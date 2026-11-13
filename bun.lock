@@ -17,14 +17,14 @@
     },
     "packages/core": {
       "name": "@imsvidskiy/glass-surface",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "devDependencies": {
         "tsdown": "catalog:",
       },
     },
     "packages/react": {
       "name": "@imsvidskiy/glass-surface-react",
-      "version": "2.0.0",
+      "version": "3.0.0",
       "dependencies": {
         "@imsvidskiy/glass-surface": "workspace:^",
       },
