@@ -1,14 +1,13 @@
 import {
   createGlassSurfaceController,
   describeFilter,
-  FILTER_REGION,
+  type FilterDescription,
+  type FilterPrimitive,
   type GlassSurfaceInput,
   getSurfaceClasses,
-  getSurfaceOverrides,
   getSurfaceProperties,
   resolveOptions,
   toFilterId,
-  toStyleObject,
 } from "@imsvidskiy/glass-surface";
 import {
   type CSSProperties,
@@ -23,77 +22,89 @@ import {
 
 export type GlassSurfaceElement = "div" | "span";
 
-export interface GlassSurfaceProps extends GlassSurfaceInput {
-  children?: ReactNode;
-  className?: string;
-  element?: GlassSurfaceElement;
-  height?: CSSProperties["height"];
-  style?: CSSProperties;
-  width?: CSSProperties["width"];
+export type GlassSurfaceProps = GlassSurfaceInput & {
+  children?: ReactNode | undefined;
+  className?: string | undefined;
+  element?: GlassSurfaceElement | undefined;
+  height?: CSSProperties["height"] | undefined;
+  style?: CSSProperties | undefined;
+  width?: CSSProperties["width"] | undefined;
+};
+
+function renderPrimitive({ attributes, result, tag }: FilterPrimitive): ReactNode {
+  return createElement(tag, {
+    key: result,
+    result,
+    ...attributes,
+  });
 }
 
-export function GlassSurface(props: GlassSurfaceProps): ReactNode {
-  const {
-    children,
-    width = 200,
-    height = 80,
-    className,
-    element: Element = "div",
-    style,
-    ...input
-  } = props;
+function renderFilter(filter: FilterDescription | null): ReactNode {
+  if (filter === null) {
+    return null;
+  }
 
+  return (
+    <svg aria-hidden="true" className="glass-surface__filter">
+      <filter {...filter.attributes}>{filter.primitives.map(renderPrimitive)}</filter>
+    </svg>
+  );
+}
+
+export function GlassSurface({
+  children,
+  className,
+  element: Element = "div",
+  height = 80,
+  style,
+  width = 200,
+  ...input
+}: GlassSurfaceProps): ReactNode {
   const filterId = toFilterId(useId());
 
-  const [controller] = useState(function createController() {
+  const [controller] = useState(() => {
     return createGlassSurfaceController(input);
   });
 
-  const state = useSyncExternalStore(
-    controller.subscribe,
-    controller.getState,
-    controller.getState
-  );
+  const state = useSyncExternalStore(controller.subscribe, controller.getState, controller.getState);
 
-  const attach = useCallback(
-    function mountSurface(surface: HTMLElement | null) {
-      if (!surface) {
+  const options = resolveOptions(input);
+  const filter = describeFilter(filterId, options, state);
+
+  const surfaceClassName = [
+    ...getSurfaceClasses(state),
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const surfaceStyle: CSSProperties = {
+    ...style,
+    height,
+    width,
+    ...getSurfaceProperties(filterId, options, state),
+  };
+
+  const handleSurface = useCallback(
+    (surface: HTMLElement | null) => {
+      if (surface === null) {
         return;
       }
 
       return controller.mount(surface);
     },
-    [controller]
+    [
+      controller,
+    ]
   );
 
-  useLayoutEffect(function syncOptions() {
+  useLayoutEffect(() => {
     controller.setOptions(input);
   });
 
-  const options = resolveOptions(input);
-  const primitives = describeFilter(options, state.displacementMap);
-
-  const surfaceClassName = [...getSurfaceClasses(state), className]
-    .filter(Boolean)
-    .join(" ");
-
-  const surfaceStyle = {
-    ...style,
-    height,
-    width,
-    ...getSurfaceProperties(filterId, options, state),
-    ...toStyleObject(getSurfaceOverrides(options, state)),
-  } as CSSProperties;
-
   return (
-    <Element className={surfaceClassName} ref={attach} style={surfaceStyle}>
-      <svg aria-hidden="true" className="glass-surface__filter">
-        <filter id={filterId} {...FILTER_REGION}>
-          {primitives.map(({ tag, result, attributes }) =>
-            createElement(tag, { key: result, result, ...attributes })
-          )}
-        </filter>
-      </svg>
+    <Element className={surfaceClassName} ref={handleSurface} style={surfaceStyle}>
+      {renderFilter(filter)}
 
       <canvas className="glass-surface__canvas" />
 

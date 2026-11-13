@@ -1,7 +1,16 @@
-/* biome-ignore-all lint/suspicious/useBaseline: backdrop filters, masks and light-dark are progressive here and degrade to a frosted or plain surface where unsupported */
-/* Surface */
+/* biome-ignore-all lint/suspicious/useBaseline: backdrop filters and light-dark are progressive here and degrade to a plain tinted surface where unsupported */
 
 .glass-surface {
+  --glass-tint: light-dark(
+    rgb(255 255 255 / var(--glass-frost)),
+    rgb(0 0 0 / var(--glass-frost))
+  );
+  --glass-line-color: light-dark(rgb(0 0 0 / 0.15), rgb(255 255 255 / 0.35));
+  --glass-glow-color: light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.15));
+  --glass-depth:
+    0 4px 16px rgb(17 17 26 / 0.05), 0 8px 24px rgb(17 17 26 / 0.05),
+    0 16px 56px rgb(17 17 26 / 0.05);
+
   position: relative;
   display: flex;
   align-items: center;
@@ -15,8 +24,6 @@
   outline: 2px solid light-dark(#007aff, #0a84ff);
   outline-offset: 2px;
 }
-
-/* Layers */
 
 .glass-surface__filter {
   position: absolute;
@@ -46,43 +53,20 @@
 }
 
 .glass-surface__frame {
-  background: light-dark(
-    hsl(0 0% 100% / var(--glass-frost)),
-    hsl(0 0% 0% / var(--glass-frost))
-  );
+  background: var(--glass-tint);
   box-shadow:
-    0 0 2px 1px
-    light-dark(
-      color-mix(in oklch, black, transparent 85%),
-      color-mix(in oklch, white, transparent 65%)
-    )
-    inset,
-    0 0 10px 4px
-    light-dark(
-      color-mix(in oklch, black, transparent 90%),
-      color-mix(in oklch, white, transparent 85%)
-    )
-    inset,
-    0 4px 16px rgb(17 17 26 / 0.05) inset,
-    0 8px 24px rgb(17 17 26 / 0.05) inset,
-    0 16px 56px rgb(17 17 26 / 0.05) inset;
+    inset 0 0 2px 1px var(--glass-line-color),
+    inset 0 0 10px 4px var(--glass-glow-color),
+    inset var(--glass-depth);
 }
 
 .glass-surface__glow {
-  background: light-dark(
-    color-mix(in oklch, black, transparent 90%),
-    color-mix(in oklch, white, transparent 85%)
-  );
-  -webkit-mask: var(--glass-glow) 0 0 / 100% 100%;
+  background: var(--glass-glow-color);
   mask: var(--glass-glow) 0 0 / 100% 100%;
 }
 
 .glass-surface__line {
-  background: light-dark(
-    color-mix(in oklch, black, transparent 85%),
-    color-mix(in oklch, white, transparent 65%)
-  );
-  -webkit-mask: var(--glass-line) 0 0 / 100% 100%;
+  background: var(--glass-line-color);
   mask: var(--glass-line) 0 0 / 100% 100%;
 }
 
@@ -98,92 +82,45 @@
   border-radius: inherit;
 }
 
-/* Modes */
+.glass-surface--svg,
+.glass-surface--webgl {
+  box-shadow: var(--glass-depth);
+}
 
 .glass-surface--svg {
-  background: light-dark(
-    hsl(0 0% 100% / var(--glass-frost)),
-    hsl(0 0% 0% / var(--glass-frost))
-  );
-  box-shadow:
-    0 0 2px 1px
-    light-dark(
-      color-mix(in oklch, black, transparent 85%),
-      color-mix(in oklch, white, transparent 65%)
-    )
-    inset,
-    0 0 10px 4px
-    light-dark(
-      color-mix(in oklch, black, transparent 90%),
-      color-mix(in oklch, white, transparent 85%)
-    )
-    inset,
-    0 4px 16px rgb(17 17 26 / 0.05),
-    0 8px 24px rgb(17 17 26 / 0.05),
-    0 16px 56px rgb(17 17 26 / 0.05),
-    0 4px 16px rgb(17 17 26 / 0.05) inset,
-    0 8px 24px rgb(17 17 26 / 0.05) inset,
-    0 16px 56px rgb(17 17 26 / 0.05) inset;
   backdrop-filter: var(--glass-filter) saturate(var(--glass-saturation));
 }
 
-.glass-surface--webgl {
-  box-shadow:
-    0 4px 16px rgb(17 17 26 / 0.05),
-    0 8px 24px rgb(17 17 26 / 0.05),
-    0 16px 56px rgb(17 17 26 / 0.05);
-}
-
-/* Frosted like system materials: a strong blur, richer color and a tint, edged by a hairline */
 .glass-surface--fallback {
+  --glass-line-color: light-dark(rgb(0 0 0 / 0.12), rgb(255 255 255 / 0.28));
+  --glass-glow-color: light-dark(
+    rgb(255 255 255 / 0.28),
+    rgb(255 255 255 / 0.1)
+  );
+
   background: light-dark(
     hsl(240 12% 97% / calc(0.45 + var(--glass-frost) * 0.5)),
     hsl(240 4% 16% / calc(0.4 + var(--glass-frost) * 0.5))
   );
   box-shadow:
-    inset 0 0 0 1px light-dark(hsl(0 0% 100% / 0.35), hsl(0 0% 100% / 0.12)),
-    inset 0 1px 0 light-dark(hsl(0 0% 100% / 0.6), hsl(0 0% 100% / 0.2));
+    inset 0 0 0 1px light-dark(rgb(255 255 255 / 0.35), rgb(255 255 255 / 0.12)),
+    inset 0 1px 0 light-dark(rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.2));
   -webkit-backdrop-filter: blur(24px)
     saturate(calc(var(--glass-saturation) * 1.8));
   backdrop-filter: blur(24px) saturate(calc(var(--glass-saturation) * 1.8));
 }
 
-@supports not (
-    (backdrop-filter: blur(1px)) or
-    (-webkit-backdrop-filter: blur(1px))
-  ) {
-  .glass-surface--fallback {
-    background: light-dark(hsl(0 0% 100% / 0.72), hsl(0 0% 12% / 0.72));
-  }
-}
-
 .glass-surface--webgl > .glass-surface__canvas,
+.glass-surface--svg > .glass-surface__frame,
 .glass-surface--webgl > .glass-surface__frame,
 .glass-surface--shaped > .glass-surface__glow,
 .glass-surface--shaped > .glass-surface__line {
   display: block;
 }
 
-.glass-surface--fallback > .glass-surface__glow {
-  background: light-dark(
-    color-mix(in oklch, white, transparent 72%),
-    color-mix(in oklch, white, transparent 90%)
-  );
-}
-
-.glass-surface--fallback > .glass-surface__line {
-  background: light-dark(
-    color-mix(in oklch, black, transparent 88%),
-    color-mix(in oklch, white, transparent 72%)
-  );
-}
-
-/* Shape */
-
 .glass-surface--shaped {
   border-radius: 0;
   box-shadow: none;
-  -webkit-mask: var(--glass-shape);
   mask: var(--glass-shape);
 }
 

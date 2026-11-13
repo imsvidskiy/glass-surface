@@ -1,20 +1,18 @@
 {
-  "$schema": "https://www.schemastore.org/tsconfig",
+  "$schema": "https://www.schemastore.org/tsconfig.json",
   "extends": "@tsconfig/bases/strictest",
   "compilerOptions": {
-    "noUncheckedIndexedAccess": false,
-
-    "module": "preserve",
-
-    "declaration": true,
-    "noEmit": true,
-
-    "verbatimModuleSyntax": true,
-    "isolatedDeclarations": true,
     "erasableSyntaxOnly": true,
-
+    "module": "preserve",
+    "noEmit": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "target": "es2023",
-    "lib": ["es2023", "dom"],
-    "moduleDetection": "force"
+    "allowUnusedLabels": null,
+    "noUncheckedIndexedAccess": false,
+    "noFallthroughCasesInSwitch": false,
+    "allowUnreachableCode": null,
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true
   }
 }

@@ -1,22 +1,26 @@
 {
-  "$schema": "https://www.schemastore.org/tsconfig",
+  "$schema": "https://www.schemastore.org/tsconfig.json",
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "paths": {
-      "@imsvidskiy/glass-surface": ["../packages/core/src/index.ts"],
-      "@imsvidskiy/glass-surface/style.css": [
-        "../packages/core/src/glass-surface.css"
+      "@imsvidskiy/glass-surface": [
+        "../packages/core/src/index.ts"
       ],
-      "@imsvidskiy/glass-surface-react": ["../packages/react/src/index.ts"],
+      "@imsvidskiy/glass-surface-react": [
+        "../packages/react/src/index.ts"
+      ],
       "@imsvidskiy/glass-surface-react/style.css": [
         "../packages/core/src/glass-surface.css"
       ]
     },
-    "types": ["node", "vite/client"],
-
-    "isolatedDeclarations": false,
-
-    "jsx": "react-jsx"
+    "types": [
+      "vite/client"
+    ]
   },
-  "include": ["src", "cloudflare.config.ts", "vite.config.ts"]
+  "include": [
+    "src",
+    "cloudflare.config.ts",
+    "vite.config.ts"
+  ]
 }

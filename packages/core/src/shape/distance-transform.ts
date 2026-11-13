@@ -1,25 +1,20 @@
-export const UNREACHED = 1e20;
-
-interface LineBuffers {
+type LineBuffers = {
   boundaries: Float64Array;
   distances: Float64Array;
   values: Float64Array;
   vertices: Int32Array;
-}
+};
 
-function intersect(
-  values: Float64Array,
-  vertex: number,
-  position: number
-): number {
-  const rise =
-    values[position] + position * position - (values[vertex] + vertex * vertex);
+export const UNREACHED = 1e20;
+
+function intersect(values: Float64Array, vertex: number, position: number): number {
+  const rise = values[position] + position * position - (values[vertex] + vertex * vertex);
 
   return rise / (2 * position - 2 * vertex);
 }
 
 function transformLine(buffers: LineBuffers, length: number): void {
-  const { values, distances, vertices, boundaries } = buffers;
+  const { boundaries, distances, values, vertices } = buffers;
 
   let hull = 0;
 
@@ -54,15 +49,7 @@ function transformLine(buffers: LineBuffers, length: number): void {
   }
 }
 
-/**
- * Exact squared Euclidean distance transform (Felzenszwalb and Huttenlocher), in place.
- * Cells holding zero are sources; cells holding {@link UNREACHED} receive the squared distance to the nearest source.
- */
-export function squaredDistanceTransform(
-  grid: Float32Array,
-  columns: number,
-  rows: number
-): void {
+export function squaredDistanceTransform(grid: Float32Array, columns: number, rows: number): void {
   const length = Math.max(columns, rows);
 
   const buffers: LineBuffers = {

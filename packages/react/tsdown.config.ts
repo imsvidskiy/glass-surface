@@ -1,25 +1,25 @@
-import { fileURLToPath } from "node:url";
 import { defineConfig } from "tsdown";
-
-const coreStyles = fileURLToPath(
-  import.meta.resolve("@imsvidskiy/glass-surface/style.css")
-);
 
 export default defineConfig({
   attw: {
-    excludeEntrypoints: ["./style.css"],
+    excludeEntrypoints: [
+      "./style.css",
+    ],
     level: "error",
-    profile: "esm-only",
   },
-
-  copy: [{ from: coreStyles, to: "dist" }],
-  dts: true,
-  entry: "src/index.ts",
-
+  copy: [
+    {
+      from: "../core/src/glass-surface.css",
+      rename: "style.css",
+      to: "dist",
+    },
+  ],
   exports: {
-    customExports: { "./style.css": "./dist/style.css" },
+    customExports: {
+      "./style.css": "./dist/style.css",
+    },
   },
   platform: "browser",
-
-  publint: { level: "suggestion" },
+  publint: true,
+  target: "es2023",
 });

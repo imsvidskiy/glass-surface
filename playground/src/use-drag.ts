@@ -1,74 +1,77 @@
-import {
-  type PointerEvent,
-  type RefObject,
-  useCallback,
-  useRef,
-  useState,
-} from "react";
+import { type PointerEvent, type RefObject, useCallback, useRef, useState } from "react";
 
-export interface Position {
+type Position = {
   x: number;
   y: number;
-}
+};
 
-export interface Drag {
+type Drag = {
   handlePointerDown: (event: PointerEvent<HTMLElement>) => void;
   handlePointerMove: (event: PointerEvent<HTMLElement>) => void;
   handlePointerUp: (event: PointerEvent<HTMLElement>) => void;
   position: Position;
-}
+};
 
-const CENTER: Position = { x: 0.5, y: 0.5 };
+const CENTER: Position = {
+  x: 0.5,
+  y: 0.5,
+};
 
-function clampUnit(value: number): number {
+function clampFraction(value: number): number {
   return Math.min(Math.max(value, 0), 1);
 }
 
-/** Moves an element inside the stage; the position is the element's center as a fraction of the stage. */
 export function useDrag(stageRef: RefObject<HTMLElement | null>): Drag {
   const [position, setPosition] = useState(CENTER);
 
-  const grabOffset = useRef<Position | null>(null);
+  const grabOffsetRef = useRef<Position | null>(null);
 
-  const handlePointerDown = useCallback(function startDrag(
-    event: PointerEvent<HTMLElement>
-  ) {
+  const handlePointerDown = useCallback((event: PointerEvent<HTMLElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
 
     event.currentTarget.setPointerCapture(event.pointerId);
 
-    grabOffset.current = {
+    grabOffsetRef.current = {
       x: event.clientX - (bounds.left + bounds.width / 2),
       y: event.clientY - (bounds.top + bounds.height / 2),
     };
   }, []);
 
   const handlePointerMove = useCallback(
-    function drag(event: PointerEvent<HTMLElement>) {
-      const offset = grabOffset.current;
+    (event: PointerEvent<HTMLElement>) => {
+      const grabOffset = grabOffsetRef.current;
       const stage = stageRef.current;
 
-      if (offset === null || stage === null) {
+      if (grabOffset === null) {
+        return;
+      }
+
+      if (stage === null) {
         return;
       }
 
       const bounds = stage.getBoundingClientRect();
 
       setPosition({
-        x: clampUnit((event.clientX - offset.x - bounds.left) / bounds.width),
-        y: clampUnit((event.clientY - offset.y - bounds.top) / bounds.height),
+        x: clampFraction((event.clientX - grabOffset.x - bounds.left) / bounds.width),
+        y: clampFraction((event.clientY - grabOffset.y - bounds.top) / bounds.height),
       });
     },
-    [stageRef]
+    [
+      stageRef,
+    ]
   );
 
-  const handlePointerUp = useCallback(function endDrag(
-    event: PointerEvent<HTMLElement>
-  ) {
+  const handlePointerUp = useCallback((event: PointerEvent<HTMLElement>) => {
     event.currentTarget.releasePointerCapture(event.pointerId);
 
-    grabOffset.current = null;
+    grabOffsetRef.current = null;
   }, []);
 
-  return { handlePointerDown, handlePointerMove, handlePointerUp, position };
+  return {
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    position,
+  };
 }

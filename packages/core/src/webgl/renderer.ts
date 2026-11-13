@@ -1,524 +1,408 @@
-import type {
-  BackdropElement,
-  ColorChannel,
-  GlassSurfaceOptions,
-  Size,
-} from "../types";
-import {
-  getContext2d,
-  getPixelRatio,
-  isEmptySize,
-  loadImage,
-} from "../utilities";
-import {
-  getContentBox,
-  getFrameKey,
-  getSourceSize,
-  resolveBackdrop,
-} from "./backdrop";
+import { scaleSize } from "../canvas";
+import { haveSameValues } from "../memoize";
+import type { BackdropElement, GlassSurfaceOptions, Size } from "../types";
+import { type BackdropVersion, getSourceSize, readBackdropVersion, resolveBackdrop } from "./backdrop";
+import { type Frame, measureFrame } from "./frame";
 import { createProgram } from "./program";
-import { BLUR_SHADER, POSITION_LOCATION, REFRACTION_SHADER } from "./shaders";
+import {
+  createPassTarget,
+  createTexture,
+  createTriangle,
+  deletePassTarget,
+  deleteTriangle,
+  getWebgl2Context,
+  resizePassTarget,
+} from "./resources";
+import {
+  BLUR_SHADER,
+  BLUR_UNIFORMS,
+  COPY_SHADER,
+  COPY_UNIFORMS,
+  REFRACTION_SHADER,
+  REFRACTION_UNIFORMS,
+} from "./shaders";
 
-const REFRACTION_UNIFORMS = [
-  "uBackdrop",
-  "uDisplacementMap",
-  "uCanvasSize",
-  "uSurfaceSize",
-  "uBackdropOrigin",
-  "uBackdropStep",
-  "uChannelScale",
-  "uHorizontalChannel",
-  "uVerticalChannel",
-  "uLevelOfDetail",
-  "uSaturation",
-] as const;
-
-const BLUR_UNIFORMS = ["uSource", "uDirection", "uSigma", "uRadius"] as const;
-
-const CHANNEL_MASKS: Record<ColorChannel, [number, number, number, number]> = {
-  A: [0, 0, 0, 1],
-  B: [0, 0, 1, 0],
-  G: [0, 1, 0, 0],
-  R: [1, 0, 0, 0],
+type UploadedBackdrop = BackdropVersion & {
+  element: BackdropElement;
+  isMipmapped: boolean;
+  width: number;
 };
+
+type Direction = {
+  x: number;
+  y: number;
+};
+
+type Drawing = BackdropVersion &
+  Frame & {
+    map: HTMLCanvasElement;
+    options: GlassSurfaceOptions;
+  };
+
+export type RendererSource = {
+  canvas: HTMLCanvasElement;
+  element: HTMLElement;
+  onFailure: () => void;
+  readMap: () => HTMLCanvasElement | null;
+  readOptions: () => GlassSurfaceOptions;
+};
+
+export type WebglRenderer = {
+  destroy: () => void;
+};
+
+const CHANNELS = "RGBA";
 
 const BACKDROP_UNIT = 0;
 const MAP_UNIT = 1;
 const PASS_UNIT = 2;
 
-/** Below this deviation, in device pixels, the blur passes are skipped. */
+const HORIZONTAL: Direction = {
+  x: 1,
+  y: 0,
+};
+
+const VERTICAL: Direction = {
+  x: 0,
+  y: 1,
+};
+
 const MINIMUM_SIGMA = 0.3;
+const MAXIMUM_SIGMA = 4;
 
-/** The widest blur reach, in device pixels; three sigma beyond it is clipped. */
-const MAXIMUM_RADIUS = 120;
-
-const FULL_SCREEN_TRIANGLE = new Float32Array([-1, -1, 3, -1, -1, 3]);
-
-const MINIMUM_TEXELS = 1e-6;
-
-type Uniforms<Name extends string> = Record<Name, WebGLUniformLocation | null>;
-
-/** A texture the passes draw into and read from. */
-interface PassTarget {
-  framebuffer: WebGLFramebuffer;
-  texture: WebGLTexture;
-}
-
-export type RendererSettings = Pick<
-  GlassSurfaceOptions,
-  | "backdrop"
-  | "displace"
-  | "saturation"
-  | "distortionScale"
-  | "redOffset"
-  | "greenOffset"
-  | "blueOffset"
-  | "xChannel"
-  | "yChannel"
-> & { displacementMap: string };
-
-export interface RendererTargets {
-  canvas: HTMLCanvasElement;
-  element: HTMLElement;
-  onFailure: () => void;
-  readSettings: () => RendererSettings;
-}
-
-export interface WebglRenderer {
-  destroy: () => void;
-}
-
-interface UploadedBackdrop {
-  key: string;
-  mipmapped: boolean;
-  size: Size;
-  source: BackdropElement;
-}
-
-function getWebgl2Context(canvas: HTMLCanvasElement): WebGL2RenderingContext {
-  const gl = canvas.getContext("webgl2", {
-    alpha: true,
-    antialias: false,
-    depth: false,
-    premultipliedAlpha: true,
-    stencil: false,
-  });
-
-  if (!gl) {
-    throw new Error("WebGL 2 is unavailable");
-  }
-
-  return gl;
-}
-
-function createTexture(gl: WebGL2RenderingContext, unit: number): WebGLTexture {
-  const texture = gl.createTexture();
-
-  gl.activeTexture(gl.TEXTURE0 + unit);
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-
-  return texture;
-}
-
-function getUniforms<Name extends string>(
-  gl: WebGL2RenderingContext,
-  program: WebGLProgram,
-  names: readonly Name[]
-): Uniforms<Name> {
-  const entries = names.map((name) => [
-    name,
-    gl.getUniformLocation(program, name),
-  ]);
-
-  return Object.fromEntries(entries) as Uniforms<Name>;
-}
-
-/** Mipmaps only shrink a backdrop drawn smaller than its pixels; the blur is a pass of its own. */
-function getLevelOfDetail(
-  backdrop: UploadedBackdrop,
-  content: Size,
-  scale: number
-): number {
-  if (!backdrop.mipmapped) {
+function getLevelOfDetail(backdrop: UploadedBackdrop, frame: Frame, reduction: number): number {
+  if (!backdrop.isMipmapped) {
     return 0;
   }
 
-  const texelsPerPixel =
-    ((backdrop.size.width / content.width) * scale) / getPixelRatio();
+  const texelsPerPixel = (backdrop.width * frame.stepX) / frame.pixelRatio;
 
-  return Math.max(0, Math.log2(Math.max(texelsPerPixel, MINIMUM_TEXELS)));
+  return Math.max(0, Math.log2(texelsPerPixel / reduction));
 }
 
-function createPassTarget(gl: WebGL2RenderingContext): PassTarget {
-  const texture = createTexture(gl, PASS_UNIT);
-  const framebuffer = gl.createFramebuffer();
-
-  gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-  gl.framebufferTexture2D(
-    gl.FRAMEBUFFER,
-    gl.COLOR_ATTACHMENT0,
-    gl.TEXTURE_2D,
-    texture,
-    0
-  );
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-  return { framebuffer, texture };
-}
-
-function resizePassTarget(
-  gl: WebGL2RenderingContext,
-  target: PassTarget,
-  size: Size
-): void {
-  gl.activeTexture(gl.TEXTURE0 + PASS_UNIT);
-  gl.bindTexture(gl.TEXTURE_2D, target.texture);
-  gl.texImage2D(
-    gl.TEXTURE_2D,
-    0,
-    gl.RGBA,
-    size.width,
-    size.height,
-    0,
-    gl.RGBA,
-    gl.UNSIGNED_BYTE,
-    null
-  );
-}
-
-function deletePassTarget(
-  gl: WebGL2RenderingContext,
-  target: PassTarget
-): void {
-  gl.deleteFramebuffer(target.framebuffer);
-  gl.deleteTexture(target.texture);
-}
-
-export function createWebglRenderer(targets: RendererTargets): WebglRenderer {
-  const { element, canvas, readSettings, onFailure } = targets;
+export function createWebglRenderer(source: RendererSource): WebglRenderer {
+  const { canvas, element, onFailure, readMap, readOptions } = source;
 
   const gl = getWebgl2Context(canvas);
-  const refractionProgram = createProgram(gl, REFRACTION_SHADER);
-  const blurProgram = createProgram(gl, BLUR_SHADER);
-  const vertexArray = gl.createVertexArray();
-  const vertexBuffer = gl.createBuffer();
-
-  gl.bindVertexArray(vertexArray);
-  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, FULL_SCREEN_TRIANGLE, gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(POSITION_LOCATION);
-  gl.vertexAttribPointer(POSITION_LOCATION, 2, gl.FLOAT, false, 0, 0);
-  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-
-  const uniforms = getUniforms(gl, refractionProgram, REFRACTION_UNIFORMS);
-  const blurUniforms = getUniforms(gl, blurProgram, BLUR_UNIFORMS);
-
+  const refraction = createProgram(gl, REFRACTION_SHADER, REFRACTION_UNIFORMS);
+  const blur = createProgram(gl, BLUR_SHADER, BLUR_UNIFORMS);
+  const copy = createProgram(gl, COPY_SHADER, COPY_UNIFORMS);
+  const triangle = createTriangle(gl);
   const backdropTexture = createTexture(gl, BACKDROP_UNIT);
   const mapTexture = createTexture(gl, MAP_UNIT);
-  const refracted = createPassTarget(gl);
-  const halfBlurred = createPassTarget(gl);
+  const refracted = createPassTarget(gl, PASS_UNIT);
+  const halfBlurred = createPassTarget(gl, PASS_UNIT);
 
-  gl.useProgram(refractionProgram);
-  gl.uniform1i(uniforms.uBackdrop, BACKDROP_UNIT);
-  gl.uniform1i(uniforms.uDisplacementMap, MAP_UNIT);
-
-  gl.useProgram(blurProgram);
-  gl.uniform1i(blurUniforms.uSource, PASS_UNIT);
-
-  const mapCanvas = document.createElement("canvas");
-  const mapContext = getContext2d(mapCanvas);
   const lifetime = new AbortController();
 
   let backdrop: UploadedBackdrop | null = null;
-  let mapUrl = "";
-  let mapReady = false;
-  let frame = 0;
-  let visible = true;
-  let drawnSignature = "";
-  let passSize: Size = { height: 0, width: 0 };
+  let map: HTMLCanvasElement | null = null;
+  let drawn: Drawing | null = null;
+  let frameRequest = 0;
+  let isVisible = true;
+
+  let passSize: Size = {
+    height: 0,
+    width: 0,
+  };
 
   function isRunning(): boolean {
-    return visible && !document.hidden;
+    if (document.hidden) {
+      return false;
+    }
+
+    return isVisible;
+  }
+
+  function isUploaded(next: BackdropElement, version: BackdropVersion): boolean {
+    if (backdrop === null) {
+      return false;
+    }
+
+    if (backdrop.element !== next) {
+      return false;
+    }
+
+    return haveSameValues(version, backdrop);
+  }
+
+  function isDrawn(drawing: Drawing): boolean {
+    if (drawn === null) {
+      return false;
+    }
+
+    return haveSameValues(drawn, drawing);
   }
 
   function wake(): void {
-    if (frame !== 0) {
+    if (frameRequest !== 0) {
       return;
     }
 
     if (isRunning()) {
-      frame = requestAnimationFrame(tick);
+      frameRequest = requestAnimationFrame(renderFrame);
     }
   }
 
-  async function loadDisplacementMap(url: string): Promise<void> {
-    mapUrl = url;
+  function uploadBackdrop(next: BackdropElement): void {
+    const version = readBackdropVersion(next);
 
-    const image = await loadImage(url).catch(function ignoreFailure() {
-      return null;
-    });
-
-    const outdated = url !== mapUrl || lifetime.signal.aborted;
-
-    if (image === null || outdated) {
+    if (version === null) {
       return;
     }
 
-    const pixelRatio = getPixelRatio();
-
-    mapCanvas.width = Math.max(1, Math.round(element.offsetWidth * pixelRatio));
-    mapCanvas.height = Math.max(
-      1,
-      Math.round(element.offsetHeight * pixelRatio)
-    );
-    mapContext.drawImage(image, 0, 0, mapCanvas.width, mapCanvas.height);
-
-    gl.activeTexture(gl.TEXTURE0 + MAP_UNIT);
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      mapCanvas
-    );
-
-    mapReady = true;
-    drawnSignature = "";
-  }
-
-  function uploadBackdrop(source: BackdropElement): void {
-    const key = getFrameKey(source);
-    const uploaded = backdrop?.source === source && backdrop.key === key;
-
-    if (key === "" || uploaded) {
+    if (isUploaded(next, version)) {
       return;
     }
 
-    const mipmapped = source instanceof HTMLImageElement;
+    const isMipmapped = next instanceof HTMLImageElement;
 
     gl.activeTexture(gl.TEXTURE0 + BACKDROP_UNIT);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, next);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, isMipmapped ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR);
 
-    if (mipmapped) {
+    if (isMipmapped) {
       gl.generateMipmap(gl.TEXTURE_2D);
     }
 
-    gl.texParameteri(
-      gl.TEXTURE_2D,
-      gl.TEXTURE_MIN_FILTER,
-      mipmapped ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR
-    );
-
-    backdrop = { key, mipmapped, size: getSourceSize(source), source };
+    backdrop = {
+      ...version,
+      element: next,
+      isMipmapped,
+      width: getSourceSize(next).width,
+    };
   }
 
-  function draw(
-    source: BackdropElement,
-    uploaded: UploadedBackdrop,
-    settings: RendererSettings
+  function uploadMap(next: HTMLCanvasElement | null): void {
+    if (next === null) {
+      return;
+    }
+
+    if (next === map) {
+      return;
+    }
+
+    gl.activeTexture(gl.TEXTURE0 + MAP_UNIT);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, next);
+
+    map = next;
+  }
+
+  function resizeCanvas(size: Size): void {
+    if (haveSameValues(size, canvas)) {
+      return;
+    }
+
+    canvas.width = size.width;
+    canvas.height = size.height;
+  }
+
+  function resizePasses(size: Size): void {
+    if (haveSameValues(size, passSize)) {
+      return;
+    }
+
+    passSize = size;
+
+    resizePassTarget(gl, refracted, PASS_UNIT, size);
+    resizePassTarget(gl, halfBlurred, PASS_UNIT, size);
+  }
+
+  function drawRefraction(
+    drawing: Drawing,
+    output: WebGLFramebuffer | null,
+    target: Size,
+    levelOfDetail: number
   ): void {
-    const layout = { height: element.offsetHeight, width: element.offsetWidth };
-    const content = getContentBox(source);
+    const { layoutHeight, layoutWidth, options, originX, originY, stepX, stepY } = drawing;
+    const { blueOffset, distortionScale, greenOffset, redOffset, saturation, xChannel, yChannel } = options;
+    const { uniforms } = refraction;
 
-    if (isEmptySize(layout) || isEmptySize(content)) {
-      return;
-    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, output);
+    gl.viewport(0, 0, target.width, target.height);
+    gl.useProgram(refraction.handle);
 
-    const bounds = element.getBoundingClientRect();
-    const pixelRatio = getPixelRatio();
-    const width = Math.max(1, Math.round(layout.width * pixelRatio));
-    const height = Math.max(1, Math.round(layout.height * pixelRatio));
-
-    const {
-      distortionScale,
-      redOffset,
-      greenOffset,
-      blueOffset,
-      xChannel,
-      yChannel,
-      displace,
-      saturation,
-    } = settings;
-
-    const signature = [
-      bounds.left,
-      bounds.top,
-      bounds.width,
-      bounds.height,
-      content.x,
-      content.y,
-      content.width,
-      content.height,
-      width,
-      height,
-      uploaded.key,
-      mapUrl,
-      displace,
-      saturation,
-      distortionScale,
-      redOffset,
-      greenOffset,
-      blueOffset,
-      xChannel,
-      yChannel,
-    ].join("|");
-
-    if (signature === drawnSignature) {
-      return;
-    }
-
-    drawnSignature = signature;
-
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width;
-      canvas.height = height;
-    }
-
-    const scaleX = bounds.width / layout.width;
-    const scaleY = bounds.height / layout.height;
-    const sigma = Math.max(0, displace) * pixelRatio;
-    const blurred = sigma >= MINIMUM_SIGMA;
-
-    if (blurred && (passSize.width !== width || passSize.height !== height)) {
-      passSize = { height, width };
-      resizePassTarget(gl, refracted, passSize);
-      resizePassTarget(gl, halfBlurred, passSize);
-    }
-
-    gl.viewport(0, 0, width, height);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, blurred ? refracted.framebuffer : null);
-    gl.useProgram(refractionProgram);
-    gl.uniform2f(uniforms.uCanvasSize, width, height);
-    gl.uniform2f(uniforms.uSurfaceSize, layout.width, layout.height);
-    gl.uniform2f(
-      uniforms.uBackdropOrigin,
-      (bounds.left - content.x) / content.width,
-      (bounds.top - content.y) / content.height
-    );
-    gl.uniform2f(
-      uniforms.uBackdropStep,
-      scaleX / content.width,
-      scaleY / content.height
-    );
-    gl.uniform3f(
-      uniforms.uChannelScale,
-      distortionScale + redOffset,
-      distortionScale + greenOffset,
-      distortionScale + blueOffset
-    );
-    gl.uniform4fv(uniforms.uHorizontalChannel, CHANNEL_MASKS[xChannel]);
-    gl.uniform4fv(uniforms.uVerticalChannel, CHANNEL_MASKS[yChannel]);
-    gl.uniform1f(
-      uniforms.uLevelOfDetail,
-      getLevelOfDetail(uploaded, content, scaleX)
-    );
+    gl.uniform1i(uniforms.uBackdrop, BACKDROP_UNIT);
+    gl.uniform1i(uniforms.uDisplacementMap, MAP_UNIT);
+    gl.uniform2f(uniforms.uTargetSize, target.width, target.height);
+    gl.uniform2f(uniforms.uSurfaceSize, layoutWidth, layoutHeight);
+    gl.uniform2f(uniforms.uBackdropOrigin, originX, originY);
+    gl.uniform2f(uniforms.uBackdropStep, stepX, stepY);
+    gl.uniform1f(uniforms.uDistortionScale, distortionScale);
+    gl.uniform3f(uniforms.uChannelOffset, redOffset, greenOffset, blueOffset);
+    gl.uniform1i(uniforms.uHorizontalChannel, CHANNELS.indexOf(xChannel));
+    gl.uniform1i(uniforms.uVerticalChannel, CHANNELS.indexOf(yChannel));
+    gl.uniform1f(uniforms.uLevelOfDetail, levelOfDetail);
     gl.uniform1f(uniforms.uSaturation, saturation);
+
     gl.drawArrays(gl.TRIANGLES, 0, 3);
-
-    if (!blurred) {
-      return;
-    }
-
-    blur(sigma);
   }
 
-  /** Blurs the refracted pass across, then down onto the canvas. */
-  function blur(sigma: number): void {
-    gl.useProgram(blurProgram);
-    gl.uniform1f(blurUniforms.uSigma, sigma);
-    gl.uniform1i(
-      blurUniforms.uRadius,
-      Math.min(MAXIMUM_RADIUS, Math.ceil(sigma * 3))
-    );
-    gl.activeTexture(gl.TEXTURE0 + PASS_UNIT);
+  function drawBlur(
+    input: WebGLTexture,
+    output: WebGLFramebuffer,
+    target: Size,
+    direction: Direction,
+    sigma: number
+  ): void {
+    const { uniforms } = blur;
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, halfBlurred.framebuffer);
-    gl.bindTexture(gl.TEXTURE_2D, refracted.texture);
-    gl.uniform2f(blurUniforms.uDirection, 1, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, output);
+    gl.viewport(0, 0, target.width, target.height);
+    gl.useProgram(blur.handle);
+
+    gl.activeTexture(gl.TEXTURE0 + PASS_UNIT);
+    gl.bindTexture(gl.TEXTURE_2D, input);
+
+    gl.uniform1i(uniforms.uSource, PASS_UNIT);
+    gl.uniform2f(uniforms.uDirection, direction.x, direction.y);
+    gl.uniform2f(uniforms.uTargetSize, target.width, target.height);
+    gl.uniform1f(uniforms.uSigma, sigma);
+    gl.uniform1i(uniforms.uRadius, Math.ceil(sigma * 3));
+
     gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  function drawCopy(input: WebGLTexture, target: Size): void {
+    const { uniforms } = copy;
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.bindTexture(gl.TEXTURE_2D, halfBlurred.texture);
-    gl.uniform2f(blurUniforms.uDirection, 0, 1);
+    gl.viewport(0, 0, target.width, target.height);
+    gl.useProgram(copy.handle);
+
+    gl.activeTexture(gl.TEXTURE0 + PASS_UNIT);
+    gl.bindTexture(gl.TEXTURE_2D, input);
+
+    gl.uniform1i(uniforms.uSource, PASS_UNIT);
+    gl.uniform2f(uniforms.uTargetSize, target.width, target.height);
+
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
-  function tick(): void {
-    frame = 0;
+  function draw(uploaded: UploadedBackdrop, drawing: Drawing): void {
+    const { layoutHeight, layoutWidth, options, pixelRatio } = drawing;
+
+    const layout = {
+      height: layoutHeight,
+      width: layoutWidth,
+    };
+
+    const target = scaleSize(layout, pixelRatio);
+    const sigma = Math.max(0, options.displace) * pixelRatio;
+
+    resizeCanvas(target);
+
+    if (sigma < MINIMUM_SIGMA) {
+      drawRefraction(drawing, null, target, getLevelOfDetail(uploaded, drawing, 1));
+
+      return;
+    }
+
+    const reduction = Math.min(1, MAXIMUM_SIGMA / sigma);
+    const reduced = scaleSize(target, reduction);
+
+    resizePasses(reduced);
+
+    drawRefraction(drawing, refracted.framebuffer, reduced, getLevelOfDetail(uploaded, drawing, reduction));
+    drawBlur(refracted.texture, halfBlurred.framebuffer, reduced, HORIZONTAL, sigma * reduction);
+    drawBlur(halfBlurred.texture, refracted.framebuffer, reduced, VERTICAL, sigma * reduction);
+    drawCopy(refracted.texture, target);
+  }
+
+  function renderSurface(): void {
+    const options = readOptions();
+    const backdropElement = resolveBackdrop(options.backdrop);
+
+    if (backdropElement === null) {
+      return;
+    }
+
+    uploadBackdrop(backdropElement);
+    uploadMap(readMap());
+
+    if (backdrop === null) {
+      return;
+    }
+
+    if (map === null) {
+      return;
+    }
+
+    const frame = measureFrame(element, backdropElement);
+
+    if (frame === null) {
+      return;
+    }
+
+    const drawing: Drawing = {
+      ...frame,
+      map,
+      options,
+      source: backdrop.source,
+      time: backdrop.time,
+    };
+
+    if (isDrawn(drawing)) {
+      return;
+    }
+
+    drawn = drawing;
+
+    draw(backdrop, drawing);
+  }
+
+  function renderFrame(): void {
+    frameRequest = 0;
 
     if (!isRunning()) {
       return;
     }
 
-    frame = requestAnimationFrame(tick);
-
-    const settings = readSettings();
-
-    if (settings.displacementMap !== mapUrl) {
-      loadDisplacementMap(settings.displacementMap);
-    }
-
-    const source = resolveBackdrop(settings.backdrop);
-
-    if (!source) {
-      return;
-    }
+    frameRequest = requestAnimationFrame(renderFrame);
 
     try {
-      uploadBackdrop(source);
+      renderSurface();
     } catch {
       onFailure();
-
-      return;
     }
-
-    if (backdrop === null || !mapReady) {
-      return;
-    }
-
-    draw(source, backdrop, settings);
   }
 
-  function handleContextLost(event: Event): void {
-    event.preventDefault();
-    onFailure();
-  }
+  const visibilityObserver = new IntersectionObserver((entries) => {
+    isVisible = entries.some((entry) => {
+      return entry.isIntersecting;
+    });
 
-  const intersectionObserver = new IntersectionObserver(
-    function handleIntersection(entries) {
-      visible = entries.some((entry) => entry.isIntersecting);
-      wake();
-    }
-  );
+    wake();
+  });
 
-  intersectionObserver.observe(element);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
+  visibilityObserver.observe(element);
+
   document.addEventListener("visibilitychange", wake, {
     signal: lifetime.signal,
   });
-  canvas.addEventListener("webglcontextlost", handleContextLost, {
+
+  canvas.addEventListener("webglcontextlost", onFailure, {
     signal: lifetime.signal,
   });
+
   wake();
 
   return {
     destroy() {
       lifetime.abort();
-      cancelAnimationFrame(frame);
-      intersectionObserver.disconnect();
+      cancelAnimationFrame(frameRequest);
+      visibilityObserver.disconnect();
 
       gl.deleteTexture(backdropTexture);
       gl.deleteTexture(mapTexture);
       deletePassTarget(gl, refracted);
       deletePassTarget(gl, halfBlurred);
-      gl.deleteBuffer(vertexBuffer);
-      gl.deleteVertexArray(vertexArray);
-      gl.deleteProgram(refractionProgram);
-      gl.deleteProgram(blurProgram);
+      deleteTriangle(gl, triangle);
+      gl.deleteProgram(refraction.handle);
+      gl.deleteProgram(blur.handle);
+      gl.deleteProgram(copy.handle);
     },
   };
 }

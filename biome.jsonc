@@ -1,9 +1,36 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "extends": ["ultracite/biome/core"],
+  "extends": [
+    "ultracite/biome/core",
+    "ultracite/biome/react"
+  ],
+  "formatter": {
+    "expand": "always",
+    "lineWidth": 120
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "useConsistentArrowReturn": {
+          "level": "error",
+          "options": {
+            "style": "always"
+          }
+        },
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": {
+            "style": "type"
+          }
+        }
+      }
+    }
+  },
   "overrides": [
     {
-      "includes": [".github/PULL_REQUEST_TEMPLATE.md"],
+      "includes": [
+        ".github/PULL_REQUEST_TEMPLATE.md"
+      ],
       "linter": {
         "rules": {
           "suspicious": {
@@ -13,11 +40,25 @@
       }
     },
     {
-      "includes": ["packages/*/src/index.ts"],
+      "includes": [
+        "packages/*/src/index.ts"
+      ],
       "linter": {
         "rules": {
           "performance": {
             "noBarrelFile": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "packages/core/**"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "useHookAtTopLevel": "off"
           }
         }
       }

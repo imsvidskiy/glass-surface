@@ -1,8 +1,12 @@
 {
-  "$schema": "https://www.schemastore.org/tsconfig",
+  "$schema": "https://www.schemastore.org/tsconfig.json",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx"
+    "declaration": true,
+    "jsx": "react-jsx",
+    "isolatedDeclarations": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }

@@ -1,27 +1,14 @@
-export {
-  createGlassSurfaceController,
-  type GlassSurfaceController,
-} from "./controller";
+export { defaultOptions, resolveOptions } from "./options";
+export { createGlassSurfaceController, type GlassSurfaceController } from "./surface/controller";
 export {
   describeFilter,
-  FILTER_REGION,
-  type FilterInput,
+  type FilterDescription,
   type FilterPrimitive,
   type FilterPrimitiveTag,
   type SvgAttributes,
-} from "./filter";
-export { createGlassSurface, type GlassSurfaceInstance } from "./mount";
-export { defaultOptions, resolveOptions } from "./options";
-export {
-  getSurfaceClasses,
-  getSurfaceOverrides,
-  getSurfaceProperties,
-  type SurfaceOverrides,
-  type SurfaceProperties,
-  toFilterId,
-  toStyleObject,
-} from "./styles";
-export { supportsSvgBackdropFilter } from "./support";
+} from "./surface/filter";
+export { createGlassSurface, type GlassSurfaceInstance } from "./surface/mount";
+export { getSurfaceClasses, getSurfaceProperties, type SurfaceProperties, toFilterId } from "./surface/styles";
 export type {
   Backdrop,
   BackdropElement,

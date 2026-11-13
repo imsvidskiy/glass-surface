@@ -9,7 +9,17 @@ const COMPONENT_DEFAULTS: Record<string, unknown> = {
 
 const PROP_INDENT = "        ";
 
-function formatProp(name: string, value: unknown): string {
+function isCustomized([name, value]: [
+  string,
+  unknown,
+]): boolean {
+  return value !== COMPONENT_DEFAULTS[name];
+}
+
+function formatProp([name, value]: [
+  string,
+  unknown,
+]): string {
   if (typeof value === "string") {
     return `${name}="${value}"`;
   }
@@ -17,23 +27,19 @@ function formatProp(name: string, value: unknown): string {
   return `${name}={${String(value)}}`;
 }
 
-function differsFromDefault([name, value]: [string, unknown]): boolean {
-  return value !== COMPONENT_DEFAULTS[name];
+function indentProp(prop: string): string {
+  return `${PROP_INDENT}${prop}`;
 }
 
-/** A ready-to-paste component with every prop that differs from the defaults, sorted by name. */
 export function createSnippet(settings: Settings): string {
-  const changed = Object.entries(settings).filter(differsFromDefault);
+  const customProps = Object.entries(settings).filter(isCustomized).map(formatProp);
 
-  const propLines = changed
-    .map(function toProp([name, value]) {
-      return formatProp(name, value);
-    })
-    .concat("backdrop={backdrop}")
+  const propLines = [
+    ...customProps,
+    "backdrop={backdropRef}",
+  ]
     .sort()
-    .map(function indent(prop) {
-      return `${PROP_INDENT}${prop}`;
-    });
+    .map(indentProp);
 
   return [
     'import "@imsvidskiy/glass-surface-react/style.css";',
@@ -41,11 +47,11 @@ export function createSnippet(settings: Settings): string {
     'import { useRef } from "react";',
     "",
     "export function Glass() {",
-    "  const backdrop = useRef<HTMLImageElement>(null);",
+    "  const backdropRef = useRef<HTMLImageElement>(null);",
     "",
     "  return (",
     "    <>",
-    '      <img alt="" ref={backdrop} src="/backdrop.jpg" />',
+    '      <img alt="" ref={backdropRef} src="/backdrop.jpg" />',
     "",
     "      <GlassSurface",
     ...propLines,

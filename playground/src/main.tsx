@@ -7,7 +7,7 @@ import { App } from "./app";
 
 const root = document.querySelector("#root");
 
-if (!root) {
+if (root === null) {
   throw new Error("Root element is missing");
 }
 
