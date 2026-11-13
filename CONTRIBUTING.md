@@ -17,7 +17,8 @@ releases.
 
 ## Development setup
 
-You need [Bun](https://bun.sh) 1.4 or later.
+You need [Bun](https://bun.sh) in the version that `packageManager` in
+`package.json` names.
 
 ```sh
 git clone https://github.com/imsvidskiy/glass-surface.git
@@ -31,6 +32,17 @@ bun run dev
 `http://localhost:5173`, which loads both packages from their sources, so
 changes show up without a build.
 
+## Project layout
+
+| Path | What it holds |
+| --- | --- |
+| `packages/core/src/surface` | The controller, the SVG filter, the classes and custom properties, and the DOM mount |
+| `packages/core/src/displacement` | The displacement maps for rectangles and shapes |
+| `packages/core/src/shape` | Loading a shape image and measuring its outline |
+| `packages/core/src/webgl` | The WebGL renderer, its shaders, and its resources |
+| `packages/react/src` | The React component |
+| `playground/src` | The playground |
+
 ## Checks
 
 CI runs the checks below in this order on every pull request and every push to
@@ -41,9 +53,15 @@ pre-push hook runs `build` and `typecheck`.
 | --- | --- | --- |
 | `bun run check` | Ultracite (Biome) | Any lint error or formatting difference; `bun run fix` fixes what it can |
 | `bun run build` | tsdown, publint, attw | A build error or a problem in the published package |
-| `bun run typecheck` | TypeScript | Any type error under `@tsconfig/bases/strictest` |
+| `bun run typecheck` | TypeScript | Any type error |
 
-Fix the code rather than the rule.
+TypeScript runs under `@tsconfig/bases/strictest` with two exceptions. Biome
+already reports unused code, and the pixel math indexes typed arrays, so
+`noUncheckedIndexedAccess` is off.
+
+There is no test suite. Check a visible change in the playground in Chromium,
+which uses the SVG filter, and in Safari or Firefox, which use WebGL. Suppress
+a lint rule only with a `biome-ignore` comment that gives the reason.
 
 ## Code
 
@@ -51,27 +69,47 @@ Fix the code rather than the rule.
 
 - Write names in full words, without abbreviations: `distanceOutside`, not
   `dOut`; `columns`, not `w`.
+- Start a boolean with `is`, `has`, `can`, or `should`, and name a function
+  with a verb and a noun, such as `measureShape`.
 - Name a file after what it holds, in kebab case, such as `shape-field.ts`.
 - Keep the public API in `src/index.ts`; everything else stays internal.
-- No comments in code, except JSDoc on public options and types.
+- Write no comments. A name carries the meaning, and the README documents the
+  options. Tool directives such as `biome-ignore` are the exception.
+
+### Types
+
+- Declare types with `type`, not `interface`.
+- Sort the fields of a type, the names in a destructuring, and the members of
+  a union alphabetically.
+- Compare and memoize typed values with `haveSameValues` and `memoizeLatest`
+  instead of building string keys.
 
 ### Control flow
 
-- Declare functions with `function`, never as arrow functions assigned to a
-  name. Inline callbacks may be arrows.
+- Declare a helper with `function`. Arrow functions are for inline callbacks
+  and always have a block body.
 - Keep the happy path at the left margin: check preconditions at the top and
   return early.
 - Every `if` and loop body goes in braces, even for a single `return`.
-- Don't use `??` or `&&` to pick values or render conditionally. Give a long
-  condition a name, or split it into early returns.
+- Don't branch with `??`, `&&`, `||`, or a ternary that spans lines. Give a
+  long condition a name, or split it into early returns.
 
 ### Layout
 
-- Separate the steps of a function with one blank line: the destructuring, the
-  values it prepares, the work, and the result. Statements of one kind stay
-  together.
-- Separate sibling elements in markup with one blank line, and members of a
-  type that carry a doc comment.
+- Order a module as imports, types, constants, helpers, and exports, with each
+  declaration above its first use.
+- Split a function body into steps separated by one blank line: the
+  destructuring, the values it prepares, the work, and the result. Statements
+  of one step stay together.
+- Put a blank line before and after a statement that spans lines, and before a
+  `return` that isn't the only statement of its block.
+
+### React
+
+- Name the props type after the component, such as `GlassSurfaceProps`.
+- Declare every event handler as `handle…` inside `useCallback`, never inline
+  in the markup.
+- Separate sibling elements in the markup with one blank line.
 
 ## Commits
 

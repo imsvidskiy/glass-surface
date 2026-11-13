@@ -1,87 +1,40 @@
-<h1 align="center">Glass Surface</h1>
+# Glass Surface
 
-<p align="center">Refractive liquid glass for the web and React.</p>
+Refractive liquid glass for the web and React.
 
-<p align="center">
-  <a
-    href="https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml"
-  ><img
-    src="https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml/badge.svg"
-    alt="CI"
-  ></a>
-  <a
-    href="LICENSE"
-  ><img
-    src="https://img.shields.io/badge/license-MIT-blue"
-    alt="License: MIT"
-  ></a>
-  <img
-    src="https://img.shields.io/badge/React-19-informational"
-    alt="React 19"
-  >
-</p>
+[![CI](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml/badge.svg)](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@imsvidskiy/glass-surface)](https://www.npmjs.com/package/@imsvidskiy/glass-surface)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-<p align="center">
-  <a href="https://glass-surface.svidware.workers.dev">Live demo</a> ·
-  <a href="#install">Install</a> ·
-  <a href="#usage">Usage</a> ·
-  <a href="#playground">Playground</a> ·
-  <a href="#renderers">Renderers</a> ·
-  <a href="CONTRIBUTING.md">Contributing</a>
-</p>
+The surface bends what lies behind it at the edge, splits the colors like a
+lens, and keeps the center calm. Try it in the
+[playground](https://glass-surface.svidware.workers.dev).
 
 ![The playground: a glass card over a patterned backdrop and the Customize panel](.github/screenshots/playground.webp)
 
-**Put real refraction behind any element.** The surface bends what lies
-behind it at the edge, splits the colors like a lens, and keeps the center
-calm, in React or in plain JavaScript.
+## Features
 
-<table>
-  <thead>
-    <tr>
-      <td
-        width="33%"
-        valign="top"
-      ><b>WebGL</b><br>Refracts an image, video, or canvas with smooth
-        sampling, at any device pixel ratio.</td>
-      <td
-        width="33%"
-        valign="top"
-      ><b>SVG filter</b><br>Refracts whatever DOM is behind the element
-        through <code>backdrop-filter</code> in Chromium.</td>
-      <td
-        width="33%"
-        valign="top"
-      ><b>Frosted fallback</b><br>Blur, richer color, and a tint wherever
-        refraction isn't available.</td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td valign="top"><b>Any shape</b><br>The alpha channel of an image
-        becomes the outline, with a bevel that follows it.</td>
-      <td valign="top"><b>Chromatic aberration</b><br>Each color channel
-        bends by its own amount.</td>
-      <td valign="top"><b>Any framework</b><br>One core for JavaScript and
-        TypeScript, and a React component on top.</td>
-    </tr>
-  </tbody>
-</table>
+- **Refraction in every browser.** An SVG filter refracts the page in
+  Chromium, WebGL refracts an image, video, or canvas everywhere else, and
+  frosted glass covers the rest.
+- **Any shape.** The alpha channel of an image becomes the outline, with a
+  bevel that follows it.
+- **Chromatic aberration.** Each color channel bends by its own amount.
+- **Any framework.** One core for JavaScript and TypeScript, and a React
+  component on top.
 
 ## Install
 
-With any package manager:
-
 ```sh
 npm install @imsvidskiy/glass-surface-react
-pnpm add @imsvidskiy/glass-surface-react
-yarn add @imsvidskiy/glass-surface-react
-bun add @imsvidskiy/glass-surface-react
 ```
 
-Without React, install `@imsvidskiy/glass-surface` the same way.
+Without React, install `@imsvidskiy/glass-surface`. pnpm, Yarn, and Bun work
+the same way.
 
 ## Usage
+
+With React 19:
 
 ```tsx
 import "@imsvidskiy/glass-surface-react/style.css";
@@ -89,13 +42,13 @@ import { GlassSurface } from "@imsvidskiy/glass-surface-react";
 import { useRef } from "react";
 
 export function TabBar() {
-  const photo = useRef<HTMLImageElement>(null);
+  const photoRef = useRef<HTMLImageElement>(null);
 
   return (
     <>
-      <img alt="" ref={photo} src="/photo.jpg" />
+      <img alt="" ref={photoRef} src="/photo.jpg" />
 
-      <GlassSurface backdrop={photo} borderRadius={38} height={76} width={320}>
+      <GlassSurface backdrop={photoRef} borderRadius={38} height={76} width={320}>
         …
       </GlassSurface>
     </>
@@ -103,24 +56,80 @@ export function TabBar() {
 }
 ```
 
-[Core](packages/core) shows the same surface without React.
+Without a framework:
 
-## Playground
+```ts
+import "@imsvidskiy/glass-surface/style.css";
+import { createGlassSurface } from "@imsvidskiy/glass-surface";
 
-The [playground](https://glass-surface.svidware.workers.dev) drags the surface
-over three patterned backdrops, tunes every option, and copies the component.
+const surface = createGlassSurface(document.querySelector("#panel"), {
+  backdrop: document.querySelector("#photo"),
+});
+
+surface.update({ distortionScale: -90 });
+surface.destroy();
+```
+
+## Options
+
+Every option is a prop of the React component and a key of the object that
+`createGlassSurface` and `update` take.
+
+| Option | Type | Default | What it sets |
+| --- | --- | --- | --- |
+| `backdrop` | element, ref, or `null` | `null` | The `<img>`, `<video>`, or `<canvas>` behind the surface, or a ref to it. WebGL refracts it. |
+| `backgroundOpacity` | number | `0` | Opacity of the tint, from 0 to 1. |
+| `blueOffset` | number | `20` | Extra displacement of the blue channel. |
+| `blur` | number | `11` | Softness of the transition between the edge and the center, in pixels. |
+| `borderRadius` | number | `20` | Corner radius, in pixels. |
+| `borderWidth` | number | `0.07` | Width of the refracting edge, as a fraction of the shorter side. |
+| `brightness` | number | `50` | Lightness of the flat center of the displacement map, from 0 to 100. |
+| `displace` | number | `0.8` | Blur of the refracted result, in pixels. |
+| `distortionScale` | number | `-180` | Strength of the displacement. |
+| `greenOffset` | number | `10` | Extra displacement of the green channel. |
+| `mixBlendMode` | CSS blend mode | `"difference"` | Blend mode of the vertical gradient in the displacement map. |
+| `opacity` | number | `0.93` | How strongly the flat center overrides the edge gradient, from 0 to 1. |
+| `redOffset` | number | `0` | Extra displacement of the red channel. |
+| `refraction` | boolean | `true` | Turns refraction on. Without it the surface is frosted. |
+| `renderer` | `"auto"`, `"svg"`, or `"webgl"` | `"auto"` | The renderer to prefer, as described in [Renderers](#renderers). |
+| `saturation` | number | `1` | Saturation multiplier of the refracted backdrop. |
+| `shape` | URL or `null` | `null` | An image whose alpha channel is the outline of the surface. |
+| `xChannel` | `"R"`, `"G"`, `"B"`, or `"A"` | `"R"` | Displacement map channel that drives the horizontal shift. |
+| `yChannel` | `"R"`, `"G"`, `"B"`, or `"A"` | `"G"` | Displacement map channel that drives the vertical shift. |
+
+The React component adds its own props:
+
+| Prop | Type | Default | What it sets |
+| --- | --- | --- | --- |
+| `children` | node | none | The content on the glass. |
+| `className` | string | none | Extra classes on the surface. |
+| `element` | `"div"` or `"span"` | `"div"` | The tag of the surface and its content. Use `"span"` inside phrasing content such as a heading. |
+| `height` | CSS height | `80` | Height of the surface. |
+| `style` | style object | none | Extra styles on the surface. |
+| `width` | CSS width | `200` | Width of the surface. |
 
 ## Renderers
 
 | Renderer | Refracts | Where |
 | --- | --- | --- |
-| WebGL | The `backdrop`: an `<img>`, `<video>`, or `<canvas>` | Every browser with WebGL 2 |
-| SVG | Any content behind the element | Chromium |
+| SVG | Whatever is behind the element | Chromium |
+| WebGL | The `backdrop` | Every browser with WebGL 2 |
 | Fallback | Nothing; frosted glass | Everywhere else |
 
 `renderer: "auto"` uses the SVG filter in Chromium and WebGL elsewhere when a
 `backdrop` is given. `renderer: "webgl"` uses WebGL wherever a `backdrop` is
 given.
+
+Each renderer has limits worth knowing:
+
+- The SVG filter sees only the pixels directly behind the surface, so a strong
+  distortion mirrors them at the edge instead of pulling in what lies beyond.
+- WebGL reads the `backdrop` pixels, so a cross-origin image, video, or shape
+  needs CORS headers and the `crossorigin` attribute.
+- Every WebGL surface owns a context, and browsers keep about 16 per page.
+  Surfaces beyond that fall back to the SVG filter or to frosted glass.
+- A WebGL surface redraws only when the backdrop, the layout, or an option
+  changes, and pauses while it is off screen or the tab is hidden.
 
 ## Packages
 
