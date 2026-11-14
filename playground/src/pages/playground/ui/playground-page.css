@@ -1,0 +1,11 @@
+.playground-page {
+  display: grid;
+  gap: 16px;
+  max-width: 1180px;
+  padding: 16px 16px 40px;
+  margin: 0 auto;
+}
+
+.playground-page__toolbar {
+  display: flex;
+}

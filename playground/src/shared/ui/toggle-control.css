@@ -1,0 +1,33 @@
+.toggle-control__switch {
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  appearance: none;
+  cursor: pointer;
+  background: var(--line);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.toggle-control__switch::before {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 2px;
+  content: "";
+  background: var(--text);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-control__switch:checked {
+  background: var(--accent);
+}
+
+.toggle-control__switch:checked::before {
+  transform: translateX(14px);
+}
+
+.toggle-control__switch:focus {
+  outline: none;
+}

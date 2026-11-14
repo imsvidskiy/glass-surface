@@ -1,4 +1,4 @@
-import type { Size } from "../types";
+import type { Size } from "../lib/geometry";
 import { POSITION_LOCATION } from "./shaders";
 
 export type PassTarget = {

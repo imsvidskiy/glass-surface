@@ -1,0 +1,29 @@
+.stage {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  color-scheme: light;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+
+.stage__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stage__handle {
+  position: absolute;
+  touch-action: none;
+  cursor: grab;
+  /* biome-ignore lint/suspicious/useBaseline: the handle only stops text selection where user-select works */
+  user-select: none;
+  transform: translate(-50%, -50%);
+}
+
+.stage__handle:active {
+  cursor: grabbing;
+}

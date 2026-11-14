@@ -1,9 +1,11 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig.json",
-  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
+      "@/*": [
+        "./src/*"
+      ],
       "@imsvidskiy/glass-surface": [
         "../packages/core/src/index.ts"
       ],
@@ -11,13 +13,14 @@
         "../packages/react/src/index.ts"
       ],
       "@imsvidskiy/glass-surface-react/style.css": [
-        "../packages/core/src/glass-surface.css"
+        "../packages/core/src/style.css"
       ]
     },
     "types": [
       "vite/client"
     ]
   },
+  "extends": "../tsconfig.base.json",
   "include": [
     "src",
     "cloudflare.config.ts",

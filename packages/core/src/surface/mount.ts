@@ -1,6 +1,6 @@
-import type { GlassSurfaceInput } from "../types";
+import type { GlassSurfaceInput } from "../options";
 import { createGlassSurfaceController } from "./controller";
-import { describeFilter, type SvgAttributes } from "./filter";
+import { describeFilter, type FilterDescription, type FilterPrimitive, type SvgAttributes } from "./filter";
 import { getSurfaceClasses, getSurfaceProperties, toFilterId } from "./styles";
 
 export type GlassSurfaceInstance = {
@@ -18,14 +18,65 @@ const DECORATIONS = [
 
 let instanceCount = 0;
 
+function setAttributes(node: Element, attributes: SvgAttributes): void {
+  for (const [name, value] of Object.entries(attributes)) {
+    const text = String(value);
+
+    if (node.getAttribute(name) !== text) {
+      node.setAttribute(name, text);
+    }
+  }
+}
+
 function createSvgElement(tag: string, attributes: SvgAttributes): SVGElement {
   const node = document.createElementNS(SVG_NAMESPACE, tag);
 
-  for (const [name, value] of Object.entries(attributes)) {
-    node.setAttribute(name, String(value));
-  }
+  setAttributes(node, attributes);
 
   return node;
+}
+
+function toPrimitiveAttributes({ attributes, result }: FilterPrimitive): SvgAttributes {
+  return {
+    result,
+    ...attributes,
+  };
+}
+
+function createFilter({ attributes, primitives }: FilterDescription): SVGElement {
+  const filter = createSvgElement("filter", attributes);
+
+  for (const primitive of primitives) {
+    filter.append(createSvgElement(primitive.tag, toPrimitiveAttributes(primitive)));
+  }
+
+  return filter;
+}
+
+function updateFilter(filter: Element, { attributes, primitives }: FilterDescription): void {
+  setAttributes(filter, attributes);
+
+  for (const [index, primitive] of primitives.entries()) {
+    setAttributes(filter.children[index], toPrimitiveAttributes(primitive));
+  }
+}
+
+function renderFilter(root: SVGElement, description: FilterDescription | null): void {
+  const filter = root.firstElementChild;
+
+  if (description === null) {
+    root.replaceChildren();
+
+    return;
+  }
+
+  if (filter === null) {
+    root.append(createFilter(description));
+
+    return;
+  }
+
+  updateFilter(filter, description);
 }
 
 function createPart(tag: "canvas" | "div" | "span", name: string): HTMLElement {
@@ -69,32 +120,10 @@ export function createGlassSurface(element: HTMLElement, input: GlassSurfaceInpu
     }
   }
 
-  function renderFilter(): void {
-    const description = describeFilter(filterId, controller.getOptions(), controller.getState());
-
-    if (description === null) {
-      filterRoot.replaceChildren();
-
-      return;
-    }
-
-    const filter = createSvgElement("filter", description.attributes);
-
-    for (const { attributes, result, tag } of description.primitives) {
-      filter.append(
-        createSvgElement(tag, {
-          result,
-          ...attributes,
-        })
-      );
-    }
-
-    filterRoot.replaceChildren(filter);
-  }
-
   function render(): void {
+    const options = controller.getOptions();
     const state = controller.getState();
-    const properties = getSurfaceProperties(filterId, controller.getOptions(), state);
+    const properties = getSurfaceProperties(filterId, options, state);
 
     clear();
 
@@ -107,7 +136,7 @@ export function createGlassSurface(element: HTMLElement, input: GlassSurfaceInpu
       element.style.setProperty(name, value);
     }
 
-    renderFilter();
+    renderFilter(filterRoot, describeFilter(filterId, options, state));
   }
 
   content.append(...element.childNodes);
@@ -118,22 +147,25 @@ export function createGlassSurface(element: HTMLElement, input: GlassSurfaceInpu
 
   render();
 
+  function destroy(): void {
+    unmount();
+    unsubscribe();
+    clear();
+
+    element.replaceChildren(...content.childNodes);
+  }
+
+  function update(nextInput: GlassSurfaceInput): void {
+    currentInput = {
+      ...currentInput,
+      ...nextInput,
+    };
+
+    controller.setOptions(currentInput);
+  }
+
   return {
-    destroy() {
-      unmount();
-      unsubscribe();
-      clear();
-
-      element.replaceChildren(...content.childNodes);
-    },
-
-    update(nextInput) {
-      currentInput = {
-        ...currentInput,
-        ...nextInput,
-      };
-
-      controller.setOptions(currentInput);
-    },
+    destroy,
+    update,
   };
 }

@@ -1,4 +1,6 @@
-import type { GlassSurfaceOptions, GlassSurfaceState, ShapeState } from "../types";
+import type { GlassSurfaceOptions } from "../options";
+import type { ShapeState } from "../shape/shape-tracer";
+import type { GlassSurfaceState } from "./controller";
 
 export type SurfaceProperties = Record<`--glass-${string}`, string>;
 

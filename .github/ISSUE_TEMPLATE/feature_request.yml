@@ -7,27 +7,26 @@ body:
       value: |
         Describe the problem before the solution.
   - type: textarea
-    id: problem
     attributes:
       label: Problem
       description: What are you trying to achieve, and what stops you today?
       placeholder: I want the glass to refract a live DOM backdrop in Safari.
+    id: problem
     validations:
       required: true
   - type: textarea
-    id: proposal
     attributes:
       label: Proposal
-      description: How the library could solve it. A new option, a renderer change, an adapter for another framework.
+      description: How the library could solve it, such as a new option, a renderer change, or an adapter for another framework.
+    id: proposal
     validations:
       required: true
   - type: textarea
-    id: alternatives
     attributes:
       label: Alternatives
       description: Workarounds you tried or other designs you considered.
+    id: alternatives
   - type: dropdown
-    id: package
     attributes:
       label: Package
       multiple: true
@@ -36,3 +35,5 @@ body:
         - "@imsvidskiy/glass-surface-react"
         - Playground
         - New adapter
+
+    id: package

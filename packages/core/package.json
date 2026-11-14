@@ -33,11 +33,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown",
-    "typecheck": "tsc"
-  },
-  "devDependencies": {
-    "tsdown": "catalog:"
+    "typecheck": "tsc && tsc --project tests"
   },
   "publishConfig": {
     "access": "public"

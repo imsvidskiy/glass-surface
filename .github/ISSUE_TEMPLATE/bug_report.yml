@@ -1,38 +1,37 @@
 # yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Bug report
-description: The surface does not render or behave as documented
+description: The surface doesn't render or behave as documented
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for the report. The package version, the renderer and the browser make most bugs reproducible on the first try. Security problems go through [private vulnerability reporting](https://github.com/imsvidskiy/glass-surface/security/advisories/new) instead.
+        Thanks for the report. The package version, the renderer, and the browser make most bugs reproducible on the first try. Report a security problem through [private vulnerability reporting](https://github.com/imsvidskiy/glass-surface/security/advisories/new) instead.
   - type: textarea
-    id: what-happened
     attributes:
       label: What happened
       description: What you did, what you saw, and what you expected instead.
       placeholder: A shaped surface lost its outline after the window was resized.
+    id: what-happened
     validations:
       required: true
   - type: textarea
-    id: steps
     attributes:
       label: Steps to reproduce
       description: The options you pass, or a link to a minimal reproduction.
       placeholder: |
         1. Render <GlassSurface shape="/star.svg" />
         2. Resize the window
+    id: steps
     validations:
       required: true
   - type: input
-    id: version
     attributes:
       label: Version
       description: The installed version of the package, as `npm ls @imsvidskiy/glass-surface` prints it.
+    id: version
     validations:
       required: true
   - type: dropdown
-    id: package
     attributes:
       label: Package
       multiple: true
@@ -40,28 +39,30 @@ body:
         - "@imsvidskiy/glass-surface"
         - "@imsvidskiy/glass-surface-react"
         - Playground
+    id: package
     validations:
       required: true
   - type: dropdown
-    id: renderer
     attributes:
       label: Renderer
       options:
-        - WebGL
         - SVG
+        - WebGL
         - Fallback
         - Unsure
+    id: renderer
     validations:
       required: true
   - type: input
-    id: browser
     attributes:
       label: Browser and OS
       placeholder: Chrome 141 on macOS 27
+    id: browser
     validations:
       required: true
   - type: textarea
-    id: screenshot
     attributes:
       label: Screenshot
       description: What the surface looks like, if it renders at all.
+
+    id: screenshot

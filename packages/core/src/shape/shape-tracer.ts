@@ -1,32 +1,50 @@
-import { getPixelRatio, isEmptySize } from "../canvas";
-import { memoizeLatest } from "../memoize";
-import type { ShapeState, Size } from "../types";
+import { isEmptySize, type Rectangle, type Size } from "../lib/geometry";
+import { memoizeLatest } from "../lib/memoize";
+import { getPixelRatio } from "../lib/pixel-ratio";
 import { measureShape, type ShapeField } from "./shape-field";
 import { createGlowMask, createLineMask } from "./shape-masks";
 
 type ShapeLoad =
   | {
-      source: null;
-      status: "idle";
-    }
-  | {
-      source: string;
-      status: "failed";
-    }
-  | {
-      source: string;
-      status: "loading";
-    }
-  | {
       image: HTMLImageElement;
       source: string;
       status: "loaded";
+    }
+  | {
+      source: null;
+      status: "none";
+    }
+  | {
+      source: string;
+      status: "failed" | "loading";
     };
 
 type OutlineInput = Size & {
   image: HTMLImageElement;
   pixelRatio: number;
 };
+
+export type ShapeOutline = {
+  box: Rectangle;
+  glowMask: string;
+  lineMask: string;
+  source: string;
+};
+
+export type ShapeState =
+  | {
+      readonly status: "failed";
+    }
+  | {
+      readonly status: "loading";
+    }
+  | {
+      readonly status: "none";
+    }
+  | {
+      readonly outline: ShapeOutline;
+      readonly status: "ready";
+    };
 
 export type ShapeTrace = {
   field: ShapeField | null;
@@ -40,31 +58,25 @@ export type ShapeTracer = {
 
 const CELL_BUDGET = 400_000;
 
-const NO_SHAPE: ShapeTrace = {
-  field: null,
-  state: {
-    status: "none",
+const OUTLINELESS_TRACES: Record<Exclude<ShapeLoad["status"], "loaded">, ShapeTrace> = {
+  failed: {
+    field: null,
+    state: {
+      status: "failed",
+    },
   },
-};
-
-const LOADING_SHAPE: ShapeTrace = {
-  field: null,
-  state: {
-    status: "loading",
+  loading: {
+    field: null,
+    state: {
+      status: "loading",
+    },
   },
-};
-
-const FAILED_SHAPE: ShapeTrace = {
-  field: null,
-  state: {
-    status: "failed",
+  none: {
+    field: null,
+    state: {
+      status: "none",
+    },
   },
-};
-
-const PENDING_TRACES: Record<Exclude<ShapeLoad["status"], "loaded">, ShapeTrace> = {
-  failed: FAILED_SHAPE,
-  idle: NO_SHAPE,
-  loading: LOADING_SHAPE,
 };
 
 function loadImage(source: string): Promise<HTMLImageElement | null> {
@@ -125,7 +137,7 @@ function traceOutline({ height, image, pixelRatio, width }: OutlineInput): Shape
       },
     };
   } catch {
-    return FAILED_SHAPE;
+    return OUTLINELESS_TRACES.failed;
   }
 }
 
@@ -134,7 +146,7 @@ export function createShapeTracer(onLoad: () => void): ShapeTracer {
 
   let current: ShapeLoad = {
     source: null,
-    status: "idle",
+    status: "none",
   };
 
   async function load(input: string | null): Promise<void> {
@@ -147,7 +159,7 @@ export function createShapeTracer(onLoad: () => void): ShapeTracer {
     if (source === null) {
       current = {
         source,
-        status: "idle",
+        status: "none",
       };
 
       return;
@@ -171,11 +183,11 @@ export function createShapeTracer(onLoad: () => void): ShapeTracer {
 
   function trace(size: Size): ShapeTrace {
     if (current.status !== "loaded") {
-      return PENDING_TRACES[current.status];
+      return OUTLINELESS_TRACES[current.status];
     }
 
     if (isEmptySize(size)) {
-      return LOADING_SHAPE;
+      return OUTLINELESS_TRACES.loading;
     }
 
     return traceLatest({

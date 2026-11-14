@@ -1,17 +1,15 @@
 import {
   createGlassSurfaceController,
   describeFilter,
-  type FilterDescription,
-  type FilterPrimitive,
   type GlassSurfaceInput,
   getSurfaceClasses,
   getSurfaceProperties,
   resolveOptions,
   toFilterId,
 } from "@imsvidskiy/glass-surface";
+import { clsx } from "clsx";
 import {
   type CSSProperties,
-  createElement,
   type ReactNode,
   useCallback,
   useId,
@@ -19,6 +17,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import { SurfaceFilter } from "./surface-filter";
 
 export type GlassSurfaceElement = "div" | "span";
 
@@ -31,26 +30,6 @@ export type GlassSurfaceProps = GlassSurfaceInput & {
   width?: CSSProperties["width"] | undefined;
 };
 
-function renderPrimitive({ attributes, result, tag }: FilterPrimitive): ReactNode {
-  return createElement(tag, {
-    key: result,
-    result,
-    ...attributes,
-  });
-}
-
-function renderFilter(filter: FilterDescription | null): ReactNode {
-  if (filter === null) {
-    return null;
-  }
-
-  return (
-    <svg aria-hidden="true" className="glass-surface__filter">
-      <filter {...filter.attributes}>{filter.primitives.map(renderPrimitive)}</filter>
-    </svg>
-  );
-}
-
 export function GlassSurface({
   children,
   className,
@@ -60,23 +39,16 @@ export function GlassSurface({
   width = 200,
   ...input
 }: GlassSurfaceProps): ReactNode {
-  const filterId = toFilterId(useId());
-
   const [controller] = useState(() => {
     return createGlassSurfaceController(input);
   });
 
+  const filterId = toFilterId(useId());
   const state = useSyncExternalStore(controller.subscribe, controller.getState, controller.getState);
 
   const options = resolveOptions(input);
-  const filter = describeFilter(filterId, options, state);
 
-  const surfaceClassName = [
-    ...getSurfaceClasses(state),
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const surfaceClassName = clsx(getSurfaceClasses(state), className);
 
   const surfaceStyle: CSSProperties = {
     ...style,
@@ -104,7 +76,7 @@ export function GlassSurface({
 
   return (
     <Element className={surfaceClassName} ref={handleSurface} style={surfaceStyle}>
-      {renderFilter(filter)}
+      <SurfaceFilter description={describeFilter(filterId, options, state)} />
 
       <canvas className="glass-surface__canvas" />
 
