@@ -1,5 +1,6 @@
-import { getPixelRatio, isEmptySize } from "../canvas";
-import type { BackdropElement } from "../types";
+import { isEmptySize } from "../lib/geometry";
+import { getPixelRatio } from "../lib/pixel-ratio";
+import type { BackdropElement } from "../options";
 import { getContentBox } from "./backdrop";
 
 export type Frame = {

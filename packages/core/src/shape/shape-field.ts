@@ -1,6 +1,6 @@
-import { createCanvas, getContext2d } from "../canvas";
-import type { Rectangle, Size } from "../types";
-import { squaredDistanceTransform, UNREACHED } from "./distance-transform";
+import { createCanvas, getContext2d } from "../lib/canvas";
+import { squaredDistanceTransform, UNREACHED } from "../lib/distance-transform";
+import type { Rectangle, Size } from "../lib/geometry";
 
 export type ShapeField = {
   box: Rectangle;

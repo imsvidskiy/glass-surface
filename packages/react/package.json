@@ -33,16 +33,15 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsdown",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@imsvidskiy/glass-surface": "workspace:^"
+    "@imsvidskiy/glass-surface": "workspace:^",
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
     "@types/react": "catalog:",
-    "react": "catalog:",
-    "tsdown": "catalog:"
+    "react": "catalog:"
   },
   "peerDependencies": {
     "react": "^19.0.0"

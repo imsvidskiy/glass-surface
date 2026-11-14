@@ -1,0 +1,24 @@
+:root {
+  --page: #0b0b0e;
+  --panel: #131317;
+  --control: #1b1b21;
+  --control-hover: #212129;
+  --line: #26262e;
+  --text: #ececf1;
+  --muted: #8d8d9b;
+  --accent: #8b8cff;
+  --accent-fill: rgb(139 140 255 / 0.16);
+
+  font-family: system-ui, sans-serif;
+  color: var(--text);
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+}

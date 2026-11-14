@@ -1,11 +1,12 @@
-import { createCanvas, getContext2d, scaleSize } from "../canvas";
-import type { BlendMode, Size } from "../types";
+import { createCanvas, getContext2d } from "../lib/canvas";
+import { type Size, scaleSize } from "../lib/geometry";
+import type { BlendMode } from "../options";
 
 export type RectangleMapInput = Size & {
   blur: number;
   borderRadius: number;
-  borderWidth: number;
   brightness: number;
+  edgeWidth: number;
   mixBlendMode: BlendMode;
   opacity: number;
   texelsPerPixel: number;
@@ -39,12 +40,11 @@ function fillFade(context: CanvasRenderingContext2D, fade: CanvasGradient, color
 }
 
 export function createRectangleMap(input: RectangleMapInput): HTMLCanvasElement {
-  const { blur, borderRadius, borderWidth, brightness, height, mixBlendMode, opacity, texelsPerPixel, width } = input;
+  const { blur, borderRadius, brightness, edgeWidth, height, mixBlendMode, opacity, texelsPerPixel, width } = input;
 
   const canvas = createCanvas(scaleSize(input, texelsPerPixel));
   const context = getContext2d(canvas);
   const scaleX = canvas.width / width;
-  const edge = Math.min(width, height) * borderWidth * 0.5;
 
   context.scale(scaleX, canvas.height / height);
   context.fillStyle = "black";
@@ -60,13 +60,13 @@ export function createRectangleMap(input: RectangleMapInput): HTMLCanvasElement 
   context.shadowColor = `hsl(0 0% ${brightness}% / ${opacity})`;
   context.shadowBlur = blur * 2 * scaleX;
   context.shadowOffsetX = SHADOW_DISTANCE * scaleX;
-  context.translate(edge - SHADOW_DISTANCE, edge);
+  context.translate(edgeWidth - SHADOW_DISTANCE, edgeWidth);
 
   traceRoundedRectangle(
     context,
     {
-      height: height - edge * 2,
-      width: width - edge * 2,
+      height: height - edgeWidth * 2,
+      width: width - edgeWidth * 2,
     },
     borderRadius
   );

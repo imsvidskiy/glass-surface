@@ -1,4 +1,58 @@
-import type { GlassSurfaceInput, GlassSurfaceOptions } from "./types";
+export type BackdropElement = HTMLCanvasElement | HTMLImageElement | HTMLVideoElement;
+
+export type Backdrop =
+  | BackdropElement
+  | {
+      readonly current: BackdropElement | null;
+    };
+
+export type BlendMode =
+  | "color"
+  | "color-burn"
+  | "color-dodge"
+  | "darken"
+  | "difference"
+  | "exclusion"
+  | "hard-light"
+  | "hue"
+  | "lighten"
+  | "luminosity"
+  | "multiply"
+  | "normal"
+  | "overlay"
+  | "saturation"
+  | "screen"
+  | "soft-light";
+
+export type ColorChannel = "A" | "B" | "G" | "R";
+
+export type GlassRenderer = "auto" | "svg" | "webgl";
+
+export type GlassSurfaceOptions = {
+  backdrop: Backdrop | null;
+  backgroundOpacity: number;
+  blueOffset: number;
+  blur: number;
+  borderRadius: number;
+  borderWidth: number;
+  brightness: number;
+  displace: number;
+  distortionScale: number;
+  greenOffset: number;
+  mixBlendMode: BlendMode;
+  opacity: number;
+  redOffset: number;
+  refraction: boolean;
+  renderer: GlassRenderer;
+  saturation: number;
+  shape: string | null;
+  xChannel: ColorChannel;
+  yChannel: ColorChannel;
+};
+
+export type GlassSurfaceInput = {
+  [Option in keyof GlassSurfaceOptions]?: GlassSurfaceOptions[Option] | undefined;
+};
 
 export const defaultOptions: Readonly<GlassSurfaceOptions> = {
   backdrop: null,

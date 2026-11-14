@@ -1,4 +1,5 @@
-import type { GlassSurfaceOptions, GlassSurfaceState } from "../types";
+import type { GlassSurfaceOptions } from "../options";
+import type { GlassSurfaceState } from "./controller";
 
 type Channel = "blue" | "green" | "red";
 

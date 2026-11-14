@@ -1,5 +1,5 @@
-import { renderPixels } from "../canvas";
-import { approximateNormalCdf } from "../math";
+import { renderPixels } from "../lib/canvas";
+import { approximateNormalCdf } from "../lib/math";
 import type { ShapeField } from "./shape-field";
 
 function renderEdgeMask(field: ShapeField, readFalloff: (depth: number) => number): string {

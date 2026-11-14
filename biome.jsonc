@@ -41,19 +41,7 @@
     },
     {
       "includes": [
-        "packages/*/src/index.ts"
-      ],
-      "linter": {
-        "rules": {
-          "performance": {
-            "noBarrelFile": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": [
-        "packages/core/**"
+        "packages/core/src/webgl/painter.ts"
       ],
       "linter": {
         "rules": {

@@ -5,13 +5,8 @@
     "erasableSyntaxOnly": true,
     "module": "preserve",
     "noEmit": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "target": "es2023",
-    "allowUnusedLabels": null,
     "noUncheckedIndexedAccess": false,
-    "noFallthroughCasesInSwitch": false,
-    "allowUnreachableCode": null,
     "moduleDetection": "force",
     "verbatimModuleSyntax": true
   }

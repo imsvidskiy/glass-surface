@@ -1,14 +1,21 @@
-import { isEmptySize } from "../canvas";
 import { createDisplacementMapper } from "../displacement/displacement-map";
-import { haveSameValues, memoizeLatest } from "../memoize";
-import { resolveOptions } from "../options";
+import { isEmptySize, type Size } from "../lib/geometry";
+import { haveSameValues, memoizeLatest } from "../lib/memoize";
+import { type GlassSurfaceInput, type GlassSurfaceOptions, resolveOptions } from "../options";
 import type { ShapeField } from "../shape/shape-field";
-import { createShapeTracer } from "../shape/shape-tracer";
-import type { GlassMode, GlassSurfaceInput, GlassSurfaceOptions, GlassSurfaceState, Size } from "../types";
+import { createShapeTracer, type ShapeState } from "../shape/shape-tracer";
 import { createWebglRenderer, type WebglRenderer } from "../webgl/renderer";
+import { type GlassMode, resolveMode } from "./mode";
 import { supportsSvgBackdropFilter } from "./support";
 
 type Listener = () => void;
+
+export type GlassSurfaceState = {
+  readonly displacementMap: string;
+  readonly mode: GlassMode;
+  readonly shape: ShapeState;
+  readonly size: Size;
+};
 
 export type GlassSurfaceController = {
   getOptions: () => GlassSurfaceOptions;
@@ -88,36 +95,67 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
     }
   }
 
-  function shouldUseWebgl(): boolean {
-    if (options.backdrop === null) {
-      return false;
-    }
-
-    if (hasWebglFailed) {
-      return false;
-    }
-
-    if (options.renderer === "auto") {
-      return !isSvgSupported;
-    }
-
-    return options.renderer === "webgl";
+  function getMode(): GlassMode {
+    return resolveMode({
+      hasWebglFailed,
+      isSvgSupported,
+      options,
+    });
   }
 
-  function resolveMode(): GlassMode {
-    if (!options.refraction) {
-      return "fallback";
+  function handleWebglFailure(): void {
+    hasWebglFailed = true;
+
+    update();
+  }
+
+  function createRenderer(surface: HTMLElement): WebglRenderer | null {
+    const canvas = surface.querySelector<HTMLCanvasElement>(CANVAS_SELECTOR);
+
+    if (canvas === null) {
+      return null;
     }
 
-    if (shouldUseWebgl()) {
-      return "webgl";
+    try {
+      return createWebglRenderer({
+        canvas,
+        element: surface,
+        onFailure: handleWebglFailure,
+        readMap: getMap,
+        readOptions: getOptions,
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  function destroyRenderer(): void {
+    renderer?.destroy();
+    renderer = null;
+  }
+
+  function syncRenderer(surface: HTMLElement): GlassMode {
+    const mode = getMode();
+
+    if (mode !== "webgl") {
+      destroyRenderer();
+
+      return mode;
     }
 
-    if (isSvgSupported) {
-      return "svg";
+    if (renderer !== null) {
+      return mode;
     }
 
-    return "fallback";
+    renderer = createRenderer(surface);
+
+    if (renderer !== null) {
+      return mode;
+    }
+
+    hasWebglFailed = true;
+
+    return getMode();
   }
 
   function resolveMap(mode: GlassMode, size: Size, field: ShapeField | null): HTMLCanvasElement | null {
@@ -146,64 +184,13 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
     });
   }
 
-  function handleWebglFailure(): void {
-    hasWebglFailed = true;
-
-    update();
-  }
-
-  function destroyRenderer(): void {
-    renderer?.destroy();
-    renderer = null;
-  }
-
-  function createRenderer(surface: HTMLElement): void {
-    const canvas = surface.querySelector<HTMLCanvasElement>(CANVAS_SELECTOR);
-
-    if (canvas === null) {
-      handleWebglFailure();
-
-      return;
-    }
-
-    try {
-      renderer = createWebglRenderer({
-        canvas,
-        element: surface,
-        onFailure: handleWebglFailure,
-        readMap: getMap,
-        readOptions: getOptions,
-      });
-    } catch {
-      handleWebglFailure();
-    }
-  }
-
-  function syncRenderer(): void {
-    if (element === null) {
-      destroyRenderer();
-
-      return;
-    }
-
-    if (state.mode !== "webgl") {
-      destroyRenderer();
-
-      return;
-    }
-
-    if (renderer === null) {
-      createRenderer(element);
-    }
-  }
-
   function refresh(): boolean {
     if (element === null) {
       return false;
     }
 
     const size = measureSize(element, state.size);
-    const mode = resolveMode();
+    const mode = syncRenderer(element);
     const shape = shapeTracer.trace(size);
 
     map = resolveMap(mode, size, shape.field);
@@ -215,15 +202,13 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
       size,
     };
 
-    const hasChanged = !haveSameValues(state, next);
-
-    if (hasChanged) {
-      state = next;
+    if (haveSameValues(state, next)) {
+      return false;
     }
 
-    syncRenderer();
+    state = next;
 
-    return hasChanged;
+    return true;
   }
 
   function update(): void {
@@ -258,10 +243,9 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
 
     return () => {
       resizeObserver.disconnect();
+      destroyRenderer();
 
       element = null;
-
-      syncRenderer();
     };
   }
 
