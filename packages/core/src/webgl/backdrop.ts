@@ -1,6 +1,6 @@
 import type { Rectangle, Size } from "../lib/geometry";
+import { fitObject } from "../lib/object-fit";
 import type { Backdrop, BackdropElement } from "../options";
-import { fitObject } from "./object-fit";
 
 export type BackdropVersion = {
   element: BackdropElement;

@@ -34,7 +34,7 @@ export function TabBar() {
 }
 ```
 
-Every option of
+Every [option](https://github.com/imsvidskiy/glass-surface#options) of
 [`@imsvidskiy/glass-surface`](https://github.com/imsvidskiy/glass-surface/tree/main/packages/core)
 is a prop. `width` and `height` default to 200 × 80, and `element="span"`
 renders the surface and its content as spans, for glass inside phrasing
@@ -43,8 +43,7 @@ content such as a heading.
 The component is a client component: the package entry carries
 `"use client"`, so a server component can render it directly.
 
-The [options](https://github.com/imsvidskiy/glass-surface#options) and the
-[renderers](https://github.com/imsvidskiy/glass-surface#renderers) are
+The [renderers](https://github.com/imsvidskiy/glass-surface#renderers) are
 described in the repository README.
 
 ## License

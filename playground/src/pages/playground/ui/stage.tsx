@@ -19,7 +19,7 @@ export function Stage({ backdropName, settings }: StageProps): ReactNode {
 
   const { handlePointerDown, handlePointerMove, handlePointerUp, position } = useDrag(stageRef);
 
-  const handleStyle: CSSProperties = {
+  const positionStyle: CSSProperties = {
     left: `${position.x * 100}%`,
     top: `${position.y * 100}%`,
   };
@@ -41,7 +41,7 @@ export function Stage({ backdropName, settings }: StageProps): ReactNode {
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        style={handleStyle}
+        style={positionStyle}
       >
         <GlassSurface {...settings} backdrop={backdropRef} />
       </div>

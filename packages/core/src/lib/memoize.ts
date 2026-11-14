@@ -27,7 +27,7 @@ export function memoizeLatest<Input extends object, Output>(
 ): (input: Input) => Output {
   let latest: Memo<Input, Output> | null = null;
 
-  return (input) => {
+  function readLatest(input: Input): Output {
     if (!isFresh(latest, input)) {
       latest = {
         input,
@@ -36,5 +36,7 @@ export function memoizeLatest<Input extends object, Output>(
     }
 
     return latest.output;
-  };
+  }
+
+  return readLatest;
 }

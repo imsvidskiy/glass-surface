@@ -55,7 +55,7 @@ export function createWebglRenderer({
     return isVisible;
   }
 
-  function wake(): void {
+  function scheduleFrame(): void {
     if (frameRequest !== 0) {
       return;
     }
@@ -155,7 +155,7 @@ export function createWebglRenderer({
       return entry.isIntersecting;
     });
 
-    wake();
+    scheduleFrame();
   }
 
   function destroy(): void {
@@ -167,7 +167,7 @@ export function createWebglRenderer({
 
   visibilityObserver.observe(element);
 
-  document.addEventListener("visibilitychange", wake, {
+  document.addEventListener("visibilitychange", scheduleFrame, {
     signal: lifetime.signal,
   });
 
@@ -175,7 +175,7 @@ export function createWebglRenderer({
     signal: lifetime.signal,
   });
 
-  wake();
+  scheduleFrame();
 
   return {
     destroy,

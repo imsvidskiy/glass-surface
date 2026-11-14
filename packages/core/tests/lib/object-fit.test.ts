@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { fitObject } from "../../src/webgl/object-fit";
+import { fitObject } from "../../src/lib/object-fit";
 
 const BOUNDS = {
   height: 100,

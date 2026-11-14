@@ -1,4 +1,4 @@
-import { isEmptySize } from "../lib/geometry";
+import { isEmptySize, measureElement } from "../lib/geometry";
 import { getPixelRatio } from "../lib/pixel-ratio";
 import type { BackdropElement } from "../options";
 import { getContentBox } from "./backdrop";
@@ -14,10 +14,7 @@ export type Frame = {
 };
 
 export function measureFrame(element: HTMLElement, backdrop: BackdropElement): Frame | null {
-  const layout = {
-    height: element.offsetHeight,
-    width: element.offsetWidth,
-  };
+  const layout = measureElement(element);
 
   if (isEmptySize(layout)) {
     return null;

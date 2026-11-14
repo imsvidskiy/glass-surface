@@ -1,6 +1,7 @@
 import { createCanvas, getContext2d } from "../lib/canvas";
-import { squaredDistanceTransform, UNREACHED } from "../lib/distance-transform";
+import { transformSquaredDistances, UNREACHED } from "../lib/distance-transform";
 import type { Rectangle, Size } from "../lib/geometry";
+import { fitObject, type ObjectFitStyle } from "../lib/object-fit";
 
 export type ShapeField = {
   box: Rectangle;
@@ -12,17 +13,24 @@ export type ShapeField = {
 
 const MINIMUM_CELLS = 2;
 
-function fitImage(image: HTMLImageElement, { height, width }: Size): Rectangle {
-  const naturalWidth = image.naturalWidth > 0 ? image.naturalWidth : width;
-  const naturalHeight = image.naturalHeight > 0 ? image.naturalHeight : height;
-  const fit = Math.min(width / naturalWidth, height / naturalHeight);
+const CONTAINED: ObjectFitStyle = {
+  objectFit: "contain",
+  objectPosition: "50%",
+};
 
-  return {
-    height: naturalHeight * fit,
-    width: naturalWidth * fit,
-    x: (width - naturalWidth * fit) / 2,
-    y: (height - naturalHeight * fit) / 2,
+function fitImage(image: HTMLImageElement, size: Size): Rectangle {
+  const bounds = {
+    ...size,
+    x: 0,
+    y: 0,
   };
+
+  const natural = {
+    height: image.naturalHeight,
+    width: image.naturalWidth,
+  };
+
+  return fitObject(bounds, natural, CONTAINED);
 }
 
 function readAlpha(image: HTMLImageElement, box: Rectangle, grid: Size, cellsPerPixel: number): Uint8ClampedArray {
@@ -69,8 +77,8 @@ export function measureShape(image: HTMLImageElement, size: Size, cellsPerPixel:
     distanceInside[index] = edge <= -0.5 ? UNREACHED : Math.min(edge, 0) ** 2;
   }
 
-  squaredDistanceTransform(distanceOutside, columns, rows);
-  squaredDistanceTransform(distanceInside, columns, rows);
+  transformSquaredDistances(distanceOutside, columns, rows);
+  transformSquaredDistances(distanceInside, columns, rows);
 
   for (let index = 0; index < depth.length; index += 1) {
     depth[index] = (Math.sqrt(distanceInside[index]) - Math.sqrt(distanceOutside[index])) / cellsPerPixel;

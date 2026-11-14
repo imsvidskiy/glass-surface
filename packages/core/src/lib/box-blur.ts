@@ -12,23 +12,23 @@ const PASSES = 3;
 function blurLine(source: Float32Array, target: Float32Array, { length, offset, radius, stride }: BlurLine): void {
   const weight = 1 / (2 * radius + 1);
 
-  function read(index: number): number {
+  function readCell(index: number): number {
     return source[offset + clamp(index, 0, length - 1) * stride];
   }
 
-  let sum = read(0) * (radius + 1);
+  let sum = readCell(0) * (radius + 1);
 
   for (let index = 1; index <= radius; index += 1) {
-    sum += read(index);
+    sum += readCell(index);
   }
 
   for (let index = 0; index < length; index += 1) {
     target[offset + index * stride] = sum * weight;
-    sum += read(index + radius + 1) - read(index - radius);
+    sum += readCell(index + radius + 1) - readCell(index - radius);
   }
 }
 
-export function boxBlur(grid: Float32Array, columns: number, rows: number, radius: number): void {
+export function blurGrid(grid: Float32Array, columns: number, rows: number, radius: number): void {
   const buffer = new Float32Array(grid.length);
 
   for (let pass = 0; pass < PASSES; pass += 1) {

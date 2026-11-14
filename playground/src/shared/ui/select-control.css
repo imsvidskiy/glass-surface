@@ -1,3 +1,17 @@
+.select-control::after {
+  position: absolute;
+  top: calc(50% - 5px);
+  right: 18px;
+  width: 6px;
+  height: 6px;
+
+  pointer-events: none;
+  content: "";
+  border: solid var(--muted);
+  border-width: 0 1.5px 1.5px 0;
+  rotate: 45deg;
+}
+
 .select-control__select {
   padding: 4px 20px 4px 6px;
 
@@ -6,9 +20,7 @@
 
   appearance: none;
   cursor: pointer;
-  background: transparent
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238d8d9b' stroke-width='1.5'/%3E%3C/svg%3E")
-    no-repeat right 4px center;
+  background: transparent;
   border: 0;
 }
 

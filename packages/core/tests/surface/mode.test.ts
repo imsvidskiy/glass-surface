@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import { type GlassSurfaceInput, resolveOptions } from "../../src/options";
-import { resolveMode } from "../../src/surface/mode";
+import { type GlassMode, resolveMode } from "../../src/surface/mode";
 
 type Support = {
   hasWebglFailed?: boolean;
@@ -11,7 +11,7 @@ const BACKDROP = {
   current: null,
 };
 
-function resolve(input: GlassSurfaceInput, { hasWebglFailed = false, isSvgSupported }: Support): string {
+function resolveInput(input: GlassSurfaceInput, { hasWebglFailed = false, isSvgSupported }: Support): GlassMode {
   return resolveMode({
     hasWebglFailed,
     isSvgSupported,
@@ -19,7 +19,7 @@ function resolve(input: GlassSurfaceInput, { hasWebglFailed = false, isSvgSuppor
   });
 }
 
-test("auto prefers the SVG filter where it works", () => {
+test("resolveMode picks the SVG filter for auto where it works", () => {
   const input = {
     backdrop: BACKDROP,
   };
@@ -28,10 +28,10 @@ test("auto prefers the SVG filter where it works", () => {
     isSvgSupported: true,
   };
 
-  expect(resolve(input, support)).toBe("svg");
+  expect(resolveInput(input, support)).toBe("svg");
 });
 
-test("auto uses WebGL for a backdrop where the SVG filter does not work", () => {
+test("resolveMode picks WebGL for auto with a backdrop where the SVG filter does not work", () => {
   const input = {
     backdrop: BACKDROP,
   };
@@ -40,28 +40,28 @@ test("auto uses WebGL for a backdrop where the SVG filter does not work", () => 
     isSvgSupported: false,
   };
 
-  expect(resolve(input, support)).toBe("webgl");
+  expect(resolveInput(input, support)).toBe("webgl");
 });
 
-test("a surface without a backdrop never uses WebGL", () => {
+test("resolveMode never picks WebGL without a backdrop", () => {
   const input: GlassSurfaceInput = {
     renderer: "webgl",
   };
 
   expect(
-    resolve(input, {
+    resolveInput(input, {
       isSvgSupported: true,
     })
   ).toBe("svg");
 
   expect(
-    resolve(input, {
+    resolveInput(input, {
       isSvgSupported: false,
     })
   ).toBe("fallback");
 });
 
-test("the webgl renderer wins over the SVG filter when a backdrop is given", () => {
+test("resolveMode picks WebGL over the SVG filter for webgl with a backdrop", () => {
   const input: GlassSurfaceInput = {
     backdrop: BACKDROP,
     renderer: "webgl",
@@ -71,10 +71,10 @@ test("the webgl renderer wins over the SVG filter when a backdrop is given", () 
     isSvgSupported: true,
   };
 
-  expect(resolve(input, support)).toBe("webgl");
+  expect(resolveInput(input, support)).toBe("webgl");
 });
 
-test("the svg renderer falls back where the SVG filter does not work", () => {
+test("resolveMode picks the fallback for svg where the SVG filter does not work", () => {
   const input: GlassSurfaceInput = {
     backdrop: BACKDROP,
     renderer: "svg",
@@ -84,31 +84,31 @@ test("the svg renderer falls back where the SVG filter does not work", () => {
     isSvgSupported: false,
   };
 
-  expect(resolve(input, support)).toBe("fallback");
+  expect(resolveInput(input, support)).toBe("fallback");
 });
 
-test("a failed WebGL renderer gives way to the SVG filter or the fallback", () => {
+test("resolveMode gives up WebGL after it failed", () => {
   const input: GlassSurfaceInput = {
     backdrop: BACKDROP,
     renderer: "webgl",
   };
 
   expect(
-    resolve(input, {
+    resolveInput(input, {
       hasWebglFailed: true,
       isSvgSupported: true,
     })
   ).toBe("svg");
 
   expect(
-    resolve(input, {
+    resolveInput(input, {
       hasWebglFailed: true,
       isSvgSupported: false,
     })
   ).toBe("fallback");
 });
 
-test("a surface without refraction is always the fallback", () => {
+test("resolveMode picks the fallback without refraction", () => {
   const input = {
     backdrop: BACKDROP,
     refraction: false,
@@ -118,5 +118,5 @@ test("a surface without refraction is always the fallback", () => {
     isSvgSupported: true,
   };
 
-  expect(resolve(input, support)).toBe("fallback");
+  expect(resolveInput(input, support)).toBe("fallback");
 });

@@ -45,7 +45,7 @@ from the folders above it in this table:
 
 | Path | What it holds |
 | --- | --- |
-| `src/lib` | Helpers that know nothing about glass: geometry, math, canvas, blur, the distance transform, and memoization |
+| `src/lib` | Helpers that know nothing about glass: geometry, math, canvas, the pixel ratio, object fit, blur, the distance transform, and memoization |
 | `src/options.ts` | The options, their types, and their defaults |
 | `src/shape` | Loading a shape image and measuring its outline |
 | `src/displacement` | The displacement maps for rectangles and shapes |
@@ -55,10 +55,10 @@ from the folders above it in this table:
 | `src/style.css` | The stylesheet that both packages ship |
 | `tests` | The unit tests, in the same folders as the modules they cover |
 
-The controller holds the state of a surface and knows nothing about markup.
-`getSurfaceClasses`, `getSurfaceProperties`, and `describeFilter` turn that
-state into plain data, and `mount.ts` and the React component render the same
-data.
+The controller holds the state of a surface and renders no markup; it only
+finds the canvas of the mounted element. `getSurfaceClasses`,
+`getSurfaceProperties`, and `describeFilter` turn that state into plain data,
+and `mount.ts` and the React component render the same data.
 
 ### React
 
@@ -170,6 +170,7 @@ uses the SVG filter, and in Safari or Firefox, which use WebGL.
 - A stylesheet holds one block, written as `.block`, `.block__element`, and
   `.block--modifier`. The stylesheet of a component has the name of the
   component and of its block, such as `panel-group.css` for `.panel-group`.
+  The playground controls also share the `.control` block of `control.css`.
 - Open a rule with its custom properties, then a blank line, then the
   declarations. Biome sorts the declarations.
 - Split a rule of six or more declarations into its groups with one blank
