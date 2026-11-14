@@ -1,8 +1,8 @@
 # Contributing
 
-This page covers the setup, the checks a change passes, and the rules for
-code, commits, and pull requests. [Releasing](docs/releasing.md) covers
-releases.
+This page covers the setup, the layout of the project, the checks a change
+passes, and the rules for code, commits, and pull requests.
+[Releasing](docs/releasing.md) covers releases.
 
 ## Ways to contribute
 
@@ -34,34 +34,72 @@ changes show up without a build.
 
 ## Project layout
 
+The repository is a Bun workspace of two published packages and the
+playground. One `tsdown.config.ts` at the root builds both packages, and one
+`tsconfig.base.json` and one `biome.jsonc` hold the rules for all three.
+
+### Core
+
+`packages/core` is `@imsvidskiy/glass-surface`. A folder of `src` imports only
+from the folders above it in this table:
+
 | Path | What it holds |
 | --- | --- |
-| `packages/core/src/surface` | The controller, the SVG filter, the classes and custom properties, and the DOM mount |
-| `packages/core/src/displacement` | The displacement maps for rectangles and shapes |
-| `packages/core/src/shape` | Loading a shape image and measuring its outline |
-| `packages/core/src/webgl` | The WebGL renderer, its shaders, and its resources |
-| `packages/react/src` | The React component |
-| `playground/src` | The playground |
+| `src/lib` | Helpers that know nothing about glass: geometry, math, canvas, blur, the distance transform, and memoization |
+| `src/options.ts` | The options, their types, and their defaults |
+| `src/shape` | Loading a shape image and measuring its outline |
+| `src/displacement` | The displacement maps for rectangles and shapes |
+| `src/webgl` | The WebGL renderer: `renderer.ts` decides when to draw, `painter.ts` draws |
+| `src/surface` | The controller, the choice of a renderer, the SVG filter, the classes and custom properties, and the DOM mount |
+| `src/index.ts` | The public API |
+| `src/style.css` | The stylesheet that both packages ship |
+| `tests` | The unit tests, in the same folders as the modules they cover |
+
+The controller holds the state of a surface and knows nothing about markup.
+`getSurfaceClasses`, `getSurfaceProperties`, and `describeFilter` turn that
+state into plain data, and `mount.ts` and the React component render the same
+data.
+
+### React
+
+`packages/react` is `@imsvidskiy/glass-surface-react`: the `GlassSurface`
+component over the controller of the core. It adds no logic of its own.
+
+### Playground
+
+`playground` is a Vite application deployed to Cloudflare Workers. Its `src`
+follows [Feature-Sliced Design](https://fsd.how):
+
+| Path | What it holds |
+| --- | --- |
+| `src/app` | The entry point and the global styles |
+| `src/pages/playground` | The page: `ui`, `model`, `lib`, and `config`, exported through `index.ts` |
+| `src/shared` | Controls and helpers that know nothing about the page |
+
+A layer imports only from the layers below it, through the `@/` alias. Files
+of one slice import each other by relative paths.
 
 ## Checks
 
 CI runs the checks below in this order on every pull request and every push to
 `main`. The pre-commit hook runs `ultracite fix` on the staged files, and the
-pre-push hook runs `build` and `typecheck`.
+pre-push hook runs `build`, `typecheck`, and `test`.
 
 | Command | Tool | Fails on |
 | --- | --- | --- |
-| `bun run check` | Ultracite (Biome) | Any lint error or formatting difference; `bun run fix` fixes what it can |
-| `bun run build` | tsdown, publint, attw | A build error or a problem in the published package |
+| `bun run check` | Ultracite (Biome) and Steiger | A lint error, a formatting difference, or a playground import that breaks Feature-Sliced Design; `bun run fix` fixes what it can |
+| `bun run build` | tsdown, publint, and attw | A build error or a problem in the published package |
 | `bun run typecheck` | TypeScript | Any type error |
+| `bun run test` | The Bun test runner | A failing unit test |
 
-TypeScript runs under `@tsconfig/bases/strictest` with two exceptions. Biome
-already reports unused code, and the pixel math indexes typed arrays, so
-`noUncheckedIndexedAccess` is off.
+TypeScript runs under `@tsconfig/bases/strictest` with one exception: the
+pixel math indexes typed arrays, so `noUncheckedIndexedAccess` is off.
+Suppress a lint rule only with a `biome-ignore` comment that gives the reason.
 
-There is no test suite. Check a visible change in the playground in Chromium,
-which uses the SVG filter, and in Safari or Firefox, which use WebGL. Suppress
-a lint rule only with a `biome-ignore` comment that gives the reason.
+The unit tests cover the modules that run without a browser: the options, the
+helpers, the choice of a renderer, the filter, and the classes. Rendering has
+no automated test. Check a visible change in the playground in Chromium, which
+uses the SVG filter, and in Safari or Firefox, which use WebGL.
 
 ## Code
 
@@ -79,15 +117,28 @@ a lint rule only with a `biome-ignore` comment that gives the reason.
 ### Types
 
 - Declare types with `type`, not `interface`.
-- Sort the fields of a type, the names in a destructuring, and the members of
-  a union alphabetically.
+- Declare a type in the module that owns its values, and import it from there.
+  There is no shared file of types.
+- Sort the fields of a type, the keys of an object, the names in a
+  destructuring, and the members of a union alphabetically.
 - Compare and memoize typed values with `haveSameValues` and `memoizeLatest`
   instead of building string keys.
 
-### Control flow
+### Functions
 
 - Declare a helper with `function`. Arrow functions are for inline callbacks
   and always have a block body.
+- Order the parameters the same way everywhere: the context the function works
+  through, such as `gl`; the value it reads or changes; the values that adjust
+  the work; and a callback last.
+- Pass values that have no natural order as one object, and destructure it in
+  the signature unless the function also needs it whole.
+- Lay out a factory such as `createPainter` as its constants, its state, its
+  functions, the setup, and the returned object. The object lists declared
+  functions in shorthand.
+
+### Control flow
+
 - Keep the happy path at the left margin: check preconditions at the top and
   return early.
 - Every `if` and loop body goes in braces, even for a single `return`.
@@ -107,9 +158,22 @@ a lint rule only with a `biome-ignore` comment that gives the reason.
 ### React
 
 - Name the props type after the component, such as `GlassSurfaceProps`.
+- Order a component as its state, its refs, the other hooks, the values it
+  derives, the handlers, the effects, and the markup.
 - Declare every event handler as `handle…` inside `useCallback`, never inline
   in the markup.
+- Join class names with `clsx`.
 - Separate sibling elements in the markup with one blank line.
+
+### Styles
+
+- A stylesheet holds one block, written as `.block`, `.block__element`, and
+  `.block--modifier`. The stylesheet of a component has the name of the
+  component and of its block, such as `panel-group.css` for `.panel-group`.
+- Open a rule with its custom properties, then a blank line, then the
+  declarations. Biome sorts the declarations.
+- Order the rules as the block, its states, its elements, and its modifiers.
+- In the playground, take colors from the tokens of `global.css`.
 
 ## Commits
 
@@ -133,7 +197,7 @@ Commits follow
 | `react` | `@imsvidskiy/glass-surface-react` |
 | `playground` | The playground and its deployment |
 | `release` | The version bump that prepares a release |
-| `deps` | Dependency updates, which Dependabot opens |
+| `deps` and `deps-dev` | Dependency updates, which Dependabot opens |
 
 ## Pull requests
 

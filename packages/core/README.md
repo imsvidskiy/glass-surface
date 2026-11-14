@@ -30,8 +30,7 @@ surface.destroy();
 `update` merges new options into the current ones, and `destroy` restores the
 element.
 
-The
-[options](https://github.com/imsvidskiy/glass-surface#options) and the
+The [options](https://github.com/imsvidskiy/glass-surface#options) and the
 [renderers](https://github.com/imsvidskiy/glass-surface#renderers) are
 described in the repository README.
 
@@ -48,6 +47,22 @@ another framework can use them too:
 | `describeFilter` | Describes the SVG filter for the options and a state, or returns `null` when the surface doesn't use one |
 | `toFilterId` | Turns a unique id into the id of the filter |
 | `resolveOptions` and `defaultOptions` | Fill in the options that aren't given |
+
+An adapter renders the markup that the stylesheet expects, inside the mounted
+element and in this order:
+
+| Element | Class | When |
+| --- | --- | --- |
+| `<svg>` with the described `<filter>` | `glass-surface__filter` | While `describeFilter` returns a description |
+| `<canvas>` | `glass-surface__canvas` | Always; the WebGL renderer draws on it |
+| `<span aria-hidden="true">` | `glass-surface__frame` | Always |
+| `<span aria-hidden="true">` | `glass-surface__glow` | Always |
+| `<span aria-hidden="true">` | `glass-surface__line` | Always |
+| The content | `glass-surface__content` | Always |
+
+It subscribes to the controller with `subscribe`, reads `getState` and
+`getOptions` on every change, passes new options to `setOptions`, and calls
+`mount` with the element once it is in the document.
 
 ## License
 

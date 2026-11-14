@@ -116,9 +116,13 @@ The React component adds its own props:
 | WebGL | The `backdrop` | Every browser with WebGL 2 |
 | Fallback | Nothing; frosted glass | Everywhere else |
 
-`renderer: "auto"` uses the SVG filter in Chromium and WebGL elsewhere when a
-`backdrop` is given. `renderer: "webgl"` uses WebGL wherever a `backdrop` is
-given.
+The `renderer` option picks between them:
+
+| `renderer` | Chromium | Other browsers |
+| --- | --- | --- |
+| `"auto"` | SVG | WebGL with a `backdrop`, the fallback without |
+| `"svg"` | SVG | Fallback |
+| `"webgl"` | WebGL with a `backdrop`, SVG without | WebGL with a `backdrop`, the fallback without |
 
 Each renderer has limits worth knowing:
 

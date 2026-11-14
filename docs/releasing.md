@@ -18,14 +18,15 @@ Both packages share one version, set by the `fixed` group in
 ## One-time setup
 
 You need an npm account that owns the `@imsvidskiy` scope, signed in with
-`bunx npm login`.
+`bunx npm login`, and the GitHub CLI signed in with `gh auth login`.
 
 ## Picking the version
 
 Raise the major version when a change breaks code written for the previous
 release or changes how a surface looks with the default options, the minor
-version when it adds an option, a prop or a renderer, and the patch version
-otherwise. The changesets on `main` carry these bumps.
+version when it adds to the public API, such as an option, a prop, a
+renderer, or an export, and the patch version otherwise. The changesets on
+`main` carry these bumps.
 
 ## Cutting a release
 
