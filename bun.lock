@@ -19,11 +19,11 @@
     },
     "packages/core": {
       "name": "@imsvidskiy/glass-surface",
-      "version": "3.1.0",
+      "version": "3.1.1",
     },
     "packages/react": {
       "name": "@imsvidskiy/glass-surface-react",
-      "version": "3.1.0",
+      "version": "3.1.1",
       "dependencies": {
         "@imsvidskiy/glass-surface": "workspace:^",
         "clsx": "^2.1.1",
