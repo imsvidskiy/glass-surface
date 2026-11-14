@@ -4,6 +4,7 @@ Refractive liquid glass for the web and React.
 
 [![CI](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml/badge.svg)](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@imsvidskiy/glass-surface)](https://www.npmjs.com/package/@imsvidskiy/glass-surface)
+[![Downloads](https://img.shields.io/npm/d18m/@imsvidskiy/glass-surface)](https://www.npmjs.com/package/@imsvidskiy/glass-surface)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 The surface bends what lies behind it at the edge, splits the colors like a
