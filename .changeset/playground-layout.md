@@ -4,5 +4,6 @@
 ---
 
 The screenshot in the README shows the playground with the preview on the left
-and the settings on the right. The code of both packages is the same as in
-3.1.0.
+and the settings on the right. The stylesheet separates its groups of
+declarations with blank lines; its rules, and the code of both packages, are
+the same as in 3.1.0.
