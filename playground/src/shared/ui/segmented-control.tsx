@@ -1,7 +1,7 @@
 import "./control.css";
 import "./segmented-control.css";
 
-import { type ChangeEvent, type ReactNode, useCallback } from "react";
+import { type ChangeEvent, type ReactNode, useCallback, useId } from "react";
 import { findOption } from "@/shared/lib/find-option";
 
 type SegmentedControlProps<Name extends string, Value extends string> = {
@@ -19,6 +19,8 @@ export function SegmentedControl<Name extends string, Value extends string>({
   options,
   value,
 }: SegmentedControlProps<Name, Value>): ReactNode {
+  const labelId = useId();
+
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const option = findOption(options, event.target.value);
@@ -37,8 +39,10 @@ export function SegmentedControl<Name extends string, Value extends string>({
   );
 
   return (
-    <fieldset className="control">
-      <legend className="control__label segmented-control__legend">{label}</legend>
+    <div aria-labelledby={labelId} className="control" role="radiogroup">
+      <span className="control__label" id={labelId}>
+        {label}
+      </span>
 
       <span className="segmented-control__options">
         {options.map((option) => {
@@ -58,6 +62,6 @@ export function SegmentedControl<Name extends string, Value extends string>({
           );
         })}
       </span>
-    </fieldset>
+    </div>
   );
 }

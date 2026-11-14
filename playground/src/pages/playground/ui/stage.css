@@ -2,6 +2,7 @@
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
+
   color-scheme: light;
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -21,9 +22,15 @@
   cursor: grab;
   /* biome-ignore lint/suspicious/useBaseline: the handle only stops text selection where user-select works */
   user-select: none;
-  transform: translate(-50%, -50%);
+  translate: -50% -50%;
 }
 
 .stage__handle:active {
   cursor: grabbing;
+}
+
+@media (min-width: 1024px) {
+  .stage {
+    aspect-ratio: auto;
+  }
 }

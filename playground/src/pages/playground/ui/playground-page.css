@@ -3,9 +3,20 @@
   gap: 16px;
   max-width: 1180px;
   padding: 16px 16px 40px;
-  margin: 0 auto;
+  margin-inline: auto;
 }
 
 .playground-page__toolbar {
   display: flex;
+}
+
+@media (min-width: 1024px) {
+  .playground-page {
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 380px;
+    grid-auto-flow: column;
+    max-width: 1680px;
+    height: 100dvh;
+    padding: 16px;
+  }
 }

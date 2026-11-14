@@ -11,7 +11,7 @@ export function PanelGroup({ children, title }: PanelGroupProps): ReactNode {
     <div className="panel-group">
       <h3 className="panel-group__heading">{title}</h3>
 
-      <div className="panel-group__grid">{children}</div>
+      {children}
     </div>
   );
 }

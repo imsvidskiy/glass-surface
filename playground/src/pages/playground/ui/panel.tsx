@@ -38,15 +38,13 @@ export function Panel({ onChange, onReset, settings }: PanelProps): ReactNode {
       <header className="panel__header">
         <h2 className="panel__title">Customize</h2>
 
-        <div className="panel__actions">
-          <button className="panel__button" onClick={handleCopy} type="button">
-            {isCopied ? "Copied" : "Copy code"}
-          </button>
+        <button className="panel__button" onClick={handleCopy} type="button">
+          {isCopied ? "Copied" : "Copy code"}
+        </button>
 
-          <button className="panel__button" onClick={onReset} type="button">
-            Reset
-          </button>
-        </div>
+        <button className="panel__button" onClick={onReset} type="button">
+          Reset
+        </button>
       </header>
 
       <PanelGroup title="Surface">

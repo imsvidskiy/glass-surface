@@ -1,7 +1,9 @@
 .select-control__select {
   padding: 4px 20px 4px 6px;
+
   font: inherit;
   color: var(--text);
+
   appearance: none;
   cursor: pointer;
   background: transparent

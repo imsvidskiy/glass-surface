@@ -2,6 +2,7 @@
   width: 34px;
   height: 20px;
   margin: 0;
+
   appearance: none;
   cursor: pointer;
   background: var(--line);
@@ -14,10 +15,11 @@
   width: 16px;
   height: 16px;
   margin: 2px;
+
   content: "";
   background: var(--text);
   border-radius: 50%;
-  transition: transform 0.2s;
+  transition: translate 0.2s;
 }
 
 .toggle-control__switch:checked {
@@ -25,7 +27,7 @@
 }
 
 .toggle-control__switch:checked::before {
-  transform: translateX(14px);
+  translate: 14px;
 }
 
 .toggle-control__switch:focus {

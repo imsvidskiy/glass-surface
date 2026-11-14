@@ -172,6 +172,10 @@ uses the SVG filter, and in Safari or Firefox, which use WebGL.
   component and of its block, such as `panel-group.css` for `.panel-group`.
 - Open a rule with its custom properties, then a blank line, then the
   declarations. Biome sorts the declarations.
+- Split a rule of six or more declarations into its groups with one blank
+  line: layout, text, and appearance.
+- Lay out with flex and grid, and write `translate` and logical margins
+  instead of `transform` and `margin: 0 auto`.
 - Order the rules as the block, its states, its elements, and its modifiers.
 - In the playground, take colors from the tokens of `global.css`.
 
