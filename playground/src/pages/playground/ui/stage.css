@@ -27,3 +27,9 @@
 .stage__handle:active {
   cursor: grabbing;
 }
+
+@media (min-width: 1024px) {
+  .stage {
+    aspect-ratio: auto;
+  }
+}
