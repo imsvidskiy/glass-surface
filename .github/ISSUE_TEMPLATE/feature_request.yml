@@ -18,7 +18,7 @@ body:
     id: proposal
     attributes:
       label: Proposal
-      description: How the library could solve it. A new option, a renderer change, an adapter for another framework.
+      description: How the library could solve it, such as a new option, a renderer change, or an adapter for another framework.
     validations:
       required: true
   - type: textarea

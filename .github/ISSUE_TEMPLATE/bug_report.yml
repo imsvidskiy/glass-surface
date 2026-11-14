@@ -1,11 +1,11 @@
 # yaml-language-server: $schema=https://www.schemastore.org/github-issue-forms.json
 name: Bug report
-description: The surface does not render or behave as documented
+description: The surface doesn't render or behave as documented
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for the report. The package version, the renderer and the browser make most bugs reproducible on the first try. Security problems go through [private vulnerability reporting](https://github.com/imsvidskiy/glass-surface/security/advisories/new) instead.
+        Thanks for the report. The package version, the renderer, and the browser make most bugs reproducible on the first try. Report a security problem through [private vulnerability reporting](https://github.com/imsvidskiy/glass-surface/security/advisories/new) instead.
   - type: textarea
     id: what-happened
     attributes:
@@ -47,8 +47,8 @@ body:
     attributes:
       label: Renderer
       options:
-        - WebGL
         - SVG
+        - WebGL
         - Fallback
         - Unsure
     validations:
