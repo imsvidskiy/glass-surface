@@ -47,7 +47,6 @@ export function GlassSurface({
   const state = useSyncExternalStore(controller.subscribe, controller.getState, controller.getState);
 
   const options = resolveOptions(input);
-
   const surfaceClassName = clsx(getSurfaceClasses(state), className);
 
   const surfaceStyle: CSSProperties = {

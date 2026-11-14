@@ -21,7 +21,7 @@ export function createDisplacementMapper(): DisplacementMapper {
   const drawRectangle = memoizeLatest(createRectangleMap);
   const drawShape = memoizeLatest(createShapeMap);
 
-  return (options, size, field) => {
+  function drawMap(options: GlassSurfaceOptions, size: Size, field: ShapeField | null): HTMLCanvasElement {
     const input = {
       blur: options.blur,
       brightness: options.brightness,
@@ -44,5 +44,7 @@ export function createDisplacementMapper(): DisplacementMapper {
       ...input,
       field,
     });
-  };
+  }
+
+  return drawMap;
 }

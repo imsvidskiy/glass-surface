@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test";
-import { squaredDistanceTransform, UNREACHED } from "../../src/lib/distance-transform";
+import { transformSquaredDistances, UNREACHED } from "../../src/lib/distance-transform";
 
 const COLUMNS = 8;
 const ROWS = 6;
@@ -27,14 +27,14 @@ function measureNearestSeed(column: number, row: number): number {
   return Math.min(...distances);
 }
 
-test("squaredDistanceTransform measures the squared distance to the nearest seed", () => {
+test("transformSquaredDistances measures the squared distance to the nearest seed", () => {
   const grid = new Float32Array(COLUMNS * ROWS).fill(UNREACHED);
 
   for (const seed of SEEDS) {
     grid[seed.row * COLUMNS + seed.column] = 0;
   }
 
-  squaredDistanceTransform(grid, COLUMNS, ROWS);
+  transformSquaredDistances(grid, COLUMNS, ROWS);
 
   for (let row = 0; row < ROWS; row += 1) {
     for (let column = 0; column < COLUMNS; column += 1) {

@@ -1,7 +1,7 @@
-import { boxBlur } from "../lib/box-blur";
+import { blurGrid } from "../lib/box-blur";
 import { renderPixels, resizeCanvas } from "../lib/canvas";
 import { scaleSize } from "../lib/geometry";
-import { approximateNormalCdf, clamp } from "../lib/math";
+import { approximateCumulativeNormal, clamp } from "../lib/math";
 import type { ShapeField } from "../shape/shape-field";
 
 export type ShapeMapInput = {
@@ -33,7 +33,7 @@ function renderShapeMap({ blur, brightness, edgeWidth, field, opacity }: ShapeMa
     return surface[clamp(row, 0, rows - 1) * columns + clamp(column, 0, columns - 1)];
   }
 
-  boxBlur(surface, columns, rows, radius);
+  blurGrid(surface, columns, rows, radius);
 
   return renderPixels(
     {
@@ -48,7 +48,7 @@ function renderShapeMap({ blur, brightness, edgeWidth, field, opacity }: ShapeMa
           const slopeX = readHeight(column + 1, row) - readHeight(column - 1, row);
           const slopeY = readHeight(column, row + 1) - readHeight(column, row - 1);
 
-          const flatness = opacity * approximateNormalCdf((depth[index] - edgeWidth) / softness);
+          const flatness = opacity * approximateCumulativeNormal((depth[index] - edgeWidth) / softness);
           const bend = (1 - flatness) * cellsPerPixel * 0.25;
           const shift = flatness * lift;
 

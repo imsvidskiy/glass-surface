@@ -1,12 +1,12 @@
 import { createDisplacementMapper } from "../displacement/displacement-map";
-import { isEmptySize, type Size } from "../lib/geometry";
+import { EMPTY_SIZE, isEmptySize, measureElement, type Size } from "../lib/geometry";
 import { haveSameValues, memoizeLatest } from "../lib/memoize";
 import { type GlassSurfaceInput, type GlassSurfaceOptions, resolveOptions } from "../options";
 import type { ShapeField } from "../shape/shape-field";
 import { createShapeTracer, type ShapeState } from "../shape/shape-tracer";
 import { createWebglRenderer, type WebglRenderer } from "../webgl/renderer";
 import { type GlassMode, resolveMode } from "./mode";
-import { supportsSvgBackdropFilter } from "./support";
+import { canUseSvgBackdropFilter } from "./support";
 
 type Listener = () => void;
 
@@ -27,20 +27,12 @@ export type GlassSurfaceController = {
 
 const CANVAS_SELECTOR = ":scope > .glass-surface__canvas";
 
-const EMPTY_SIZE: Size = {
-  height: 0,
-  width: 0,
-};
-
 function encodeMap({ canvas }: { canvas: HTMLCanvasElement }): string {
   return canvas.toDataURL();
 }
 
 function measureSize(element: HTMLElement, previous: Size): Size {
-  const size = {
-    height: element.offsetHeight,
-    width: element.offsetWidth,
-  };
+  const size = measureElement(element);
 
   if (haveSameValues(size, previous)) {
     return previous;
@@ -51,7 +43,7 @@ function measureSize(element: HTMLElement, previous: Size): Size {
 
 export function createGlassSurfaceController(input: GlassSurfaceInput = {}): GlassSurfaceController {
   const listeners = new Set<Listener>();
-  const shapeTracer = createShapeTracer(update);
+  const shapeTracer = createShapeTracer(updateState);
   const drawMap = createDisplacementMapper();
   const encodeLatestMap = memoizeLatest(encodeMap);
 
@@ -89,7 +81,7 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
     };
   }
 
-  function notify(): void {
+  function notifyListeners(): void {
     for (const listener of listeners) {
       listener();
     }
@@ -106,7 +98,7 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
   function handleWebglFailure(): void {
     hasWebglFailed = true;
 
-    update();
+    updateState();
   }
 
   function createRenderer(surface: HTMLElement): WebglRenderer | null {
@@ -184,7 +176,7 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
     });
   }
 
-  function refresh(): boolean {
+  function refreshState(): boolean {
     if (element === null) {
       return false;
     }
@@ -211,9 +203,9 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
     return true;
   }
 
-  function update(): void {
-    if (refresh()) {
-      notify();
+  function updateState(): void {
+    if (refreshState()) {
+      notifyListeners();
     }
   }
 
@@ -227,19 +219,19 @@ export function createGlassSurfaceController(input: GlassSurfaceInput = {}): Gla
     options = nextOptions;
 
     shapeTracer.load(options.shape);
-    refresh();
-    notify();
+    refreshState();
+    notifyListeners();
   }
 
   function mount(target: HTMLElement): () => void {
-    const resizeObserver = new ResizeObserver(update);
+    const resizeObserver = new ResizeObserver(updateState);
 
     element = target;
-    isSvgSupported = supportsSvgBackdropFilter();
+    isSvgSupported = canUseSvgBackdropFilter();
 
     resizeObserver.observe(target);
     shapeTracer.load(options.shape);
-    update();
+    updateState();
 
     return () => {
       resizeObserver.disconnect();

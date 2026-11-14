@@ -1,5 +1,5 @@
 import { renderPixels } from "../lib/canvas";
-import { approximateNormalCdf } from "../lib/math";
+import { approximateCumulativeNormal } from "../lib/math";
 import type { ShapeField } from "./shape-field";
 
 function renderEdgeMask(field: ShapeField, readFalloff: (depth: number) => number): string {
@@ -22,12 +22,12 @@ function renderEdgeMask(field: ShapeField, readFalloff: (depth: number) => numbe
 
 export function createLineMask(field: ShapeField): string {
   return renderEdgeMask(field, (depth) => {
-    return approximateNormalCdf(depth - 1);
+    return approximateCumulativeNormal(depth - 1);
   });
 }
 
 export function createGlowMask(field: ShapeField): string {
   return renderEdgeMask(field, (depth) => {
-    return approximateNormalCdf((depth - 4) / 5);
+    return approximateCumulativeNormal((depth - 4) / 5);
   });
 }

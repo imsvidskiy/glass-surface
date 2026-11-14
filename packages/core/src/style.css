@@ -13,9 +13,7 @@
 
   position: relative;
   display: flex;
-  justify-content: center;
   overflow: hidden;
-
   border-radius: var(--glass-radius);
   transition: opacity 0.26s ease-out;
 }

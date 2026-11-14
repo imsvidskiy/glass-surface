@@ -27,7 +27,7 @@ export function ToggleControl<Name extends string>({
   );
 
   return (
-    <label className="control">
+    <label className="control toggle-control">
       <span className="control__label">{label}</span>
 
       <input

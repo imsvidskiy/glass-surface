@@ -7,7 +7,7 @@ type LineBuffers = {
 
 export const UNREACHED = 1e20;
 
-function intersect(values: Float64Array, vertex: number, position: number): number {
+function findIntersection(values: Float64Array, vertex: number, position: number): number {
   const rise = values[position] + position * position - (values[vertex] + vertex * vertex);
 
   return rise / (2 * position - 2 * vertex);
@@ -21,11 +21,11 @@ function transformLine({ boundaries, distances, values, vertices }: LineBuffers,
   boundaries[1] = UNREACHED;
 
   for (let position = 1; position < length; position += 1) {
-    let boundary = intersect(values, vertices[hull], position);
+    let boundary = findIntersection(values, vertices[hull], position);
 
     while (boundary <= boundaries[hull]) {
       hull -= 1;
-      boundary = intersect(values, vertices[hull], position);
+      boundary = findIntersection(values, vertices[hull], position);
     }
 
     hull += 1;
@@ -47,7 +47,7 @@ function transformLine({ boundaries, distances, values, vertices }: LineBuffers,
   }
 }
 
-export function squaredDistanceTransform(grid: Float32Array, columns: number, rows: number): void {
+export function transformSquaredDistances(grid: Float32Array, columns: number, rows: number): void {
   const length = Math.max(columns, rows);
 
   const buffers: LineBuffers = {

@@ -1,4 +1,4 @@
-import { type Size, scaleSize } from "../lib/geometry";
+import { EMPTY_SIZE, type Size, scaleSize } from "../lib/geometry";
 import { haveSameValues } from "../lib/memoize";
 import type { BackdropElement, GlassSurfaceOptions } from "../options";
 import { getSourceSize } from "./backdrop";
@@ -74,10 +74,7 @@ export function createPainter(canvas: HTMLCanvasElement): Painter {
     width: 0,
   };
 
-  let passSize: Size = {
-    height: 0,
-    width: 0,
-  };
+  let passSize = EMPTY_SIZE;
 
   function uploadBackdrop(source: BackdropElement): void {
     const isMipmapped = source instanceof HTMLImageElement;
@@ -101,7 +98,7 @@ export function createPainter(canvas: HTMLCanvasElement): Painter {
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, map);
   }
 
-  function resizeCanvas(size: Size): void {
+  function syncCanvasSize(size: Size): void {
     if (haveSameValues(size, canvas)) {
       return;
     }
@@ -213,7 +210,7 @@ export function createPainter(canvas: HTMLCanvasElement): Painter {
     const target = scaleSize(layout, pixelRatio);
     const sigma = Math.max(0, options.displace) * pixelRatio;
 
-    resizeCanvas(target);
+    syncCanvasSize(target);
 
     if (sigma < MINIMUM_SIGMA) {
       drawRefraction(frame, options, null, target, 1);

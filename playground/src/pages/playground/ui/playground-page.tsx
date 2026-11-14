@@ -4,6 +4,7 @@ import { type ReactNode, useCallback, useState } from "react";
 import { SegmentedControl } from "@/shared/ui/segmented-control";
 import {
   BACKDROP_NAMES,
+  type BackdropName,
   DEFAULT_BACKDROP_NAME,
   DEFAULT_SETTINGS,
   type SettingChangeHandler,
@@ -15,6 +16,10 @@ import { Stage } from "./stage";
 export function PlaygroundPage(): ReactNode {
   const [backdropName, setBackdropName] = useState(DEFAULT_BACKDROP_NAME);
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+
+  const handleBackdropChange = useCallback((name: BackdropName) => {
+    setBackdropName(name);
+  }, []);
 
   const handleSettingChange = useCallback<SettingChangeHandler>((value, name) => {
     setSettings((current): Settings => {
@@ -35,7 +40,7 @@ export function PlaygroundPage(): ReactNode {
         <SegmentedControl
           label="Backdrop"
           name="backdrop"
-          onChange={setBackdropName}
+          onChange={handleBackdropChange}
           options={BACKDROP_NAMES}
           value={backdropName}
         />

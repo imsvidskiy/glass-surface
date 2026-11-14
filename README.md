@@ -4,6 +4,7 @@ Refractive liquid glass for the web and React.
 
 [![CI](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml/badge.svg)](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@imsvidskiy/glass-surface)](https://www.npmjs.com/package/@imsvidskiy/glass-surface)
+[![Downloads](https://img.shields.io/npm/d18m/@imsvidskiy/glass-surface)](https://www.npmjs.com/package/@imsvidskiy/glass-surface)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 The surface bends what lies behind it at the edge, splits the colors like a
@@ -62,12 +63,15 @@ Without a framework:
 import "@imsvidskiy/glass-surface/style.css";
 import { createGlassSurface } from "@imsvidskiy/glass-surface";
 
-const surface = createGlassSurface(document.querySelector("#panel"), {
-  backdrop: document.querySelector("#photo"),
-});
+const panel = document.querySelector<HTMLElement>("#panel");
+const photo = document.querySelector<HTMLImageElement>("#photo");
 
-surface.update({ distortionScale: -90 });
-surface.destroy();
+if (panel !== null) {
+  const surface = createGlassSurface(panel, { backdrop: photo });
+
+  surface.update({ distortionScale: -90 });
+  surface.destroy();
+}
 ```
 
 ## Options
@@ -82,7 +86,7 @@ Every option is a prop of the React component and a key of the object that
 | `blueOffset` | number | `20` | Extra displacement of the blue channel. |
 | `blur` | number | `11` | Softness of the transition between the edge and the center, in pixels. |
 | `borderRadius` | number | `20` | Corner radius, in pixels. |
-| `borderWidth` | number | `0.07` | Width of the refracting edge, as a fraction of the shorter side. |
+| `borderWidth` | number | `0.07` | Width of the refracting edge, as a fraction of half the shorter side. |
 | `brightness` | number | `50` | Lightness of the flat center of the displacement map, from 0 to 100. |
 | `displace` | number | `0.8` | Blur of the refracted result, in pixels. |
 | `distortionScale` | number | `-180` | Strength of the displacement. |
@@ -124,16 +128,18 @@ The `renderer` option picks between them:
 | `"svg"` | SVG | Fallback |
 | `"webgl"` | WebGL with a `backdrop`, SVG without | WebGL with a `backdrop`, the fallback without |
 
-Each renderer has limits worth knowing:
+Each renderer has limits:
 
 - The SVG filter sees only the pixels directly behind the surface, so a strong
   distortion mirrors them at the edge instead of pulling in what lies beyond.
-- WebGL reads the `backdrop` pixels, so a cross-origin image, video, or shape
-  needs CORS headers and the `crossorigin` attribute.
+- WebGL reads the `backdrop` pixels, so a cross-origin image or video needs
+  CORS headers and the `crossorigin` attribute. A cross-origin `shape` needs
+  CORS headers with every renderer.
 - Every WebGL surface owns a context, and browsers keep about 16 per page.
   Surfaces beyond that fall back to the SVG filter or to frosted glass.
 - A WebGL surface redraws only when the backdrop, the layout, or an option
-  changes, and pauses while it is off screen or the tab is hidden.
+  changes, and pauses while it is off screen or the tab is hidden. A `<canvas>`
+  backdrop counts as changed on every frame.
 
 ## Packages
 

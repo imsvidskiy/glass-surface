@@ -1,16 +1,10 @@
 import "./control.css";
 import "./segmented-control.css";
 
-import { type ChangeEvent, type ReactNode, useCallback, useId } from "react";
-import { findOption } from "@/shared/lib/find-option";
+import { type ReactNode, useId } from "react";
+import { type OptionControlProps, useOptionChange } from "@/shared/lib/use-option-change";
 
-type SegmentedControlProps<Name extends string, Value extends string> = {
-  label: string;
-  name: Name;
-  onChange: (value: Value, name: Name) => void;
-  options: readonly Value[];
-  value: Value;
-};
+type SegmentedControlProps<Name extends string, Value extends string> = OptionControlProps<Name, Value>;
 
 export function SegmentedControl<Name extends string, Value extends string>({
   label,
@@ -21,25 +15,14 @@ export function SegmentedControl<Name extends string, Value extends string>({
 }: SegmentedControlProps<Name, Value>): ReactNode {
   const labelId = useId();
 
-  const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      const option = findOption(options, event.target.value);
-
-      if (option === undefined) {
-        return;
-      }
-
-      onChange(option, name);
-    },
-    [
-      name,
-      onChange,
-      options,
-    ]
-  );
+  const handleChange = useOptionChange({
+    name,
+    onChange,
+    options,
+  });
 
   return (
-    <div aria-labelledby={labelId} className="control" role="radiogroup">
+    <div aria-labelledby={labelId} className="control segmented-control" role="radiogroup">
       <span className="control__label" id={labelId}>
         {label}
       </span>

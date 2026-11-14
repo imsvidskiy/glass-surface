@@ -18,6 +18,12 @@ const DECORATIONS = [
 
 let instanceCount = 0;
 
+function createFilterId(): string {
+  instanceCount += 1;
+
+  return toFilterId(String(instanceCount));
+}
+
 function setAttributes(node: Element, attributes: SvgAttributes): void {
   for (const [name, value] of Object.entries(attributes)) {
     const text = String(value);
@@ -96,9 +102,7 @@ function createDecoration(name: string): HTMLElement {
 }
 
 export function createGlassSurface(element: HTMLElement, input: GlassSurfaceInput = {}): GlassSurfaceInstance {
-  instanceCount += 1;
-
-  const filterId = toFilterId(String(instanceCount));
+  const filterId = createFilterId();
   const controller = createGlassSurfaceController(input);
   const canvas = createPart("canvas", "canvas");
   const content = createPart("div", "content");
@@ -112,7 +116,7 @@ export function createGlassSurface(element: HTMLElement, input: GlassSurfaceInpu
   let appliedClasses: string[] = [];
   let appliedProperties: string[] = [];
 
-  function clear(): void {
+  function clearSurface(): void {
     element.classList.remove(...appliedClasses);
 
     for (const name of appliedProperties) {
@@ -120,12 +124,12 @@ export function createGlassSurface(element: HTMLElement, input: GlassSurfaceInpu
     }
   }
 
-  function render(): void {
+  function renderSurface(): void {
     const options = controller.getOptions();
     const state = controller.getState();
     const properties = getSurfaceProperties(filterId, options, state);
 
-    clear();
+    clearSurface();
 
     appliedClasses = getSurfaceClasses(state);
     appliedProperties = Object.keys(properties);
@@ -143,14 +147,14 @@ export function createGlassSurface(element: HTMLElement, input: GlassSurfaceInpu
   element.append(filterRoot, canvas, ...DECORATIONS.map(createDecoration), content);
 
   const unmount = controller.mount(element);
-  const unsubscribe = controller.subscribe(render);
+  const unsubscribe = controller.subscribe(renderSurface);
 
-  render();
+  renderSurface();
 
   function destroy(): void {
     unmount();
     unsubscribe();
-    clear();
+    clearSurface();
 
     element.replaceChildren(...content.childNodes);
   }

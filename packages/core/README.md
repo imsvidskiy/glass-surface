@@ -18,12 +18,15 @@ pnpm, Yarn, and Bun work the same way.
 import "@imsvidskiy/glass-surface/style.css";
 import { createGlassSurface } from "@imsvidskiy/glass-surface";
 
-const surface = createGlassSurface(document.querySelector("#panel"), {
-  backdrop: document.querySelector("#photo"),
-});
+const panel = document.querySelector<HTMLElement>("#panel");
+const photo = document.querySelector<HTMLImageElement>("#photo");
 
-surface.update({ distortionScale: -90 });
-surface.destroy();
+if (panel !== null) {
+  const surface = createGlassSurface(panel, { backdrop: photo });
+
+  surface.update({ distortionScale: -90 });
+  surface.destroy();
+}
 ```
 
 `createGlassSurface` moves the children of the element onto the glass.
@@ -60,9 +63,10 @@ element and in this order:
 | `<span aria-hidden="true">` | `glass-surface__line` | Always |
 | The content | `glass-surface__content` | Always |
 
-It subscribes to the controller with `subscribe`, reads `getState` and
-`getOptions` on every change, passes new options to `setOptions`, and calls
-`mount` with the element once it is in the document.
+It subscribes to the controller with `subscribe` and reads `getState` and
+`getOptions` on every change. `setOptions` replaces the options instead of
+merging them. `mount` takes the element once it is in the document and returns
+the function that unmounts it.
 
 ## License
 

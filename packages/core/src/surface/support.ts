@@ -1,6 +1,6 @@
 const UNSUPPORTED_BROWSERS = /Firefox|^(?!.*Chrome).*Safari/u;
 
-export function supportsSvgBackdropFilter(): boolean {
+export function canUseSvgBackdropFilter(): boolean {
   if (UNSUPPORTED_BROWSERS.test(navigator.userAgent)) {
     return false;
   }

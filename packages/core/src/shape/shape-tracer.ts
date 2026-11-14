@@ -6,6 +6,10 @@ import { createGlowMask, createLineMask } from "./shape-masks";
 
 type ShapeLoad =
   | {
+      source: string;
+      status: "failed" | "loading";
+    }
+  | {
       image: HTMLImageElement;
       source: string;
       status: "loaded";
@@ -13,10 +17,6 @@ type ShapeLoad =
   | {
       source: null;
       status: "none";
-    }
-  | {
-      source: string;
-      status: "failed" | "loading";
     };
 
 type OutlineInput = Size & {
