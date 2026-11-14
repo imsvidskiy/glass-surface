@@ -6,9 +6,6 @@ on:
   push:
     branches: [ main ]
 
-permissions:
-  contents: read
-
 env:
   FORCE_COLOR: "1"
 
@@ -44,3 +41,6 @@ jobs:
       - name: Test
         run: bun run test
     timeout-minutes: 10
+
+permissions:
+  contents: read

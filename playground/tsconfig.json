@@ -1,6 +1,5 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig.json",
-  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
@@ -21,6 +20,7 @@
       "vite/client"
     ]
   },
+  "extends": "../tsconfig.base.json",
   "include": [
     "src",
     "cloudflare.config.ts",

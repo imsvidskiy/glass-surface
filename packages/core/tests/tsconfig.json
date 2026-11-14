@@ -1,11 +1,11 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig.json",
-  "extends": "../tsconfig.json",
   "compilerOptions": {
     "types": [
       "bun"
     ]
   },
+  "extends": "../tsconfig.json",
   "include": [
     "."
   ]

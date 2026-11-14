@@ -1,6 +1,5 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig.json",
-  "extends": "@tsconfig/bases/strictest",
   "compilerOptions": {
     "erasableSyntaxOnly": true,
     "module": "preserve",
@@ -9,5 +8,6 @@
     "noUncheckedIndexedAccess": false,
     "moduleDetection": "force",
     "verbatimModuleSyntax": true
-  }
+  },
+  "extends": "@tsconfig/bases/strictest"
 }

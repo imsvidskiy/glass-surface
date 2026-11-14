@@ -1,10 +1,10 @@
 {
   "$schema": "https://www.schemastore.org/tsconfig.json",
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "declaration": true,
     "isolatedDeclarations": true
   },
+  "extends": "../../tsconfig.base.json",
   "include": [
     "src"
   ]
