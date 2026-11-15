@@ -1,6 +1,6 @@
 # Glass Surface
 
-Refractive liquid glass for the web and React.
+Refractive liquid glass effect for the web and React.
 
 [![CI](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml/badge.svg)](https://github.com/imsvidskiy/glass-surface/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@imsvidskiy/glass-surface)](https://www.npmjs.com/package/@imsvidskiy/glass-surface)
