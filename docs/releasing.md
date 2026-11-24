@@ -6,11 +6,11 @@ before it reaches `main`.
 
 ## What a release is made of
 
-| Artifact | Made by | Used by |
-| --- | --- | --- |
-| `@imsvidskiy/glass-surface` on npm | `bun run release` | JavaScript and TypeScript projects |
-| `@imsvidskiy/glass-surface-react` on npm | `bun run release` | React projects |
-| The `vX.Y.Z` release on GitHub | `gh release create` | The release notes and history |
+| Artifact                                 | Made by             | Used by                            |
+| ---------------------------------------- | ------------------- | ---------------------------------- |
+| `@imsvidskiy/glass-surface` on npm       | `bun run release`   | JavaScript and TypeScript projects |
+| `@imsvidskiy/glass-surface-react` on npm | `bun run release`   | React projects                     |
+| The `vX.Y.Z` release on GitHub           | `gh release create` | The release notes and history      |
 
 Both packages share one version, set by the `fixed` group in
 `.changeset/config.json`.
