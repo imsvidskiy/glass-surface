@@ -114,19 +114,19 @@ The React component adds its own props:
 
 ## Renderers
 
-| Renderer | Refracts | Where |
-| --- | --- | --- |
-| SVG | Whatever is behind the element | Chromium |
-| WebGL | The `backdrop` | Every browser with WebGL 2 |
-| Fallback | Nothing; frosted glass | Everywhere else |
+| Renderer | Refracts                       | Where                      |
+| -------- | ------------------------------ | -------------------------- |
+| SVG      | Whatever is behind the element | Chromium                   |
+| WebGL    | The `backdrop`                 | Every browser with WebGL 2 |
+| Fallback | Nothing; frosted glass         | Everywhere else            |
 
 The `renderer` option picks between them:
 
-| `renderer` | Chromium | Other browsers |
-| --- | --- | --- |
-| `"auto"` | SVG | WebGL with a `backdrop`, the fallback without |
-| `"svg"` | SVG | Fallback |
-| `"webgl"` | WebGL with a `backdrop`, SVG without | WebGL with a `backdrop`, the fallback without |
+| `renderer` | Chromium                             | Other browsers                                |
+| ---------- | ------------------------------------ | --------------------------------------------- |
+| `"auto"`   | SVG                                  | WebGL with a `backdrop`, the fallback without |
+| `"svg"`    | SVG                                  | Fallback                                      |
+| `"webgl"`  | WebGL with a `backdrop`, SVG without | WebGL with a `backdrop`, the fallback without |
 
 Each renderer has limits:
 
@@ -143,10 +143,10 @@ Each renderer has limits:
 
 ## Packages
 
-| Package | What it is |
-| --- | --- |
-| [`@imsvidskiy/glass-surface`](packages/core) | The framework-free core for JavaScript and TypeScript |
-| [`@imsvidskiy/glass-surface-react`](packages/react) | The React component |
+| Package                                             | What it is                                            |
+| --------------------------------------------------- | ----------------------------------------------------- |
+| [`@imsvidskiy/glass-surface`](packages/core)        | The framework-free core for JavaScript and TypeScript |
+| [`@imsvidskiy/glass-surface-react`](packages/react) | The React component                                   |
 
 ## Contributing
 

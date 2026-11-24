@@ -70,11 +70,11 @@ component over the controller of the core. It adds no logic of its own.
 `playground` is a Vite application deployed to Cloudflare Workers. Its `src`
 follows [Feature-Sliced Design](https://fsd.how):
 
-| Path | What it holds |
-| --- | --- |
-| `src/app` | The entry point and the global styles |
+| Path                   | What it holds                                                             |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `src/app`              | The entry point and the global styles                                     |
 | `src/pages/playground` | The page: `ui`, `model`, `lib`, and `config`, exported through `index.ts` |
-| `src/shared` | Controls and helpers that know nothing about the page |
+| `src/shared`           | Controls and helpers that know nothing about the page                     |
 
 A layer imports only from the layers below it, through the `@/` alias. Files
 of one slice import each other by relative paths.
@@ -196,13 +196,13 @@ Commits follow
   body only for what the diff can't show.
 - No trailers such as `Co-authored-by:` or `Signed-off-by:`.
 
-| Scope | Area |
-| --- | --- |
-| `core` | `@imsvidskiy/glass-surface`: state, maps, the filter, and the renderers |
-| `react` | `@imsvidskiy/glass-surface-react` |
-| `playground` | The playground and its deployment |
-| `release` | The version bump that prepares a release |
-| `deps` and `deps-dev` | Dependency updates, which Dependabot opens |
+| Scope                 | Area                                                                    |
+| --------------------- | ----------------------------------------------------------------------- |
+| `core`                | `@imsvidskiy/glass-surface`: state, maps, the filter, and the renderers |
+| `react`               | `@imsvidskiy/glass-surface-react`                                       |
+| `playground`          | The playground and its deployment                                       |
+| `release`             | The version bump that prepares a release                                |
+| `deps` and `deps-dev` | Dependency updates, which Dependabot opens                              |
 
 ## Pull requests
 

@@ -54,14 +54,14 @@ another framework can use them too:
 An adapter renders the markup that the stylesheet expects, inside the mounted
 element and in this order:
 
-| Element | Class | When |
-| --- | --- | --- |
-| `<svg>` with the described `<filter>` | `glass-surface__filter` | While `describeFilter` returns a description |
-| `<canvas>` | `glass-surface__canvas` | Always; the WebGL renderer draws on it |
-| `<span aria-hidden="true">` | `glass-surface__frame` | Always |
-| `<span aria-hidden="true">` | `glass-surface__glow` | Always |
-| `<span aria-hidden="true">` | `glass-surface__line` | Always |
-| The content | `glass-surface__content` | Always |
+| Element                               | Class                    | When                                         |
+| ------------------------------------- | ------------------------ | -------------------------------------------- |
+| `<svg>` with the described `<filter>` | `glass-surface__filter`  | While `describeFilter` returns a description |
+| `<canvas>`                            | `glass-surface__canvas`  | Always; the WebGL renderer draws on it       |
+| `<span aria-hidden="true">`           | `glass-surface__frame`   | Always                                       |
+| `<span aria-hidden="true">`           | `glass-surface__glow`    | Always                                       |
+| `<span aria-hidden="true">`           | `glass-surface__line`    | Always                                       |
+| The content                           | `glass-surface__content` | Always                                       |
 
 It subscribes to the controller with `subscribe` and reads `getState` and
 `getOptions` on every change. `setOptions` replaces the options instead of

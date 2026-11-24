@@ -1,13 +1,24 @@
+# Dependencies
+
 node_modules/
 
+# Build
+
+.cloudflare/
 dist/
 *.tgz
-.cloudflare/
+
+# Secrets
 
 .env
 .env.*
 
-.DS_Store
+# Editors
+
 .idea/
 .vscode/
 .zed/
+
+# System
+
+.DS_Store
