@@ -1,4 +1,5 @@
-import { type ChangeEvent, useCallback } from "react";
+import type { ChangeEvent } from "react";
+import { useCallback } from "react";
 
 export type OptionControlProps<Name extends string, Value extends string> = {
   label: string;

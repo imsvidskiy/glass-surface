@@ -1,6 +1,6 @@
 import "./panel.css";
-
-import { type ReactNode, useCallback, useState } from "react";
+import type { ReactNode } from "react";
+import { useCallback, useState } from "react";
 import { SegmentedControl } from "@/shared/ui/segmented-control";
 import { SelectControl } from "@/shared/ui/select-control";
 import { SliderControl } from "@/shared/ui/slider-control";

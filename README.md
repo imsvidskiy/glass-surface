@@ -67,9 +67,13 @@ const panel = document.querySelector<HTMLElement>("#panel");
 const photo = document.querySelector<HTMLImageElement>("#photo");
 
 if (panel !== null) {
-  const surface = createGlassSurface(panel, { backdrop: photo });
+  const surface = createGlassSurface(panel, {
+    backdrop: photo,
+  });
 
-  surface.update({ distortionScale: -90 });
+  surface.update({
+    distortionScale: -90,
+  });
   surface.destroy();
 }
 ```
@@ -79,38 +83,38 @@ if (panel !== null) {
 Every option is a prop of the React component and a key of the object that
 `createGlassSurface` and `update` take.
 
-| Option | Type | Default | What it sets |
-| --- | --- | --- | --- |
-| `backdrop` | element, ref, or `null` | `null` | The `<img>`, `<video>`, or `<canvas>` behind the surface, or a ref to it. WebGL refracts it. |
-| `backgroundOpacity` | number | `0` | Opacity of the tint, from 0 to 1. |
-| `blueOffset` | number | `20` | Extra displacement of the blue channel. |
-| `blur` | number | `11` | Softness of the transition between the edge and the center, in pixels. |
-| `borderRadius` | number | `20` | Corner radius, in pixels. |
-| `borderWidth` | number | `0.07` | Width of the refracting edge, as a fraction of half the shorter side. |
-| `brightness` | number | `50` | Lightness of the flat center of the displacement map, from 0 to 100. |
-| `displace` | number | `0.8` | Blur of the refracted result, in pixels. |
-| `distortionScale` | number | `-180` | Strength of the displacement. |
-| `greenOffset` | number | `10` | Extra displacement of the green channel. |
-| `mixBlendMode` | CSS blend mode | `"difference"` | Blend mode of the vertical gradient in the displacement map. |
-| `opacity` | number | `0.93` | How strongly the flat center overrides the edge gradient, from 0 to 1. |
-| `redOffset` | number | `0` | Extra displacement of the red channel. |
-| `refraction` | boolean | `true` | Turns refraction on. Without it the surface is frosted. |
-| `renderer` | `"auto"`, `"svg"`, or `"webgl"` | `"auto"` | The renderer to prefer, as described in [Renderers](#renderers). |
-| `saturation` | number | `1` | Saturation multiplier of the refracted backdrop. |
-| `shape` | URL or `null` | `null` | An image whose alpha channel is the outline of the surface. |
-| `xChannel` | `"R"`, `"G"`, `"B"`, or `"A"` | `"R"` | Displacement map channel that drives the horizontal shift. |
-| `yChannel` | `"R"`, `"G"`, `"B"`, or `"A"` | `"G"` | Displacement map channel that drives the vertical shift. |
+| Option              | Type                            | Default        | What it sets                                                                                 |
+| ------------------- | ------------------------------- | -------------- | -------------------------------------------------------------------------------------------- |
+| `backdrop`          | element, ref, or `null`         | `null`         | The `<img>`, `<video>`, or `<canvas>` behind the surface, or a ref to it. WebGL refracts it. |
+| `backgroundOpacity` | number                          | `0`            | Opacity of the tint, from 0 to 1.                                                            |
+| `blueOffset`        | number                          | `20`           | Extra displacement of the blue channel.                                                      |
+| `blur`              | number                          | `11`           | Softness of the transition between the edge and the center, in pixels.                       |
+| `borderRadius`      | number                          | `20`           | Corner radius, in pixels.                                                                    |
+| `borderWidth`       | number                          | `0.07`         | Width of the refracting edge, as a fraction of half the shorter side.                        |
+| `brightness`        | number                          | `50`           | Lightness of the flat center of the displacement map, from 0 to 100.                         |
+| `displace`          | number                          | `0.8`          | Blur of the refracted result, in pixels.                                                     |
+| `distortionScale`   | number                          | `-180`         | Strength of the displacement.                                                                |
+| `greenOffset`       | number                          | `10`           | Extra displacement of the green channel.                                                     |
+| `mixBlendMode`      | CSS blend mode                  | `"difference"` | Blend mode of the vertical gradient in the displacement map.                                 |
+| `opacity`           | number                          | `0.93`         | How strongly the flat center overrides the edge gradient, from 0 to 1.                       |
+| `redOffset`         | number                          | `0`            | Extra displacement of the red channel.                                                       |
+| `refraction`        | boolean                         | `true`         | Turns refraction on. Without it the surface is frosted.                                      |
+| `renderer`          | `"auto"`, `"svg"`, or `"webgl"` | `"auto"`       | The renderer to prefer, as described in [Renderers](#renderers).                             |
+| `saturation`        | number                          | `1`            | Saturation multiplier of the refracted backdrop.                                             |
+| `shape`             | URL or `null`                   | `null`         | An image whose alpha channel is the outline of the surface.                                  |
+| `xChannel`          | `"R"`, `"G"`, `"B"`, or `"A"`   | `"R"`          | Displacement map channel that drives the horizontal shift.                                   |
+| `yChannel`          | `"R"`, `"G"`, `"B"`, or `"A"`   | `"G"`          | Displacement map channel that drives the vertical shift.                                     |
 
 The React component adds its own props:
 
-| Prop | Type | Default | What it sets |
-| --- | --- | --- | --- |
-| `children` | node | none | The content on the glass. |
-| `className` | string | none | Extra classes on the surface. |
-| `element` | `"div"` or `"span"` | `"div"` | The tag of the surface and its content. Use `"span"` inside phrasing content such as a heading. |
-| `height` | CSS height | `80` | Height of the surface. |
-| `style` | style object | none | Extra styles on the surface. |
-| `width` | CSS width | `200` | Width of the surface. |
+| Prop        | Type                | Default | What it sets                                                                                    |
+| ----------- | ------------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| `children`  | node                | none    | The content on the glass.                                                                       |
+| `className` | string              | none    | Extra classes on the surface.                                                                   |
+| `element`   | `"div"` or `"span"` | `"div"` | The tag of the surface and its content. Use `"span"` inside phrasing content such as a heading. |
+| `height`    | CSS height          | `80`    | Height of the surface.                                                                          |
+| `style`     | style object        | none    | Extra styles on the surface.                                                                    |
+| `width`     | CSS width           | `200`   | Width of the surface.                                                                           |
 
 ## Renderers
 

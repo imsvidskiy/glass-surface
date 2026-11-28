@@ -1,4 +1,5 @@
-import { isEmptySize, type Rectangle, type Size } from "./geometry";
+import type { Rectangle, Size } from "./geometry";
+import { isEmptySize } from "./geometry";
 
 export type ObjectFitStyle = {
   objectFit: string;

@@ -1,7 +1,7 @@
 import "./control.css";
 import "./toggle-control.css";
-
-import { type ChangeEvent, type ReactNode, useCallback } from "react";
+import type { ChangeEvent, ReactNode } from "react";
+import { useCallback } from "react";
 
 type ToggleControlProps<Name extends string> = {
   isChecked: boolean;

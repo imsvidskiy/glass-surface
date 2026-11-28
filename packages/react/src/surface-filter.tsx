@@ -1,5 +1,6 @@
 import type { FilterDescription, FilterPrimitive } from "@imsvidskiy/glass-surface";
-import { createElement, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { createElement } from "react";
 
 type SurfaceFilterProps = {
   description: FilterDescription | null;

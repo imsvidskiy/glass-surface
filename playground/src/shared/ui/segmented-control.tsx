@@ -1,8 +1,9 @@
 import "./control.css";
 import "./segmented-control.css";
-
-import { type ReactNode, useId } from "react";
-import { type OptionControlProps, useOptionChange } from "@/shared/lib/use-option-change";
+import type { ReactNode } from "react";
+import { useId } from "react";
+import type { OptionControlProps } from "@/shared/lib/use-option-change";
+import { useOptionChange } from "@/shared/lib/use-option-change";
 
 type SegmentedControlProps<Name extends string, Value extends string> = OptionControlProps<Name, Value>;
 

@@ -1,7 +1,9 @@
 import { haveSameValues } from "../lib/memoize";
 import type { GlassSurfaceOptions } from "../options";
-import { type BackdropVersion, readBackdropVersion, resolveBackdrop } from "./backdrop";
-import { type Frame, measureFrame } from "./frame";
+import type { BackdropVersion } from "./backdrop";
+import { readBackdropVersion, resolveBackdrop } from "./backdrop";
+import type { Frame } from "./frame";
+import { measureFrame } from "./frame";
 import { createPainter } from "./painter";
 
 type Drawing = Frame & {
