@@ -1,4 +1,5 @@
-import { EMPTY_SIZE, type Size, scaleSize } from "../lib/geometry";
+import type { Size } from "../lib/geometry";
+import { EMPTY_SIZE, scaleSize } from "../lib/geometry";
 import { haveSameValues } from "../lib/memoize";
 import type { BackdropElement, GlassSurfaceOptions } from "../options";
 import { getSourceSize } from "./backdrop";

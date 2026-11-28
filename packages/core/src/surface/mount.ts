@@ -1,6 +1,7 @@
 import type { GlassSurfaceInput } from "../options";
 import { createGlassSurfaceController } from "./controller";
-import { describeFilter, type FilterDescription, type FilterPrimitive, type SvgAttributes } from "./filter";
+import type { FilterDescription, FilterPrimitive, SvgAttributes } from "./filter";
+import { describeFilter } from "./filter";
 import { getSurfaceClasses, getSurfaceProperties, toFilterId } from "./styles";
 
 export type GlassSurfaceInstance = {

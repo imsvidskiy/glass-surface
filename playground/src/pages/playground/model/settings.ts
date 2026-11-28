@@ -1,4 +1,5 @@
-import { defaultOptions, type GlassSurfaceOptions } from "@imsvidskiy/glass-surface";
+import type { GlassSurfaceOptions } from "@imsvidskiy/glass-surface";
+import { defaultOptions } from "@imsvidskiy/glass-surface";
 
 export type Settings = GlassSurfaceOptions & {
   height: number;

@@ -1,7 +1,8 @@
 import { createCanvas, getContext2d } from "../lib/canvas";
 import { transformSquaredDistances, UNREACHED } from "../lib/distance-transform";
 import type { Rectangle, Size } from "../lib/geometry";
-import { fitObject, type ObjectFitStyle } from "../lib/object-fit";
+import type { ObjectFitStyle } from "../lib/object-fit";
+import { fitObject } from "../lib/object-fit";
 
 export type ShapeField = {
   box: Rectangle;

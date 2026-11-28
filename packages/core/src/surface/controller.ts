@@ -1,11 +1,16 @@
 import { createDisplacementMapper } from "../displacement/displacement-map";
-import { EMPTY_SIZE, isEmptySize, measureElement, type Size } from "../lib/geometry";
+import type { Size } from "../lib/geometry";
+import { EMPTY_SIZE, isEmptySize, measureElement } from "../lib/geometry";
 import { haveSameValues, memoizeLatest } from "../lib/memoize";
-import { type GlassSurfaceInput, type GlassSurfaceOptions, resolveOptions } from "../options";
+import type { GlassSurfaceInput, GlassSurfaceOptions } from "../options";
+import { resolveOptions } from "../options";
 import type { ShapeField } from "../shape/shape-field";
-import { createShapeTracer, type ShapeState } from "../shape/shape-tracer";
-import { createWebglRenderer, type WebglRenderer } from "../webgl/renderer";
-import { type GlassMode, resolveMode } from "./mode";
+import type { ShapeState } from "../shape/shape-tracer";
+import { createShapeTracer } from "../shape/shape-tracer";
+import type { WebglRenderer } from "../webgl/renderer";
+import { createWebglRenderer } from "../webgl/renderer";
+import type { GlassMode } from "./mode";
+import { resolveMode } from "./mode";
 import { canUseSvgBackdropFilter } from "./support";
 
 type Listener = () => void;

@@ -1,15 +1,9 @@
 import "./playground-page.css";
-
-import { type ReactNode, useCallback, useState } from "react";
+import type { ReactNode } from "react";
+import { useCallback, useState } from "react";
 import { SegmentedControl } from "@/shared/ui/segmented-control";
-import {
-  BACKDROP_NAMES,
-  type BackdropName,
-  DEFAULT_BACKDROP_NAME,
-  DEFAULT_SETTINGS,
-  type SettingChangeHandler,
-  type Settings,
-} from "../model/settings";
+import type { BackdropName, SettingChangeHandler, Settings } from "../model/settings";
+import { BACKDROP_NAMES, DEFAULT_BACKDROP_NAME, DEFAULT_SETTINGS } from "../model/settings";
 import { Panel } from "./panel";
 import { Stage } from "./stage";
 

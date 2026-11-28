@@ -1,6 +1,8 @@
 import { expect, test } from "bun:test";
-import { type GlassSurfaceInput, resolveOptions } from "../../src/options";
-import { type GlassMode, resolveMode } from "../../src/surface/mode";
+import type { GlassSurfaceInput } from "../../src/options";
+import { resolveOptions } from "../../src/options";
+import type { GlassMode } from "../../src/surface/mode";
+import { resolveMode } from "../../src/surface/mode";
 
 type Support = {
   hasWebglFailed?: boolean;

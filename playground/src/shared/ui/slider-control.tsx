@@ -1,7 +1,7 @@
 import "./control.css";
 import "./slider-control.css";
-
-import { type ChangeEvent, type CSSProperties, type ReactNode, useCallback } from "react";
+import type { ChangeEvent, CSSProperties, ReactNode } from "react";
+import { useCallback } from "react";
 
 type SliderControlProps<Name extends string> = {
   label: string;

@@ -2,7 +2,8 @@ import "./control.css";
 import "./select-control.css";
 
 import type { ReactNode } from "react";
-import { type OptionControlProps, useOptionChange } from "@/shared/lib/use-option-change";
+import type { OptionControlProps } from "@/shared/lib/use-option-change";
+import { useOptionChange } from "@/shared/lib/use-option-change";
 
 type SelectControlProps<Name extends string, Value extends string> = OptionControlProps<Name, Value>;
 

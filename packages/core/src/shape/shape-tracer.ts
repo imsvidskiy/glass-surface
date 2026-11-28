@@ -1,7 +1,9 @@
-import { isEmptySize, type Rectangle, type Size } from "../lib/geometry";
+import type { Rectangle, Size } from "../lib/geometry";
+import { isEmptySize } from "../lib/geometry";
 import { memoizeLatest } from "../lib/memoize";
 import { getPixelRatio } from "../lib/pixel-ratio";
-import { measureShape, type ShapeField } from "./shape-field";
+import type { ShapeField } from "./shape-field";
+import { measureShape } from "./shape-field";
 import { createGlowMask, createLineMask } from "./shape-masks";
 
 type ShapeLoad =

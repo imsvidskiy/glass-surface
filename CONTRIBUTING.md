@@ -43,17 +43,17 @@ playground. One `tsdown.config.ts` at the root builds both packages, and one
 `packages/core` is `@imsvidskiy/glass-surface`. A folder of `src` imports only
 from the folders above it in this table:
 
-| Path | What it holds |
-| --- | --- |
-| `src/lib` | Helpers that know nothing about glass: geometry, math, canvas, the pixel ratio, object fit, blur, the distance transform, and memoization |
-| `src/options.ts` | The options, their types, and their defaults |
-| `src/shape` | Loading a shape image and measuring its outline |
-| `src/displacement` | The displacement maps for rectangles and shapes |
-| `src/webgl` | The WebGL renderer: `renderer.ts` decides when to draw, `painter.ts` draws |
-| `src/surface` | The controller, the choice of a renderer, the SVG filter, the classes and custom properties, and the DOM mount |
-| `src/index.ts` | The public API |
-| `src/style.css` | The stylesheet that both packages ship |
-| `tests` | The unit tests, in the same folders as the modules they cover |
+| Path               | What it holds                                                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/lib`          | Helpers that know nothing about glass: geometry, math, canvas, the pixel ratio, object fit, blur, the distance transform, and memoization |
+| `src/options.ts`   | The options, their types, and their defaults                                                                                              |
+| `src/shape`        | Loading a shape image and measuring its outline                                                                                           |
+| `src/displacement` | The displacement maps for rectangles and shapes                                                                                           |
+| `src/webgl`        | The WebGL renderer: `renderer.ts` decides when to draw, `painter.ts` draws                                                                |
+| `src/surface`      | The controller, the choice of a renderer, the SVG filter, the classes and custom properties, and the DOM mount                            |
+| `src/index.ts`     | The public API                                                                                                                            |
+| `src/style.css`    | The stylesheet that both packages ship                                                                                                    |
+| `tests`            | The unit tests, in the same folders as the modules they cover                                                                             |
 
 The controller holds the state of a surface and renders no markup; it only
 finds the canvas of the mounted element. `getSurfaceClasses`,
@@ -85,12 +85,12 @@ CI runs the checks below in this order on every pull request and every push to
 `main`. The pre-commit hook runs `ultracite fix` on the staged files, and the
 pre-push hook runs `build`, `typecheck`, and `test`.
 
-| Command | Tool | Fails on |
-| --- | --- | --- |
-| `bun run check` | Ultracite (Biome) and Steiger | A lint error, a formatting difference, or a playground import that breaks Feature-Sliced Design; `bun run fix` fixes what it can |
-| `bun run build` | tsdown, publint, and attw | A build error or a problem in the published package |
-| `bun run typecheck` | TypeScript | Any type error |
-| `bun run test` | The Bun test runner | A failing unit test |
+| Command             | Tool                          | Fails on                                                                                                                         |
+| ------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `bun run check`     | Ultracite (Biome) and Steiger | A lint error, a formatting difference, or a playground import that breaks Feature-Sliced Design; `bun run fix` fixes what it can |
+| `bun run build`     | tsdown, publint, and attw     | A build error or a problem in the published package                                                                              |
+| `bun run typecheck` | TypeScript                    | Any type error                                                                                                                   |
+| `bun run test`      | The Bun test runner           | A failing unit test                                                                                                              |
 
 TypeScript runs under `@tsconfig/bases/strictest` with one exception: the
 pixel math indexes typed arrays, so `noUncheckedIndexedAccess` is off.

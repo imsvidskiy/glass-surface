@@ -1,4 +1,5 @@
-import { type PointerEvent, type RefObject, useCallback, useRef, useState } from "react";
+import type { PointerEvent, RefObject } from "react";
+import { useCallback, useRef, useState } from "react";
 
 type Position = {
   x: number;

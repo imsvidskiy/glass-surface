@@ -22,9 +22,13 @@ const panel = document.querySelector<HTMLElement>("#panel");
 const photo = document.querySelector<HTMLImageElement>("#photo");
 
 if (panel !== null) {
-  const surface = createGlassSurface(panel, { backdrop: photo });
+  const surface = createGlassSurface(panel, {
+    backdrop: photo,
+  });
 
-  surface.update({ distortionScale: -90 });
+  surface.update({
+    distortionScale: -90,
+  });
   surface.destroy();
 }
 ```
@@ -42,14 +46,14 @@ described in the repository README.
 The React component is a thin layer over the same exports, and an adapter for
 another framework can use them too:
 
-| Export | What it does |
-| --- | --- |
-| `createGlassSurfaceController` | Holds the options and the state of one surface, measures the mounted element, and drives the WebGL renderer |
-| `getSurfaceClasses` | Returns the classes of the surface for a state |
-| `getSurfaceProperties` | Returns the CSS custom properties of the surface for the options and a state |
-| `describeFilter` | Describes the SVG filter for the options and a state, or returns `null` when the surface doesn't use one |
-| `toFilterId` | Turns a unique id into the id of the filter |
-| `resolveOptions` and `defaultOptions` | Fill in the options that aren't given |
+| Export                                | What it does                                                                                                |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `createGlassSurfaceController`        | Holds the options and the state of one surface, measures the mounted element, and drives the WebGL renderer |
+| `getSurfaceClasses`                   | Returns the classes of the surface for a state                                                              |
+| `getSurfaceProperties`                | Returns the CSS custom properties of the surface for the options and a state                                |
+| `describeFilter`                      | Describes the SVG filter for the options and a state, or returns `null` when the surface doesn't use one    |
+| `toFilterId`                          | Turns a unique id into the id of the filter                                                                 |
+| `resolveOptions` and `defaultOptions` | Fill in the options that aren't given                                                                       |
 
 An adapter renders the markup that the stylesheet expects, inside the mounted
 element and in this order:

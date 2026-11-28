@@ -1,7 +1,8 @@
 import "./stage.css";
 
 import { GlassSurface } from "@imsvidskiy/glass-surface-react";
-import { type CSSProperties, type ReactNode, useRef } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { useRef } from "react";
 import { useDrag } from "../lib/use-drag";
 import type { BackdropName, Settings } from "../model/settings";
 

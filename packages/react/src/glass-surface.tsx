@@ -1,22 +1,15 @@
+import type { GlassSurfaceInput } from "@imsvidskiy/glass-surface";
 import {
   createGlassSurfaceController,
   describeFilter,
-  type GlassSurfaceInput,
   getSurfaceClasses,
   getSurfaceProperties,
   resolveOptions,
   toFilterId,
 } from "@imsvidskiy/glass-surface";
 import { clsx } from "clsx";
-import {
-  type CSSProperties,
-  type ReactNode,
-  useCallback,
-  useId,
-  useLayoutEffect,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { useCallback, useId, useLayoutEffect, useState, useSyncExternalStore } from "react";
 import { SurfaceFilter } from "./surface-filter";
 
 export type GlassSurfaceElement = "div" | "span";

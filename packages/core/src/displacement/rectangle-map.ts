@@ -1,5 +1,6 @@
 import { createCanvas, getContext2d } from "../lib/canvas";
-import { type Size, scaleSize } from "../lib/geometry";
+import type { Size } from "../lib/geometry";
+import { scaleSize } from "../lib/geometry";
 import type { BlendMode } from "../options";
 
 export type RectangleMapInput = Size & {
